@@ -24,7 +24,7 @@ Check the [landing page](http://pronovix.com/walkhub) for more information.
 * `baseurl`: the url where WalkHub will be
 * `google`: OAuth2 tokens for Google
 
-Currently only OAuth2 through Google is supported as an authentication mecahnism, but other OAuth2 providers and password authentication (with 2FA support) are coming soon.
+Currently only OAuth2 through Google is supported as an authentication mechanism, but other OAuth2 providers and password authentication (with 2FA support) are coming soon.
 
 ## Build & Run
 
