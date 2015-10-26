@@ -1,0 +1,37 @@
+{
+  "name": "walkhub-service",
+  "scripts": {
+    "build": "webpack --progress --profile --colors",
+    "watch": "webpack --progress --profile --colors --watch",
+    "test": "exit 1"
+  },
+  "license": "AGPL-3.0",
+  "dependencies": {
+    "URIjs": "^1.16.0",
+    "alt": "*",
+    "axios": "*",
+    "babel-runtime": "*",
+    "bootstrap": "*",
+    "bootstrap-webpack": "*",
+    "compass-mixins": "*",
+    "crypto-js": "^3.1.5",
+    "css-loader": "*",
+    "file-loader": "*",
+    "imports-loader": "*",
+    "jquery": "*",
+    "less": "*",
+    "less-loader": "*",
+    "node-sass": "*",
+    "react": "*",
+    "react-router": "*",
+    "sass-loader": "*",
+    "style-loader": "*",
+    "url-loader": "*"
+  },
+  "devDependencies": {
+    "babel-core": "*",
+    "babel-loader": "*",
+    "html-webpack-plugin": "*",
+    "webpack": "*"
+  }
+}

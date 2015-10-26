@@ -1,0 +1,101 @@
+// Walkhub
+// Copyright (C) 2015 Pronovix
+//
+// This program is free software: you can redistribute it and/or modify
+// it under the terms of the GNU Affero General Public License as
+// published by the Free Software Foundation, either version 3 of the
+// License, or (at your option) any later version.
+//
+// This program is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU Affero General Public License for more details.
+//
+// You should have received a copy of the GNU Affero General Public License
+// along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
+// Source: https://github.com/nex3/sass/issues/740#issuecomment-18519609
+
+// Convert to number
+@function number($val) {
+  $u: unit($val);
+
+  $u: if($u == px, 1px, if($u == em, 1em, if($u == rem, 1rem, if($u == "%", 1%, if($u == pt, 1pt, if($u == pc, 1pc, if($u == in, 1in, if($u == mm, 1mm, if($u == cm, 1cm, 1)))))))));
+
+  @return $val / $u;
+}
+
+// Unit Conversion Table
+// 1px = 0.0625em;
+// 1px = 0.0625rem;
+// 1px = 0.0625pc;
+// 1px = 0.75pt;
+// 1px = 0.010416667in;
+// 1px = 0.264583333mm;
+// 1px = 0.026458333cm;
+
+// Convert to px
+@function px($val) {
+  $u: unit($val);
+
+  $u: if($u == px, 1, if($u == em, 0.0625, if($u == rem, 0.0625, if($u == pt, 0.75, if($u == pc, 0.0625, if($u == in, 0.01042, if($u == mm, 0.26458, if($u == cm, 0.02646, 1))))))));
+
+  @return number($val) / $u * 1px;
+}
+
+$unit-default-px: 10px;
+
+@function fix8_unit_to_px($val) {
+  @if $val == auto {
+    @return $val;
+  }
+  @else {
+    @if unitless($val) {
+      @if $val == 0 {
+        @return $val;
+      }
+      @else {
+        @return $val * $unit-default-px;
+      }
+    }
+    @else {
+      @return $val;
+    }
+  }
+}
+
+@function fix8_unit_to_rem($val) {
+  @if $val == auto {
+    @return $val;
+  }
+  @else {
+    @if unitless($val) {
+      @if $val == 0 {
+        @return $val;
+      }
+      @else {
+        @return $val + rem;
+      }
+    }
+    @else {
+      @return $val;
+    }
+  }
+}
+
+@mixin px-rem($prop, $val...) {
+  $n: length($val);
+  $i: 1;
+
+  $px-list: ();
+  $rem-list: ();
+
+  @while $i <= $n {
+    $px-list: append($px-list, fix8_unit_to_px(nth($val, $i)));
+    $rem-list: append($rem-list, fix8_unit_to_rem(nth($val, $i)));
+    $i: $i + 1;
+  }
+
+  #{$prop}: $px-list;
+  #{$prop}: $rem-list;
+}

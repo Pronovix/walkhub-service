@@ -1,0 +1,11 @@
+web:
+    image: pronovix/walkhub-service
+    ports:
+        - "80:80"
+    links:
+        - db
+db:
+    image: postgres:latest
+    environment:
+        POSTGRES_PASSWORD: docker
+        POSTGRES_USER: docker

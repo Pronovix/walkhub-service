@@ -1,0 +1,73 @@
+// Walkhub
+// Copyright (C) 2015 Pronovix
+//
+// This program is free software: you can redistribute it and/or modify
+// it under the terms of the GNU Affero General Public License as
+// published by the Free Software Foundation, either version 3 of the
+// License, or (at your option) any later version.
+//
+// This program is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU Affero General Public License for more details.
+//
+// You should have received a copy of the GNU Affero General Public License
+// along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
+// ---------------------
+// Mixins include
+// ---------------------
+@import "mixins";
+
+// Import bubble
+@import "bubble";
+
+// Variables
+@mixin background-gradient {
+  background-color: #0063ff;
+
+  @include filter-gradient(#0063ff, #0055d6, vertical);
+
+  $experimental-support-for-svg: true;
+
+  @include background-image(linear-gradient(top, #0063ff 0%, #0055d6 100%));
+}
+
+span.wtbubble-step-title {
+  font-weight: bold;
+}
+
+#walkthrough-proxy-message {
+  @include box-shadow(0px 1px 0px rgba(255, 255, 255, 0.3) inset);
+
+  @include border-radius(2px);
+
+  @include opacity(0.9);
+
+  @include box-sizing(border-box);
+
+  border: 1px solid black;
+  margin: 2em 5%;
+  padding: 1.25em 0.75em 0.75em 0.75em;
+  position: fixed;
+  right: 0 !important;
+  top: 0 !important;
+  left: 0 !important;
+  display: block;
+  text-shadow: 0 -1px 0 rgba(0, 0, 0, 0.5);
+  width: 90% !important;
+}
+
+#walkthrough-proxy-message-close {
+  float: right;
+  cursor: pointer;
+  margin-top: -10px;
+}
+
+.walkthrough-eventabsorber-hover {
+  border: 1px solid red;
+}
+
+.walkthrough-eventabsorber-recorded {
+	border: 5px solid green !important;
+}

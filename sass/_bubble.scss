@@ -1,0 +1,395 @@
+// Walkhub
+// Copyright (C) 2015 Pronovix
+//
+// This program is free software: you can redistribute it and/or modify
+// it under the terms of the GNU Affero General Public License as
+// published by the Free Software Foundation, either version 3 of the
+// License, or (at your option) any later version.
+//
+// This program is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU Affero General Public License for more details.
+//
+// You should have received a copy of the GNU Affero General Public License
+// along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
+// ---------------------
+// Compass include
+// ---------------------
+@import "compass/support";
+@import "compass/utilities/general/clearfix";
+@import "compass/utilities/sprites";
+@import "compass/css3";
+@import "compass/layout";
+
+// ---------------------
+// Mixins include
+// ---------------------
+@import "mixins";
+
+$transition-base: all 0.2s ease-in;
+
+@include declare-font-face("wtbubble", "wtbubble", 200);
+
+div.wtbubble-tip-guide {
+  background-color: rgba(0, 0, 0, 0.9);
+
+  @include filter-gradient(rgba(63, 63, 63, 0.85), rgba(0, 0, 0, 0.9), vertical);
+
+  $experimental-support-for-svg: true;
+
+  @include background(linear-gradient(top, rgba(63, 63, 63, 0.85) 1%, rgba(0, 0, 0, 0.9) 100%));
+
+  @include border-radius(4px);
+
+  @include box-shadow(0px 0px 15px 0px rgba(0, 0, 0, 0.15));
+
+  font-family: Tahoma, Geneva, sans-serif;
+  font-weight: normal;
+  position: absolute;
+  border: 1px solid #000000;
+  display: none;
+  color: darken(#6F6F6F, 15%);
+  width: 300px;
+  z-index: 101;
+  top: 0;
+  left: 0;
+  background-size: 100%;
+
+  [class^="icon-"],
+  [class*=" icon-"] {
+    @include font-wtbubble;
+  }
+
+  .icon-remove:before {
+    content: "";
+  }
+
+  .icon-save:before {
+    content: "";
+  }
+
+  .icon-edit:before {
+    content: "";
+  }
+
+  .icon-circle-arrow-right:before {
+    content: "";
+  }
+
+  span.wtbubble-nub {
+    display: block;
+    position: absolute;
+    background-position: top left;
+    background-repeat: no-repeat;
+    left: 22px;
+    width: 0;
+    height: 0;
+
+    &.top {
+      background-image: url("arrow-top.png");
+      width: 28px;
+      height: 14px;
+      top: -14px;
+      bottom: none;
+    }
+
+    &.bottom {
+      background-image: url("arrow-bottom.png");
+      width: 28px;
+      height: 14px;
+      bottom: -14px;
+    }
+
+    &.right {
+      background-image: url("arrow-right.png");
+      width: 14px;
+      height: 28px;
+      top: 22px;
+      bottom: none;
+      left: auto;
+      right: -14px;
+    }
+
+    &.left {
+      background-image: url("arrow-left.png");
+      width: 14px;
+      height: 28px;
+      top: 22px;
+      left: -14px;
+      right: auto;
+      bottom: none;
+    }
+
+    &.top-right {
+      background-image: url("arrow-top.png");
+      top: -28px;
+      width: 28px;
+      height: 14px;
+      bottom: none;
+      left: auto;
+      right: 28px;
+    }
+  }
+
+  .wtbubble-content-wrapper {
+    padding: 10px;
+
+    * {
+      @include mp0;
+
+      border: 0;
+      background: transparent;
+    }
+
+    h1,
+    h2,
+    h3,
+    h4,
+    h5,
+    h6 {
+      line-height: 1.25;
+      margin: 0;
+      font-weight: bold;
+      color: #fff;
+    }
+
+    h1 {
+      font-size: 30px;
+    }
+
+    h2 {
+      font-size: 26px;
+    }
+
+    h3 {
+      font-size: 22px;
+    }
+
+    h4 {
+      font-size: 18px;
+    }
+
+    h5 {
+      font-size: 16px;
+      margin-bottom: 0.5em;
+    }
+
+    h6 {
+      font-size: 14px;
+    }
+
+    p {
+      margin: 0 0 18px 0;
+      font-size: 14px;
+      line-height: 18px;
+    }
+
+    select {
+      background: white;
+    }
+
+    p,
+    h5 {
+      color: #FFFFFF;
+      text-shadow: 1px 1px 1px rgba(#000000, 0.75);
+    }
+
+    p.wtbubble-editlink {
+      clear: both;
+    }
+
+    a.wtbubble-editlink {
+      color: #fff;
+
+      @include font-size(0.8);
+    }
+
+    a.wtbubble-button {
+      @include border-radius(0.35em);
+
+      @include box-shadow(white 0 1px 0 inset);
+
+      background-color: rgb(244, 244, 245);
+
+      @include filter-gradient(#f4f4f5, #d9d9dd, vertical);
+
+      $experimental-support-for-svg: true;
+
+      @include background(linear-gradient(top, rgba(244, 244, 245, 1) 0%, rgba(217, 217, 221, 1) 100%));
+
+      @include transition($transition-base);
+
+      border: 1px solid #ccccd1;
+      color: #6f6f6f;
+      cursor: pointer;
+      display: inline-block;
+
+      @include font-size(0.8);
+
+      padding: 0.4em 0.85em 0.35em;
+      text-shadow: 1px 1px 1px rgba(255, 255, 255, 0.75);
+      text-decoration: none;
+      vertical-align: bottom;
+
+      &:hover {
+        text-decoration: none;
+        background-color: rgb(231, 231, 233);
+
+        @include filter-gradient(#e7e7e9, #ccccd1, vertical);
+
+        $experimental-support-for-svg: true;
+
+        @include background(linear-gradient(top, rgba(231, 231, 233, 1) 0%, rgba(204, 204, 209, 1) 100%));
+      }
+
+      &:active {
+        text-decoration: none;
+        text-shadow: 1px 1px 1px rgba(255, 255, 255, 0.75);
+        color: #6f6f6f;
+      }
+
+      &:after {
+        @include font-wtbubble;
+
+        display: inline-block;
+        margin-left: 5px;
+        font-size: 11px;
+      }
+
+      &:focus {
+        outline: 0;
+      }
+    }
+
+    a.wtbubble-edit {
+      &:after {
+        content: "";
+      }
+    }
+
+    input[type="submit"] {
+      margin-top: 5px;
+    }
+
+    a.wtbubble-next {
+      margin-right: 5px;
+
+      &:after {
+        content: "";
+      }
+    }
+
+    a.wtbubble-next,
+    a.wtbubble-extrabutton,
+    input[type="submit"] {
+      @include transition($transition-base);
+
+      @include border-radius(0.35em);
+
+      background-color: rgb(59, 138, 205);
+
+      @include filter-gradient(#3b8acd, #035787, vertical);
+
+      $experimental-support-for-svg: true;
+
+      @include background(linear-gradient(top, rgba(59, 138, 205, 1) 0%, rgba(3, 87, 135, 1) 100%));
+
+      @include box-shadow(inset 0px 0px 10px 0px rgba(255, 255, 255, 0.35), inset 0px -3px 1px rgba(0, 0, 0, 0.15), 0px 2px 2px rgba(0, 0, 0, 0.15));
+
+      padding: 0.4em 0.85em 0.35em;
+      border: 1px solid #005b9a;
+      color: #fff;
+      text-shadow: 1px 1px 1px rgba(0, 0, 0, 0.75);
+      display: inline-block;
+
+      &:hover {
+        background-color: rgb(79, 150, 210);
+
+        @include filter-gradient(#4f96d2, #0467a0, vertical);
+
+        $experimental-support-for-svg: true;
+
+        @include background(linear-gradient(top, rgba(79, 150, 210, 1) 0%, rgba(4, 103, 160, 1) 100%));
+      }
+
+      &:active {
+        background: #035787;
+
+        @include box-shadow(inset 0px -3px 1px rgba(255, 255, 255, 0.15));
+      }
+    }
+
+    fieldset,
+    form,
+    label,
+    hr {
+      @include mp0;
+
+      border: 0;
+      background: transparent;
+
+      @include box-shadow(none);
+    }
+
+    label {
+      margin-top: 5px;
+      float: left;
+      color: #FFFFFF;
+      text-shadow: 1px 1px 1px rgba(#000000, 0.75);
+      width: 28%;
+      clear: left;
+    }
+
+    hr {
+      margin: 5px -10px;
+      border: 0;
+      border-top: 1px solid #000;
+
+      @include box-shadow(0px 1px 0px 0px lighten(#000000, 25%));
+    }
+
+    input[type="textfield"],
+    textarea {
+      background: #FFFFFF;
+      color: #494949;
+      width: 72%;
+      max-width: 72%;
+      font-size: 12px;
+      padding: 5px 4px;
+
+      @include border-radius(4px);
+
+      @include box-shadow(inset 0 1px 3px rgba(221, 221, 221, 0.75));
+
+      @include box-sizing(border-box);
+
+      transition: all 0.25s ease-in;
+      display: inline-block;
+      border: 1px solid #cccccc;
+      margin-bottom: 5px;
+    }
+  }
+}
+
+.wtbubble-modal-bg {
+  position: fixed;
+  height: 100%;
+  width: 100%;
+  background: rgba(0, 0, 0, 0.5);
+
+  @include opacity(0.5);
+
+  z-index: 100;
+  display: block;
+  top: 0;
+  left: 0;
+  cursor: pointer;
+}
+
+@include max-screen(479px) {
+  div.wtbubble-tip-guide {
+    width: 100%;
+  }
+}

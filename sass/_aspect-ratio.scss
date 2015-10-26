@@ -1,0 +1,31 @@
+// Walkhub
+// Copyright (C) 2015 Pronovix
+//
+// This program is free software: you can redistribute it and/or modify
+// it under the terms of the GNU Affero General Public License as
+// published by the Free Software Foundation, either version 3 of the
+// License, or (at your option) any later version.
+//
+// This program is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU Affero General Public License for more details.
+//
+// You should have received a copy of the GNU Affero General Public License
+// along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
+// ============================================================
+// $Aspect Ratios
+// ============================================================
+
+// @returns Aspect Ratio Percentage
+// padding-bottom: aspect-ratio(16,9); // @returns 56.25%
+@function aspect-ratio($ratio-numerator, $ratio-denominator) {
+  @return $ratio-denominator / $ratio-numerator * 100%;
+}
+
+// @returns Based on Fixed Image Dimensions
+// padding: 0 0 aspect-ratio-fixed(1080, 720); // @returns 66.666666666667%
+@function aspect-ratio-fixed($w, $h) {
+  @return $h / $w * 100%;
+}

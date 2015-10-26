@@ -1,0 +1,266 @@
+// Walkhub
+// Copyright (C) 2015 Pronovix
+//
+// This program is free software: you can redistribute it and/or modify
+// it under the terms of the GNU Affero General Public License as
+// published by the Free Software Foundation, either version 3 of the
+// License, or (at your option) any later version.
+//
+// This program is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU Affero General Public License for more details.
+//
+// You should have received a copy of the GNU Affero General Public License
+// along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
+// ---------------------
+// Mixins include
+// ---------------------
+@import "functions";
+@import "media-queries";
+@import "font-face";
+@import "fonts";
+
+// ---------------------
+// Font Mixin
+// ---------------------
+@mixin font-wtbubble {
+  font-family: "wtbubble";
+  speak: none;
+  content: attr(data-icon);
+  font-weight: normal;
+  font-style: normal;
+  text-decoration: inherit;
+  -webkit-font-smoothing: antialiased;
+  *margin-right: 0.3em;
+}
+
+// ---------------------
+// Site Special Mixins
+// ---------------------
+// Clearfix Mixin
+@mixin clearfix {
+  &:after {
+    content: ".";
+    display: block;
+    height: 0;
+    clear: both;
+    visibility: hidden;
+  }
+}
+
+@mixin selection {
+  ::-moz-selection {
+    @content;
+  }
+
+  ::selection {
+    @content;
+  }
+}
+
+@mixin repimg {
+  width: 100%;
+  height: auto;
+}
+
+// Font Sizeing
+@mixin font-size($size: 1.6, $line: $size * 1.45) {
+  font-size: $size * 10 + px;
+  line-height: $line * 10 + px;
+  font-size: $size + rem;
+  line-height: $line + rem;
+}
+
+// Margin & Padding Reset
+@mixin mp0 {
+  margin: 0;
+  padding: 0;
+}
+
+// Hide Text
+@mixin hide-text {
+  font: (0 / 0) a;
+  text-shadow: none;
+  color: transparent;
+}
+
+// Hide stuff
+@mixin hide {
+  margin: 0;
+  padding: 0;
+  display: block;
+  visibility: hidden;
+  height: 0;
+  border: none;
+  -moz-appearance: separator;
+  -webkit-appearance: none;
+}
+
+// Placeholder color Mixin
+@mixin placeholder($color1) {
+  input::-webkit-input-placeholder {
+    color: $color1;
+  }
+
+  input::-moz-placeholder {
+    color: $color1;
+  }
+
+  input:-moz-placeholder {
+    color: $color1;
+  }
+
+  input:-ms-input-placeholder {
+    color: $color1;
+  }
+}
+
+// Scrollbar Mixin
+@mixin scrollbar-track($color1, $color2) {
+  &::-webkit-scrollbar-track,
+  scrollbar-track {
+    background-color: $color1;
+  }
+
+  &::-webkit-scrollbar,
+  scrollbar {
+    width: 10px;
+    background-color: $color1;
+  }
+
+  &::-webkit-scrollbar-thumb,
+  scrollbar-thumb {
+    @include border-radius(0.2em);
+
+    background-color: $color2;
+  }
+}
+
+// Animation
+@mixin keyframes($name) {
+  @-webkit-keyframes #{$name} {
+    @content;
+  }
+
+  @-moz-keyframes #{$name} {
+    @content;
+  }
+
+  @-ms-keyframes #{$name} {
+    @content;
+  }
+
+  @keyframes #{$name} {
+    @content;
+  }
+}
+
+@mixin animation-name($name...) {
+  -o-animation-name: $name;
+  -moz-animation-name: $name;
+  -webkit-animation-name: $name;
+  animation-name: $name;
+}
+
+@mixin animation-duration($duration...) {
+  -o-animation-duration: $duration;
+  -moz-animation-duration: $duration;
+  -webkit-animation-duration: $duration;
+  animation-duration: $duration;
+}
+
+@mixin animation-duration($duration...) {
+  -o-animation-duration: $duration;
+  -moz-animation-duration: $duration;
+  -webkit-animation-duration: $duration;
+  animation-duration: $duration;
+}
+
+@mixin animation-timing-function($timing...) {
+  -o-animation-timing-function: $timing;
+  -moz-animation-timing-function: $timing;
+  -webkit-animation-timing-function: $timing;
+  animation-timing-function: $timing;
+}
+
+@mixin animation-iteration-count($count...) {
+  -o-animation-iteration-count: $count;
+  -moz-animation-iteration-count: $count;
+  -webkit-animation-iteration-count: $count;
+  animation-iteration-count: $count;
+}
+
+@mixin animation-direction($direction...) {
+  -o-animation-direction: $direction;
+  -moz-animation-direction: $direction;
+  -webkit-animation-direction: $direction;
+  animation-direction: $direction;
+}
+
+@mixin animation-fill-mode($fill...) {
+  -o-animation-fill-mode: $fill;
+  -moz-animation-fill-mode: $fill;
+  -webkit-animation-fill-mode: $fill;
+  animation-fill-mode: $fill;
+}
+
+@mixin animation-play-state($state...) {
+  -o-animation-play-state: $state;
+  -moz-animation-play-state: $state;
+  -webkit-animation-play-state: $state;
+  animation-play-state: $state;
+}
+
+@mixin animation($animation...) {
+  -o-animation: $animation;
+  -moz-animation: $animation;
+  -webkit-animation: $animation;
+  animation: $animation;
+}
+
+// Flexbox
+@mixin flexbox {
+  display: -webkit-box;
+  display: -moz-box;
+  display: -ms-flexbox;
+  display: -webkit-flex;
+  display: flex;
+}
+
+@mixin flex($values) {
+  -webkit-box-flex: $values;
+  -moz-box-flex: $values;
+  -webkit-flex: $values;
+  -ms-flex: $values;
+  flex: $values;
+}
+
+@mixin order($val) {
+  -webkit-box-ordinal-group: $val;
+  -moz-box-ordinal-group: $val;
+  -ms-flex-order: $val;
+  -webkit-order: $val;
+  order: $val;
+}
+
+@mixin screen-min-width-max-height($res-min-w, $res-max-h) {
+  @media screen and (min-width: $res-min-w) and (max-height: px($res-max-h) - 1) {
+    @content;
+  }
+}
+
+@mixin screen-min-width-min-height($res-min-w, $res-min-h) {
+  @media screen and (min-width: $res-min-w) and (min-height: $res-min-h) {
+    @content;
+  }
+}
+
+@mixin lastchild {
+  & > *:last-child,
+  & > *:last-child > *:last-child,
+  & > *:last-child > *:last-child > *:last-child {
+    margin-bottom: 0;
+  }
+}

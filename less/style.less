@@ -1,0 +1,135 @@
+// Walkhub
+// Copyright (C) 2015 Pronovix
+//
+// This program is free software: you can redistribute it and/or modify
+// it under the terms of the GNU Affero General Public License as
+// published by the Free Software Foundation, either version 3 of the
+// License, or (at your option) any later version.
+//
+// This program is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU Affero General Public License for more details.
+//
+// You should have received a copy of the GNU Affero General Public License
+// along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
+@MAXIMUM_ZINDEX: 2147483647;
+
+@keyframes blink {
+	0% { opacity: 1.0; }
+	50% { opacity: 0.0; }
+	100% { opacity: 1.0; }
+}
+
+.wh-iframe-record-dot {
+	color: @brand-danger;
+	animation: blink 1s step-start 0s infinite;
+}
+
+fieldset.wh-edit-step {
+	margin-bottom: 5em;
+}
+
+.wh-record.embedded {
+	h1 {
+		display: none;
+	}
+
+	form {
+		.input-starting-url {
+			display: none;
+		}
+
+		.steps {
+			display: none;
+		}
+	}
+}
+
+.wh-record.embedded.has-steps form {
+	.record {
+		display: none;
+	}
+}
+
+.wh-record.embedded.no-steps form {
+	.save {
+		display: none;
+	}
+
+	.input-title {
+		display: none;
+	}
+
+	.input-severity {
+		display: none;
+	}
+}
+
+.wh-record-saved {
+	.glyphicon-ok {
+		font-size: 48px;
+	}
+
+	p.buttons {
+		margin: 0;
+	}
+
+	input[type=textfield] {
+		width: 100%;
+	}
+}
+
+.wh-record-saved.success {
+	background-color: @brand-success;
+}
+
+.wh-record-saved.error {
+	background-color: @brand-danger;
+}
+
+.wh-modal {
+	position: fixed;
+	top: 0;
+	left: 0;
+	z-index: @MAXIMUM_ZINDEX;
+	background: white;
+}
+
+.help-button {
+	font-size: 48px;
+}
+
+div div.helpbutton-container {
+	padding: 0;
+	line-height: 1;
+	width: 48px;
+	height: 48px;
+	overflow: hidden;
+}
+
+.wh-connect .provider-google a {
+	background-color: #dc4e41;
+	border-color: #dc4e41;
+}
+
+.embed-code-builder {
+	div.embed-code pre {
+		margin-bottom: 0;
+	}
+}
+
+div.wh-modal {
+	ul.navbar-right {
+		li {
+			a {
+				color: white;
+			}
+		}
+	}
+}
+
+div.embeddedapp {
+	overflow: hidden;
+}
