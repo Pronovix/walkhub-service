@@ -22,6 +22,7 @@ Check the [landing page](http://pronovix.com/walkhub) for more information.
 * `secret`: 32 bytes long random byte sequence, encoded with hex encoding
 * `cookiesecret`: 32 bytes long random byte sequence, encoded with hex encoding
 * `baseurl`: the url where WalkHub will be
+* `httpaddr`: enables HTTP to HTTPS automatic redirection. The format of the address is `host:port`.
 * `google`: OAuth2 tokens for Google
 
 Currently only OAuth2 through Google is supported as an authentication mechanism, but other OAuth2 providers and password authentication (with 2FA support) are coming soon.

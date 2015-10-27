@@ -4,6 +4,7 @@
 	"secret": "",
 	"cookiesecret": "",
 	"baseurl": "http://localhost:8080/",
+	"httpaddr": "",
 	"google": {
 		"id": "",
 		"secret": ""

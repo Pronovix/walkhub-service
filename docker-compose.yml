@@ -2,6 +2,7 @@ web:
     image: pronovix/walkhub-service
     ports:
         - "80:80"
+        - "443:443"
     links:
         - db
 db:

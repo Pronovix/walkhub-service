@@ -18,6 +18,7 @@ package walkhub
 
 import (
 	"net/http"
+	"net/url"
 	"time"
 
 	"github.com/go-kit/kit/metrics"
@@ -32,6 +33,7 @@ import (
 type WalkhubServer struct {
 	*ab.Server
 	BaseURL   string
+	HTTPAddr  string
 	AuthCreds struct {
 		Google auth.OAuthCredentials
 	}
@@ -69,6 +71,19 @@ func NewServer(cfg ab.ServerConfig) *WalkhubServer {
 	return s
 }
 
+func (s *WalkhubServer) setupHTTPS() {
+	if s.HTTPAddr == "" {
+		return
+	}
+
+	ub, err := url.Parse(s.BaseURL)
+	if err != nil {
+		panic(err)
+	}
+
+	go ab.HTTPSRedirectServer(ub.Host, s.HTTPAddr)
+}
+
 func (s *WalkhubServer) Start(addr string, certfile string, keyfile string) {
 	frontendPaths := []string{
 		"/user/:uuid",
@@ -103,6 +118,8 @@ func (s *WalkhubServer) Start(addr string, certfile string, keyfile string) {
 	s.RegisterService(&EmbedLogService{})
 
 	s.Get("/metrics", stdprometheus.Handler(), ab.RestrictAddressMiddleware("127.0.0.1"))
+
+	s.setupHTTPS()
 
 	s.StartHTTPS(addr, certfile, keyfile)
 }

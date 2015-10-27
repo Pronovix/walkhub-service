@@ -19,7 +19,9 @@ package main
 import (
 	"encoding/hex"
 	"log"
+	"net/url"
 	"runtime"
+	"time"
 
 	"github.com/Pronovix/walkhub-service"
 	"github.com/spf13/viper"
@@ -27,6 +29,15 @@ import (
 	"github.com/tamasd/ab/services/auth"
 	"github.com/tamasd/ab/util"
 )
+
+func isHTTPS(baseurl string) bool {
+	u, err := url.Parse(baseurl)
+	if err != nil {
+		log.Fatalln(err)
+	}
+
+	return u.Scheme == "https"
+}
 
 func main() {
 	runtime.GOMAXPROCS(runtime.NumCPU())
@@ -45,6 +56,8 @@ func main() {
 		log.Println(err)
 	}
 
+	baseurl := viper.GetString("baseurl")
+
 	cfg := ab.ServerConfig{
 		PGConnectString: viper.GetString("db"),
 		CookiePrefix:    "WALKHUB",
@@ -52,10 +65,17 @@ func main() {
 		DevelopmentMode: viper.GetBool("debug"),
 	}
 
+	if isHTTPS(baseurl) {
+		cfg.HSTS = &ab.HSTSConfig{
+			MaxAge: time.Hour * 24 * 365,
+		}
+	}
+
 	util.SetKey(secret)
 
 	s := walkhub.NewServer(cfg)
-	s.BaseURL = viper.GetString("baseurl")
+	s.BaseURL = baseurl
+	s.HTTPAddr = viper.GetString("httpaddr")
 	s.AuthCreds.Google = auth.OAuthCredentials{
 		ID:     viper.GetString("google.id"),
 		Secret: viper.GetString("google.secret"),
