@@ -21,7 +21,6 @@ import (
 	"log"
 	"net/url"
 	"runtime"
-	"time"
 
 	"github.com/Pronovix/walkhub-service"
 	"github.com/spf13/viper"
@@ -65,17 +64,12 @@ func main() {
 		DevelopmentMode: viper.GetBool("debug"),
 	}
 
-	if isHTTPS(baseurl) {
-		cfg.HSTS = &ab.HSTSConfig{
-			MaxAge: time.Hour * 24 * 365,
-		}
-	}
-
 	util.SetKey(secret)
 
 	s := walkhub.NewServer(cfg)
 	s.BaseURL = baseurl
 	s.HTTPAddr = viper.GetString("httpaddr")
+	s.RedirectAll = viper.GetBool("redirectall")
 	s.AuthCreds.Google = auth.OAuthCredentials{
 		ID:     viper.GetString("google.id"),
 		Secret: viper.GetString("google.secret"),

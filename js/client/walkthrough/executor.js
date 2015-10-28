@@ -25,6 +25,7 @@ import Bubble from "client/walkthrough/bubble";
 import CommandDispatcher from "client/walkthrough/command_dispatcher";
 import Translator from "client/walkthrough/translator";
 import {t} from "t";
+import URI from "URIjs";
 
 class Executor {
 
@@ -73,9 +74,11 @@ class Executor {
 
 		if (window.parent && window.parent !== window) {
 			Executor.ping(window.parent, window.location.origin);
-			if (window.location.origin !== this.origin) {
-				Executor.ping(window.parent, this.origin);
-			}
+			this.origin.forEach(function(origin) {
+				if (window.location.origin !== origin) {
+					Executor.ping(window.parent, origin);
+				}
+			});
 		}
 
 		setTimeout(function () {
@@ -174,24 +177,10 @@ class Executor {
 	}
 
 	static negotiateWalkhubOrigin() {
-		return WALKHUB_URL;
-		// TODO evaluate what is needed from the negotiation logic
-
-		if (window.Walkhub) {
-			if (window.Walkhub.ExtensionOrigin) {
-				return window.Walkhub.ExtensionOrigin();
-			}
-
-			if (window.Walkhub.Origin) {
-				return window.Walkhub.Origin();
-			}
-
-			if (window.Walkhub.ProxyOrigin) {
-				return window.Walkhub.ProxyOrigin();
-			}
-		}
-
-		return window.location.hash.substr(1);
+		const url = URI(WALKHUB_URL);
+		url.protocol(window.location.protocol.slice(0, -1));
+		const protoURL = url.toString();
+		return protoURL === WALKHUB_URL ? [WALKHUB_URL] : [protoURL, WALKHUB_URL];
 	}
 
 }

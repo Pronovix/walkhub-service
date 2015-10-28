@@ -33,6 +33,7 @@ class Walkthrough extends React.Component {
 		embedded: false,
 		compact: false,
 		linkTo: true,
+		httpReloadURL: "",
 	};
 
 	static contextTypes = {
@@ -120,9 +121,14 @@ class Walkthrough extends React.Component {
 			</div>
 		);
 
+		const reloadHTTP = this.props.httpReloadURL ? (
+			<p className="bg-danger walkthrough-http-reload-message">{t("The walkthrough is recorded on an HTTP website.")} <a href={this.props.httpReloadURL}>{t("Click here to reload the page in HTTP.")}</a></p>
+		) : null;
+
 		return (
 			<section key={walkthrough.revision} className={`walkthrough-uuid-${walkthrough.uuid} walkthrough-revision-${walkthrough.revision}`}>
 				{title}
+				{this.props.compact ? null : reloadHTTP}
 				{this.props.compact ? null : severity}
 				{this.props.compact ? null : description}
 				{this.props.compact ? null : stepsWidget}

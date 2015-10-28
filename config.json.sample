@@ -5,6 +5,8 @@
 	"cookiesecret": "",
 	"baseurl": "http://localhost:8080/",
 	"httpaddr": "",
+	"redirectall": false,
+	"embedurl": "",
 	"google": {
 		"id": "",
 		"secret": ""

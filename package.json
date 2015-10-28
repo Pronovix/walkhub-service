@@ -22,7 +22,7 @@
     "less": "*",
     "less-loader": "*",
     "node-sass": "*",
-    "react": "*",
+    "react": "0.13.*",
     "react-router": "*",
     "sass-loader": "*",
     "style-loader": "*",

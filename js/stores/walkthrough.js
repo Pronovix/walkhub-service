@@ -34,7 +34,7 @@ class WalkthroughStore {
 	maybeUpdateList() {
 		if (this.state.walkthroughList) {
 			setTimeout(() => {
-				this.performList();
+				WalkthroughStore.performList();
 			}, 500);
 		}
 	}

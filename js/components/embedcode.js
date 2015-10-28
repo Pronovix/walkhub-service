@@ -27,7 +27,7 @@ class EmbedCode extends React.Component {
 	};
 
 	render() {
-		const origin = WALKHUB_URL;
+		const origin = WALKHUB_EMBED_URL || WALKHUB_URL;
 		const clienturl = origin + "assets/client.js";
 		const scripturl = origin + "assets/embed.js";
 
@@ -49,7 +49,7 @@ class EmbedCode extends React.Component {
 						embedcode += ` data-${name}=${val}`;
 					};
 				};
-				embedcode += `<div class="walkthroughbutton" data-origin="${origin}"`;
+				embedcode += `<div class="walkthroughbutton" data-origin="${WALKHUB_URL}"`;
 
 				Object.keys(this.props).forEach(addData(this.props));
 				Object.keys(button).forEach(addData(button));

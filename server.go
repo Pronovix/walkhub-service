@@ -19,6 +19,7 @@ package walkhub
 import (
 	"net/http"
 	"net/url"
+	"strings"
 	"time"
 
 	"github.com/go-kit/kit/metrics"
@@ -32,9 +33,10 @@ import (
 
 type WalkhubServer struct {
 	*ab.Server
-	BaseURL   string
-	HTTPAddr  string
-	AuthCreds struct {
+	BaseURL     string
+	HTTPAddr    string
+	RedirectAll bool
+	AuthCreds   struct {
 		Google auth.OAuthCredentials
 	}
 }
@@ -75,13 +77,109 @@ func (s *WalkhubServer) setupHTTPS() {
 	if s.HTTPAddr == "" {
 		return
 	}
+	if s.RedirectAll {
+		ub, err := url.Parse(s.BaseURL)
+		if err != nil {
+			panic(err)
+		}
 
-	ub, err := url.Parse(s.BaseURL)
+		go ab.HTTPSRedirectServer(ub.Host, s.HTTPAddr)
+	} else {
+		s.Server.Use(func(next http.Handler) http.Handler {
+			return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+				if r.URL.Scheme == "http" {
+					whitelist := []string{
+						"record",
+						"walkthrough",
+						"search",
+					}
+
+					found := false
+					for _, pathPrefix := range whitelist {
+						if strings.HasPrefix(r.URL.Path, pathPrefix) {
+							found = true
+							break
+						}
+					}
+
+					if !found {
+						redirectToHTTPS(w, r)
+						return
+					}
+				}
+
+				next.ServeHTTP(w, r)
+			})
+		})
+
+		go s.StartHTTP(s.HTTPAddr)
+	}
+}
+
+func redirectToHTTPS(w http.ResponseWriter, r *http.Request) {
+	newurl, _ := url.Parse(r.URL.String())
+	newurl.Scheme = "https"
+	http.Redirect(w, r, newurl.String(), http.StatusMovedPermanently)
+}
+
+func corsPreflightHandler(baseURL string) http.Handler {
+	baseurl, err := url.Parse(baseURL)
 	if err != nil {
 		panic(err)
 	}
 
-	go ab.HTTPSRedirectServer(ub.Host, s.HTTPAddr)
+	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		origin := r.Header.Get("Origin")
+		method := r.Header.Get("Access-Control-Request-Method")
+		headers := r.Header.Get("Access-Control-Request-Headers")
+
+		w.Header().Add("Vary", "Origin")
+		w.Header().Add("Vary", "Access-Control-Request-Method")
+		w.Header().Add("Vary", "Access-Control-Request-Headers")
+
+		if origin == "" || method == "" {
+			ab.Fail(r, http.StatusBadRequest, nil)
+		}
+
+		originurl, err := url.Parse(origin)
+		ab.MaybeFail(r, http.StatusBadRequest, err)
+
+		if originurl.Host != baseurl.Host {
+			ab.Fail(r, http.StatusForbidden, nil)
+		}
+
+		w.Header().Set("Access-Control-Allow-Origin", origin)
+		w.Header().Set("Access-Control-Allow-Methods", method)
+		w.Header().Set("Access-Control-Allow-Headers", headers)
+		w.Header().Set("Access-Control-Allow-Credentials", "true")
+		w.Header().Set("Access-Control-Max-Age", "0")
+
+		ab.Render(r).SetCode(http.StatusOK)
+	})
+}
+
+func corsMiddleware(baseURL string) func(http.Handler) http.Handler {
+	baseurl, err := url.Parse(baseURL)
+	if err != nil {
+		panic(err)
+	}
+
+	return func(next http.Handler) http.Handler {
+		return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+			origin := r.Header.Get("origin")
+			if origin != "" {
+				originurl, err := url.Parse(origin)
+				if err == nil {
+					if originurl.Host == baseurl.Host {
+						w.Header().Set("Access-Control-Allow-Origin", origin)
+						w.Header().Set("Access-Control-Allow-Credentials", "true")
+					}
+				}
+			}
+
+			next.ServeHTTP(w, r)
+		})
+	}
 }
 
 func (s *WalkhubServer) Start(addr string, certfile string, keyfile string) {
@@ -96,6 +194,10 @@ func (s *WalkhubServer) Start(addr string, certfile string, keyfile string) {
 	for _, path := range frontendPaths {
 		s.AddFile(path, "assets/index.html")
 	}
+
+	s.Options("/*path", corsPreflightHandler(s.BaseURL))
+
+	s.Use(corsMiddleware(s.BaseURL))
 
 	UserDelegate.DB = s.GetDBConnection()
 
@@ -119,7 +221,9 @@ func (s *WalkhubServer) Start(addr string, certfile string, keyfile string) {
 
 	s.Get("/metrics", stdprometheus.Handler(), ab.RestrictAddressMiddleware("127.0.0.1"))
 
-	s.setupHTTPS()
+	if certfile != "" && keyfile != "" {
+		s.setupHTTPS()
+	}
 
 	s.StartHTTPS(addr, certfile, keyfile)
 }

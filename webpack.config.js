@@ -70,7 +70,8 @@ module.exports = {
 			filename: "start.html"
 		}),
 		new webpack.DefinePlugin({
-			WALKHUB_URL: JSON.stringify(serverConfig.baseurl)
+			WALKHUB_URL: JSON.stringify(serverConfig.baseurl),
+			WALKHUB_EMBED_URL: JSON.stringify(serverConfig.embedurl)
 		}),
 		new webpack.NoErrorsPlugin(),
 		new webpack.optimize.OccurenceOrderPlugin(),

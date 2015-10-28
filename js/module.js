@@ -21,6 +21,9 @@ import $ from "jquery";
 import axios from "axios";
 import RouterActions from "actions/router";
 import WalkhubBackend from "walkhub_backend";
+import cookies from "axios/lib/helpers/cookies";
+import {isStandardBrowserEnv} from "axios/lib/utils";
+import urlIsSameOrigin from "axios/lib/helpers/urlIsSameOrigin";
 
 axios.defaults.xsrfCookieName = "WALKHUB_CSRF";
 axios.defaults.xsrfHeaderName = "X-CSRF-Token";
@@ -33,6 +36,25 @@ axios.defaults.headers.post = {
 axios.defaults.headers.put = {
 	"Content-Type": "application/json",
 };
+axios.defaults.withCredentials = true;
+
+axios.interceptors.request.use(function(config) {
+	if (config.url[0] === "/") {
+		config.url = WALKHUB_URL + config.url.slice(1);
+	}
+
+	// Hack to send CSRF tokens with CORS.
+	if (isStandardBrowserEnv()) {
+		if (!urlIsSameOrigin(config.url)) {
+			const xsrfValue = cookies.read(axios.defaults.xsrfCookieName);
+			if (xsrfValue) {
+				config.headers[axios.defaults.xsrfHeaderName] = xsrfValue;
+			}
+		}
+	}
+
+	return config;
+});
 
 $(function() {
 	$("html").removeClass("no-js").addClass("js");

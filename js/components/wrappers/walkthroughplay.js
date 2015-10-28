@@ -20,6 +20,7 @@ import {noop} from "form";
 import Walkthrough from "components/walkthrough";
 import connectToStores from "alt/utils/connectToStores";
 import CurrentUserStore from "stores/currentuser";
+import URI from "URIjs";
 
 @connectToStores
 class WalkthroughPlay extends React.Component {
@@ -73,11 +74,21 @@ class WalkthroughPlay extends React.Component {
 	render() {
 		this.backend.canEdit = this.props.walkthrough.uid !== "" && this.props.walkthrough.uid === this.props.currentUser.UUID;
 
+		let httpReloadURL = "";
+		if (this.props.walkthrough && this.props.walkthrough.steps && this.props.walkthrough.steps[0]) {
+			const pageProtocol = window.location.protocol.slice(0, -1);
+			const walkthroughProtocol = URI(this.props.walkthrough.steps[0].arg0).protocol();
+			if (pageProtocol === "https" && walkthroughProtocol === "http") {
+				httpReloadURL = URI(window.location.href).protocol("http").toString();
+			}
+		}
+
 		return (
 			<div>
 				<Walkthrough
 					onPlayClick={this.playWalkthrough}
 					editable={this.props.currentUser.UUID === this.props.walkthrough.uid}
+					httpReloadURL={httpReloadURL}
 					{...this.props}
 				/>
 				{this.state.widget}
