@@ -83,9 +83,9 @@ func validateWalkthrough(e *Walkthrough) (_err error) {
 }
 
 func afterWalkthroughSchemaSQL(sql string) (_sql string) {
-	return sql + `
+	return `
 		CREATE TYPE walkthrough_severity AS ENUM ('tour', 'content', 'configuration');
-
+		` + sql + `
 		ALTER TABLE walkthrough ADD CONSTRAINT walkthrough_uuid_fkey FOREIGN KEY (uid)
 			REFERENCES "user" (uuid) MATCH SIMPLE
 			ON UPDATE CASCADE ON DELETE CASCADE;
