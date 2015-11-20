@@ -161,7 +161,7 @@ func (s *EmbedLogService) embedlogPostHandler() http.Handler {
 		err := entity.Insert(db)
 		ab.MaybeFail(r, http.StatusInternalServerError, ab.ConvertDBError(err, embedlogDBErrorConverter))
 
-		// HOOK: afterEmbedLogPostInsertHandler()
+		afterEmbedLogPostInsertHandler(db, entity)
 
 		if abort {
 			return

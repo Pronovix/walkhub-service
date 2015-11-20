@@ -22,6 +22,7 @@ import {noop} from "form";
 import {t} from "t";
 import WalkhubBackendActions from "actions/walkhub_backend";
 import WalkthroughStore from "stores/walkthrough";
+import LogStore from "stores/log";
 
 const getdata = window.location.search.substr(1).split("&").reduce(function (obj, str) {
 	var arrstr = str.split("=");
@@ -48,6 +49,7 @@ class WalkhubBackend {
 			recordStartUrl: "",
 			recordStarted: false,
 			allowEditing: WalkhubBackend.allowEditing && this.canEdit,
+			errors: {},
 		};
 	}
 
@@ -155,7 +157,7 @@ class WalkhubBackend {
 	}
 
 	static embeddedPost(msg) {
-		const origin = (getdata.embedorigin && window.parent) ? getdata.embedorigin : null;
+		const origin = WalkhubBackend.embeddedOrigin();
 		if (origin) {
 			if (!msg.origin) {
 				msg.origin = decodeURIComponent(origin);
@@ -167,6 +169,10 @@ class WalkhubBackend {
 			console.log("EMBED SEND " + jsonmsg);
 			window.parent.postMessage(jsonmsg, decodeURIComponent(origin));
 		}
+	}
+
+	static embeddedOrigin() {
+		return (getdata.embedorigin && window.parent) ? getdata.embedorigin : null;
 	}
 
 	success(source, ticket, data) {
@@ -217,6 +223,7 @@ class WalkhubBackend {
 
 	static embedSetListState() {
 		WalkhubBackend.embeddedPost({type: "embedState", state: "list"});
+		LogStore.performHelpCenterOpened(window.decodeURIComponent(WalkhubBackend.embeddedOrigin()));
 	}
 
 	handlePing(data, source) {
@@ -262,9 +269,11 @@ class WalkhubBackend {
 	}
 
 	handleShowError(data, source) {
+		this.state.errors[data.id] = data.error;
 	}
 
 	handleSuppressError(data, source) {
+		this.state.errors[data.id] = null;
 	}
 
 	handleLogResult(data, source) {
@@ -296,6 +305,9 @@ class WalkhubBackend {
 
 	handleFinished(data, source) {
 		WalkhubBackend.embeddedPost({type: "end"});
+		LogStore.performWalkthroughPlayed(this.state.walkthrough, Object.keys(this.state.errors).map((k) => {
+			return this.state.errors[k];
+		}).join(" "), window.decodeURIComponent(WalkhubBackend.embeddedOrigin()));
 		this.state = this.defaultState();
 		WalkhubBackendActions.close();
 		if (this.onclose) {

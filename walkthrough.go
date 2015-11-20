@@ -18,6 +18,8 @@ package walkhub
 
 import (
 	"errors"
+	"fmt"
+	"html"
 	"log"
 	"net/http"
 	"net/url"
@@ -32,10 +34,11 @@ import (
 	"github.com/tamasd/ab/util"
 )
 
-//go:generate ab --output=walkthroughgen.go --generate-service-struct=false --generate-service-struct-name=WalkthroughService --generate-crud-update=false --generate-crud-delete=false --urlidfield=1 --idfield=1 entity Walkthrough
+//go:generate abt --output=walkthroughgen.go --generate-service-struct=false --generate-service-struct-name=WalkthroughService --generate-crud-update=false --generate-crud-delete=false --urlidfield=1 --idfield=1 entity Walkthrough
 
 type WalkthroughService struct {
 	SearchService *search.SearchService
+	BaseURL       string
 }
 
 type Step struct {
@@ -134,7 +137,7 @@ func LoadActualRevisions(db ab.DB, uuids []string) ([]*Walkthrough, error) {
 	`, util.StringSliceToInterfaceSlice(uuids)...)
 }
 
-func LoadActualRevison(db ab.DB, UUID string) (*Walkthrough, error) {
+func LoadActualRevision(db ab.DB, UUID string) (*Walkthrough, error) {
 	return selectSingleWalkthroughFromQuery(db, "SELECT "+walkthroughFields+" FROM walkthrough w WHERE UUID = $1 AND published = true ORDER BY Updated DESC LIMIT 1", UUID)
 }
 
@@ -192,7 +195,7 @@ func afterWalkthroughServiceRegister(s *WalkthroughService, h *hitch.Hitch) {
 		}()
 
 		ab.Render(r).SetCode(http.StatusAccepted)
-	}), ab.RestrictAddressMiddleware("127.0.0.1"))
+	}), ab.RestrictPrivateAddressMiddleware())
 
 }
 
@@ -201,7 +204,7 @@ func beforeWalkthroughListHandler() (_loadFunc func(ab.DB, int, int) ([]*Walkthr
 }
 
 func beforeWalkthroughGetHandler() (_loadFunc func(ab.DB, string) (*Walkthrough, error)) {
-	return LoadActualRevison
+	return LoadActualRevision
 }
 
 func walkthroughPostValidation(entity *Walkthrough, r *http.Request) {
@@ -228,7 +231,7 @@ func beforeWalkthroughPutUpdateHandler(r *http.Request, entity *Walkthrough, db 
 		}
 	}
 
-	previousRevision, err := LoadActualRevison(db, entity.UUID)
+	previousRevision, err := LoadActualRevision(db, entity.UUID)
 	ab.MaybeFail(r, http.StatusBadRequest, err)
 	if previousRevision == nil {
 		ab.Fail(r, http.StatusNotFound, nil)
@@ -243,7 +246,7 @@ func beforeWalkthroughPutUpdateHandler(r *http.Request, entity *Walkthrough, db 
 }
 
 func beforeWalkthroughDeleteHandler() (_loadFunc func(ab.DB, string) (*Walkthrough, error)) {
-	return LoadActualRevison
+	return LoadActualRevision
 }
 
 func insideWalkthroughDeleteHandler(r *http.Request, entity *Walkthrough, db ab.DB) {
@@ -257,8 +260,26 @@ func insideWalkthroughDeleteHandler(r *http.Request, entity *Walkthrough, db ab.
 	}
 }
 
-func afterWalkthroughPostInsertHandler(s *WalkthroughService, entity ab.Entity) {
+func afterWalkthroughPostInsertHandler(db ab.DB, s *WalkthroughService, entity ab.Entity) {
 	s.SearchService.IndexEntity("walkthrough", entity)
+
+	wt := entity.(*Walkthrough)
+	user, err := LoadUser(db, wt.UID)
+	if err != nil {
+		log.Println(err)
+		return
+	}
+	startURL := ""
+	if len(wt.Steps) > 0 && wt.Steps[0].Command == "open" {
+		startURL = wt.Steps[0].Arg0
+	}
+	message := fmt.Sprintf("%s has recorded a Walkthrough (<%s|%s>) on %s",
+		user.Mail,
+		s.BaseURL+"walkthrough/"+wt.UUID,
+		html.EscapeString(wt.Name),
+		html.EscapeString(startURL),
+	)
+	DBLog(db, "walkthroughrecord", message)
 }
 
 func afterWalkthroughPutUpdateHandler(s *WalkthroughService, entity ab.Entity) {

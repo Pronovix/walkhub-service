@@ -18,11 +18,14 @@ package walkhub
 
 import (
 	"errors"
+	"fmt"
 	"net/http"
 	"time"
+
+	"github.com/tamasd/ab"
 )
 
-//go:generate ab --output=embedloggen.go --generate-service-struct-name=EmbedLogService --generate-crud-update=false --generate-crud-delete=false --generate-service-list=false --generate-service-get=false --generate-service-put=false --generate-service-patch=false --generate-service-delete=false entity EmbedLog
+//go:generate abt --output=embedloggen.go --generate-service-struct-name=EmbedLogService --generate-crud-update=false --generate-crud-delete=false --generate-service-list=false --generate-service-get=false --generate-service-put=false --generate-service-patch=false --generate-service-delete=false entity EmbedLog
 
 type EmbedLog struct {
 	UUID    string    `dbtype:"uuid" dbdefault:"uuid_generate_v4()" json:"uuid"`
@@ -44,4 +47,8 @@ func embedlogPostValidation(r *http.Request, entity *EmbedLog) {
 	entity.UUID = ""
 	entity.Created = time.Now()
 	entity.IPAddr = r.RemoteAddr
+}
+
+func afterEmbedLogPostInsertHandler(db ab.DB, entity *EmbedLog) {
+	DBLog(db, "embedlog", fmt.Sprintf("%s (%s) has created an embed log on %s at %s", entity.Mail, entity.IPAddr, entity.Site, entity.Created.String()))
 }

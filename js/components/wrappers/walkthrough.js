@@ -25,6 +25,7 @@ import connectToStores from "alt/utils/connectToStores";
 import {noop} from "form";
 import flux from "control";
 import WalkhubBackend from "walkhub_backend";
+import LogStore from "stores/log";
 
 @connectToStores
 class WalkthroughWrapper extends React.Component {
@@ -194,6 +195,8 @@ class WalkthroughWrapper extends React.Component {
 		WalkthroughStore.performLoad(this.props.params.uuid);
 
 		this.dispatcherToken = flux.dispatcher.register(this.walkthroughSaved);
+
+		LogStore.performWalkthroughPageVisited(this.props.params.uuid, this.context.location.query.embedorigin);
 	}
 
 	componentWillUnmount() {

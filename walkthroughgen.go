@@ -217,7 +217,7 @@ func (s *WalkthroughService) walkthroughPostHandler() http.Handler {
 		err := entity.Insert(db)
 		ab.MaybeFail(r, http.StatusInternalServerError, ab.ConvertDBError(err, walkthroughDBErrorConverter))
 
-		afterWalkthroughPostInsertHandler(s, entity)
+		afterWalkthroughPostInsertHandler(db, s, entity)
 
 		if abort {
 			return

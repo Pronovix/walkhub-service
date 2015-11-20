@@ -29,7 +29,7 @@ import (
 	"google.golang.org/api/plus/v1"
 )
 
-//go:generate ab --output=usergen.go --generate-service-struct-name=UserService --generate-service-list=false entity User
+//go:generate abt --output=usergen.go --generate-service-struct-name=UserService --generate-service-list=false entity User
 
 var UserDelegate = &auth.SessionUserDelegate{}
 
