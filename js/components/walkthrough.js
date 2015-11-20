@@ -37,7 +37,8 @@ class Walkthrough extends React.Component {
 	};
 
 	static contextTypes = {
-		router: React.PropTypes.func.isRequired,
+		location: React.PropTypes.shape,
+		history: React.PropTypes.shape,
 	};
 
 	render() {
@@ -57,7 +58,7 @@ class Walkthrough extends React.Component {
 		const editbuttons = [];
 		if (this.props.editable) {
 			if (this.props.compact) {
-				const href = this.context.router.makeHref("walkthrough", {uuid: walkthrough.uuid}, {});
+				const href = this.context.history.createHref(`/walkthrough/${walkthrough.uuid}`);
 				editbuttons.push(<a href={href} key="edit" target="_blank" className="btn btn-default">{t("Edit")}</a>);
 			} else {
 				editbuttons.push(<a onClick={this.props.onEditClick} key="edit" className="btn btn-default">{t("Edit")}</a>);
@@ -66,7 +67,7 @@ class Walkthrough extends React.Component {
 		}
 
 		const titleName = this.props.compact && this.props.linkTo ?
-			<Link to="walkthrough" params={{uuid: walkthrough.uuid}}>{walkthrough.name}</Link> :
+			<Link to={`/walkthrough/${walkthrough.uuid}`}>{walkthrough.name}</Link> :
 			walkthrough.name;
 
 		const title = (

@@ -41,11 +41,11 @@ class SearchWrapper extends React.Component {
 	};
 
 	static contextTypes = {
-		router: React.PropTypes.func.isRequired,
+		location: React.PropTypes.shape,
 	};
 
 	isEmbedded() {
-		return !!this.context.router.getCurrentQuery().embedded;
+		return !!this.context.location.query.embedded;
 	}
 
 	state = {
@@ -84,7 +84,7 @@ class SearchWrapper extends React.Component {
 
 	componentWillMount() {
 		this.setState({
-			search: this.context.router.getCurrentQuery().q,
+			search: this.context.location.query.q,
 			helpButton: this.isEmbedded(),
 		});
 	}

@@ -26,7 +26,7 @@ import {t} from "t";
 class LoggedIn extends React.Component {
 
 	static contextTypes = {
-		router: React.PropTypes.func.isRequired,
+		location: React.PropTypes.shape,
 	};
 
 	static getStores(props) {
@@ -50,7 +50,7 @@ class LoggedIn extends React.Component {
 	}
 
 	render() {
-		const embedded = !!this.context.router.getCurrentQuery().embedded;
+		const embedded = !!this.context.location.query.embedded;
 
 		const customLoginButtonClick = embedded ? (evt) => {
 			noop(evt);

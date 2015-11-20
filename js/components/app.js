@@ -17,7 +17,6 @@
 import React from "react";
 import Navbar from "components/navbar";
 import ErrorBar from "components/errorbar";
-import {RouteHandler} from "react-router";
 import {noop} from "form";
 
 class App extends React.Component {
@@ -32,7 +31,7 @@ class App extends React.Component {
 		if (this.props.embedded) {
 			return (
 				<div className="embeddedapp">
-					<RouteHandler />
+					{this.props.children}
 				</div>
 			);
 		}
@@ -45,7 +44,7 @@ class App extends React.Component {
 						messages={this.props.messages}
 						onMessageClose={this.props.onMessageClose}
 					/>
-					<RouteHandler />
+					{this.props.children}
 				</div>
 			</div>
 		);

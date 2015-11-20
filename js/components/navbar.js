@@ -30,9 +30,9 @@ class Navbar extends React.Component {
 		const logoutUrl = `/api/auth/logout?token=${csrfToken}`;
 		const loginlogout = loggedin ?
 			<a href={logoutUrl}>{t("Logout")}</a> :
-			<Link to="connect">{t("Connect")}</Link>;
+			<Link to="/connect">{t("Connect")}</Link>;
 		const recordLink = loggedin ?
-			<li><Link to="record">{t("Record")}</Link></li> :
+			<li><Link to="/record">{t("Record")}</Link></li> :
 			null;
 
 		return (
@@ -40,13 +40,13 @@ class Navbar extends React.Component {
 				<div className="container-fluid">
 					<div className="navbar-header">
 						<ul className="nav navbar-nav">
-							<li><Link to="frontpage" className="navbar-brand">WalkHub</Link></li>
+							<li><Link to="/" className="navbar-brand">WalkHub</Link></li>
 							<li><a target="_blank" href="https://github.com/Pronovix/walkhub-service">{t("Download from GitHub")}</a></li>
 						</ul>
 					</div>
 					<div className="collapse navbar-collapse">
 						<ul className="nav navbar-nav navbar-right">
-							<li><Link to="search">{t("Search")}</Link></li>
+							<li><Link to="/search">{t("Search")}</Link></li>
 							{recordLink}
 							<li>{loginlogout}</li>
 						</ul>

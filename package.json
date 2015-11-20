@@ -3,35 +3,39 @@
   "scripts": {
     "build": "webpack --progress --profile --colors",
     "watch": "webpack --progress --profile --colors --watch",
-    "test": "exit 1"
+    "test": "exit 1",
+	"check": "npm-check -s",
+	"update": "npm-check -u"
   },
   "license": "AGPL-3.0",
   "dependencies": {
     "URIjs": "^1.16.0",
-    "alt": "*",
-    "axios": "*",
-    "babel-runtime": "*",
-    "bootstrap": "*",
-    "bootstrap-webpack": "*",
-    "compass-mixins": "*",
+    "alt": "^0.17.8",
+    "axios": "^0.7",
+    "babel-runtime": "^5.8",
+    "bootstrap": "^3.3",
+    "bootstrap-webpack": "^0.0.5",
+    "compass-mixins": "^0.12",
     "crypto-js": "^3.1.5",
-    "css-loader": "*",
-    "file-loader": "*",
-    "imports-loader": "*",
-    "jquery": "*",
-    "less": "*",
-    "less-loader": "*",
-    "node-sass": "*",
-    "react": "0.13.*",
-    "react-router": "*",
-    "sass-loader": "*",
-    "style-loader": "*",
-    "url-loader": "*"
+    "css-loader": "^0.22",
+    "file-loader": "^0.8",
+    "history": "^1.13",
+    "imports-loader": "^0.6",
+    "jquery": "^2.1",
+    "less": "^2.5",
+    "less-loader": "^2.2",
+    "node-sass": "^3.4",
+    "react": "^0.14",
+    "react-dom": "^0.14",
+    "react-router": "^1.0",
+    "sass-loader": "^3.1",
+    "style-loader": "^0.13",
+    "url-loader": "^0.5"
   },
   "devDependencies": {
-    "babel-core": "*",
-    "babel-loader": "*",
-    "html-webpack-plugin": "*",
-    "webpack": "*"
+    "babel-loader": "^5.3",
+    "html-webpack-plugin": "^2.0",
+    "npm-check": "^4.1.2",
+    "webpack": "^1.12"
   }
 }

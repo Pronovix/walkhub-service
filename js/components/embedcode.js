@@ -15,6 +15,7 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 import React from "react";
+import ReactDOM from "react-dom";
 import {selectAll} from "util";
 
 class EmbedCode extends React.Component {
@@ -67,7 +68,7 @@ class EmbedCode extends React.Component {
 
 	componentDidUpdate() {
 		if (this.props.autoselect) {
-			const element = React.findDOMNode(this.refs.embedbox);
+			const element = ReactDOM.findDOMNode(this.refs.embedbox);
 			selectAll(element);
 		}
 	}

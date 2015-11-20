@@ -34,11 +34,12 @@ class RecordWrapper extends React.Component {
 	backend = null;
 
 	static contextTypes = {
-		router: React.PropTypes.func.isRequired,
+		location: React.PropTypes.shape,
+		history: React.PropTypes.shape,
 	};
 
 	isEmbedded() {
-		return !!this.context.router.getCurrentQuery().embedded;
+		return !!this.context.location.query.embedded;
 	}
 
 	defaultState() {
@@ -169,7 +170,7 @@ class RecordWrapper extends React.Component {
 					uuid: uuid,
 				});
 			} else {
-				this.context.router.transitionTo("walkthrough", {uuid: uuid});
+				this.context.history.pushState(null, `/walkthrough/${uuid}`);
 			}
 		}
 	};
@@ -190,7 +191,7 @@ class RecordWrapper extends React.Component {
 	}
 
 	getStartingURL() {
-		return this.context.router.getCurrentQuery().start || "";
+		return this.context.location.query.start || "";
 	}
 
 	dispatcherToken = null;

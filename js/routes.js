@@ -15,7 +15,7 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 import React from "react";
-import {Route, DefaultRoute} from "react-router";
+import {Route} from "react-router";
 
 import AppWrapper from "components/wrappers/app";
 import User from "components/user";
@@ -27,14 +27,14 @@ import SearchWrapper from "components/wrappers/search";
 import EmbedCodeBuilderWrapper from "components/wrappers/embedcodebuilder";
 
 const Routes = (
-	<Route handler={AppWrapper}>
-		<DefaultRoute name="frontpage" handler={FrontpageWrapper} />
-		<Route name="connect" path="/connect" handler={ConnectWrapper} />
-		<Route name="user" path="/user/:UUID" handler={User} />
-		<Route name="record" path="/record" handler={RecordWrapper} />
-		<Route name="walkthrough" path="/walkthrough/:uuid" handler={WalkthroughWrapper} />
-		<Route name="search" path="/search" handler={SearchWrapper} />
-		<Route name="embedcode" path="/embedcode" handler={EmbedCodeBuilderWrapper} />
+	<Route component={AppWrapper}>
+		<Route path="/" component={FrontpageWrapper} />
+		<Route path="/connect" component={ConnectWrapper} />
+		<Route path="/user/:UUID" component={User} />
+		<Route path="/record" component={RecordWrapper} />
+		<Route path="/walkthrough/:uuid" component={WalkthroughWrapper} />
+		<Route path="/search" component={SearchWrapper} />
+		<Route path="/embedcode" component={EmbedCodeBuilderWrapper} />
 	</Route>
 );
 

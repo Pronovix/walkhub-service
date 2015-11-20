@@ -45,7 +45,7 @@ module.exports = {
 			{
 				test: /\.js?$/,
 				exclude: [/node_modules/, /bootstrap\.config\.js/],
-				loader: "babel?cacheDirectory"
+				loader: "babel-loader"
 			},
 			{ test: /bootstrap\/js\//, loader: 'imports?jQuery=jquery' },
 			{ test: /\.(woff|woff2)(\?v=\d+\.\d+\.\d+)?$/,   loader: "url?limit=10000&mimetype=application/font-woff" },

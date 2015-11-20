@@ -40,7 +40,8 @@ class WalkthroughWrapper extends React.Component {
 	}
 
 	static contextTypes = {
-		router: React.PropTypes.func.isRequired,
+		location: React.PropTypes.shape,
+		history: React.PropTypes.shape,
 	};
 
 	dispatcherToken = null;
@@ -87,7 +88,7 @@ class WalkthroughWrapper extends React.Component {
 			const editable = this.props.user && this.props.walkthrough && (this.props.user.Admin || this.props.user.UUID === this.props.walkthrough.uid);
 			return (
 				<WalkthroughPlay
-					embedded={!!this.context.router.getCurrentQuery().embedded}
+					embedded={!!this.context.location.query.embedded}
 					walkthrough={this.props.walkthrough}
 					editable={editable}
 					onEditClick={this.editWalkthrough}
@@ -184,7 +185,7 @@ class WalkthroughWrapper extends React.Component {
 				this.cancelEditWalktrough(null);
 				break;
 			case WalkthroughActions.DELETED_WALKTHROUGH:
-				this.context.router.transitionTo("frontpage");
+				this.context.history.pushState(null, "/");
 				break;
 		}
 	};

@@ -29,7 +29,7 @@ class NotLoggedIn extends React.Component {
 	render() {
 		const loginButton = this.props.customLoginButtonClick ?
 			<a href="#" className={"btn btn-"+this.props.color} onClick={this.props.customLoginButtonClick}>{this.props.label}</a>:
-			<Link to="connect" className={"btn btn-"+this.props.color}>{this.props.label}</Link>;
+			<Link to="/connect" className={"btn btn-"+this.props.color}>{this.props.label}</Link>;
 		return (
 			<div className="row">
 				<div className="col-xs-12">

@@ -42,7 +42,7 @@ class AppWrapper extends React.Component {
 	}
 
 	static contextTypes = {
-		router: React.PropTypes.func.isRequired,
+		location: React.PropTypes.shape,
 	};
 
 	state = {
@@ -92,12 +92,16 @@ class AppWrapper extends React.Component {
 	};
 
 	render() {
-		return <App
-			currentUser={this.props.currentUser}
-			embedded={!!this.context.router.getCurrentQuery().embedded}
-			messages={this.state.messages}
-			onMessageClose={this.onMessageClose}
-		/>;
+		return (
+			<App
+				currentUser={this.props.currentUser}
+				embedded={!!this.context.location.query.embedded}
+				messages={this.state.messages}
+				onMessageClose={this.onMessageClose}
+				>
+				{this.props.children}
+			</App>
+		);
 	}
 
 }

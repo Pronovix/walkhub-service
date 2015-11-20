@@ -15,6 +15,7 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 import React from "react";
+import ReactDOM from "react-dom";
 import {noop, ButtonSetButton} from "form";
 import {t} from "t";
 
@@ -33,7 +34,7 @@ class RecordSaved extends React.Component {
 					<span className="glyphicon glyphicon-ok" aria-hidden="true"></span>
 				</p>
 				<p>
-					<input type="textfield" onClick={this.urlcopyFocus} onFocus={this.urlcopyFocus} ref="urlcopy" value={WALKHUB_URL + "walkthrough/" + this.props.uuid} />
+					<input type="textfield" onClick={this.urlcopyFocus} onFocus={this.urlcopyFocus} readOnly={true} ref="urlcopy" value={WALKHUB_URL + "walkthrough/" + this.props.uuid} />
 				</p>
 				<p className="buttons">
 					<a className="btn btn-default" href={"/walkthrough/" + this.props.uuid} target="_blank">{t("Open")}</a>
@@ -48,7 +49,7 @@ class RecordSaved extends React.Component {
 	}
 
 	componentDidMount() {
-		const urlcopy = React.findDOMNode(this.refs.urlcopy);
+		const urlcopy = ReactDOM.findDOMNode(this.refs.urlcopy);
 		urlcopy.focus();
 		urlcopy.select();
 	}

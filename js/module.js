@@ -15,8 +15,10 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 import React from "react";
-import Router from "react-router";
+import {render} from "react-dom";
+import {Router} from "react-router";
 import Routes from "routes";
+import createBrowserHistory from 'history/lib/createBrowserHistory';
 import $ from "jquery";
 import axios from "axios";
 import RouterActions from "actions/router";
@@ -24,6 +26,9 @@ import WalkhubBackend from "walkhub_backend";
 import cookies from "axios/lib/helpers/cookies";
 import {isStandardBrowserEnv} from "axios/lib/utils";
 import urlIsSameOrigin from "axios/lib/helpers/urlIsSameOrigin";
+import {t} from "t";
+
+let history = createBrowserHistory();
 
 axios.defaults.xsrfCookieName = "WALKHUB_CSRF";
 axios.defaults.xsrfHeaderName = "X-CSRF-Token";
@@ -38,6 +43,8 @@ axios.defaults.headers.put = {
 };
 axios.defaults.withCredentials = true;
 
+const xsrfValue = cookies.read(axios.defaults.xsrfCookieName);
+
 axios.interceptors.request.use(function(config) {
 	if (config.url[0] === "/") {
 		config.url = WALKHUB_URL + config.url.slice(1);
@@ -46,7 +53,6 @@ axios.interceptors.request.use(function(config) {
 	// Hack to send CSRF tokens with CORS.
 	if (isStandardBrowserEnv()) {
 		if (!urlIsSameOrigin(config.url)) {
-			const xsrfValue = cookies.read(axios.defaults.xsrfCookieName);
 			if (xsrfValue) {
 				config.headers[axios.defaults.xsrfHeaderName] = xsrfValue;
 			}
@@ -60,7 +66,14 @@ $(function() {
 	$("html").removeClass("no-js").addClass("js");
 });
 
-Router.run(Routes, Router.HistoryLocation, (Root, state) => {
-	RouterActions.changeRoute(state);
-	React.render(<Root {...state} />, document.getElementById("content"));
-});
+const el = document.getElementById("content");
+
+if (xsrfValue) {
+	render(<Router history={history}>{Routes}</Router>, el);
+} else {
+	render((
+		<div className="alert alert-danger nocookie">
+			{t("Allow cookies in your browser to be able to use WalkHub.")}
+		</div>
+	), el);
+}

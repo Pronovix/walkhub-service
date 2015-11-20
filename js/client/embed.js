@@ -17,7 +17,7 @@
 import $ from "jquery";
 import {MAXIMUM_ZINDEX} from "util";
 
-window.WalkhubWidgetPostions = {
+window.WalkhubWidgetPositions = {
 	"bottom-left": [],
 	"bottom-right": [],
 	"top-left": [],
@@ -39,8 +39,8 @@ function reposition(iframe) {
 	}
 
 	let iframeIdx = -1;
-	for (let i in window.WalkhubWidgetPostions[position]) {
-		if (window.WalkhubWidgetPostions[position][i].iframe.data("ticket") === ticket) {
+	for (let i in window.WalkhubWidgetPositions[position]) {
+		if (window.WalkhubWidgetPositions[position][i].iframe.data("ticket") === ticket) {
 			iframeIdx = i;
 			break;
 		}
@@ -49,14 +49,14 @@ function reposition(iframe) {
 	if (iframeIdx === -1) {
 		let highestX = 0;
 		let hightestXWidth = 0;
-		for (let i in window.WalkhubWidgetPostions[position]) {
-			if (window.WalkhubWidgetPostions[position][i].x > highestX) {
-				highestX = window.WalkhubWidgetPostions[position][i].x;
-				hightestXWidth = window.WalkhubWidgetPostions[position][i].width;
+		for (let i in window.WalkhubWidgetPositions[position]) {
+			if (window.WalkhubWidgetPositions[position][i].x > highestX) {
+				highestX = window.WalkhubWidgetPositions[position][i].x;
+				hightestXWidth = window.WalkhubWidgetPositions[position][i].width;
 			}
 		}
 
-		window.WalkhubWidgetPostions[position].push({
+		window.WalkhubWidgetPositions[position].push({
 			iframe: iframe,
 			x: highestX + hightestXWidth,
 			width: width,
@@ -64,11 +64,11 @@ function reposition(iframe) {
 	}
 
 	let lastX = 0;
-	for (let i in window.WalkhubWidgetPostions[position]) {
-		window.WalkhubWidgetPostions[position][i].width = window.WalkhubWidgetPostions[position][i].iframe.width();
-		window.WalkhubWidgetPostions[position][i].x = lastX;
-		window.WalkhubWidgetPostions[position][i].iframe.css(x, lastX+"px");
-		lastX += window.WalkhubWidgetPostions[position][i].width;
+	for (let i in window.WalkhubWidgetPositions[position]) {
+		window.WalkhubWidgetPositions[position][i].width = window.WalkhubWidgetPositions[position][i].iframe.width();
+		window.WalkhubWidgetPositions[position][i].x = lastX;
+		window.WalkhubWidgetPositions[position][i].iframe.css(x, lastX+"px");
+		lastX += window.WalkhubWidgetPositions[position][i].width;
 	}
 
 	iframe
@@ -138,13 +138,13 @@ function processButton(button) {
 	const uuid = button.data("uuid") || null;
 	const position = button.data("position") || "";
 	const search = button.data("search") || null;
-	let uri = WALKHUB_URL + "record?embedded=1&start=" + encodeURIComponent(window.location.href);
+	let uri = WALKHUB_EMBED_URL + "record?embedded=1&start=" + encodeURIComponent(window.location.href);
 	let type = "record";
 	if (uuid) {
-		uri = WALKHUB_URL + "walkthrough/" + uuid + "?embedded=1";
+		uri = WALKHUB_EMBED_URL + "walkthrough/" + uuid + "?embedded=1";
 		type = "play";
 	} else if (search) {
-		uri = WALKHUB_URL + "search?embedded=1&q=" + encodeURIComponent(search);
+		uri = WALKHUB_EMBED_URL + "search?embedded=1&q=" + encodeURIComponent(search);
 		type = "search";
 	}
 	const iframe = $("<iframe />")

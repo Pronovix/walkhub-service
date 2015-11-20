@@ -27,7 +27,7 @@ class WalkthroughItem extends React.Component {
 
 	render() {
 		const title = this.props.linkTo ?
-			<h2> <Link to="walkthrough" params={{uuid: this.props.walkthrough.uuid}}>{this.props.walkthrough.name}</Link> </h2> :
+			<h2> <Link to={`/walkthrough/${this.props.walkthrough.uuid}`}>{this.props.walkthrough.name}</Link> </h2> :
 			<h3> {this.props.walkthrough.name} </h3>;
 
 		const description = this.props.showDescription ?

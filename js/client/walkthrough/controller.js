@@ -163,10 +163,6 @@ class Controller {
 	finish() {
 		this.logger.logResult(this.state, true);
 
-		this.state.walkthrough = null;
-		this.state.completed = false;
-		this.state.stepIndex = 0;
-		this.state.next = [];
 		this.walkthrough = null;
 		this.step = null;
 		this.client.updateState(this.state);
