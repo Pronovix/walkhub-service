@@ -215,11 +215,16 @@ func (s *WalkhubServer) Start(addr string, certfile string, keyfile string) {
 
 	s.RegisterService(&WalkthroughService{
 		SearchService: searchsvc,
+		BaseURL:       s.BaseURL,
 	})
 
 	s.RegisterService(&EmbedLogService{})
 
-	s.Get("/metrics", stdprometheus.Handler(), ab.RestrictAddressMiddleware("127.0.0.1"))
+	s.RegisterService(&LogService{
+		BaseURL: s.BaseURL,
+	})
+
+	s.Get("/metrics", stdprometheus.Handler(), ab.RestrictPrivateAddressMiddleware())
 
 	if certfile != "" && keyfile != "" {
 		s.setupHTTPS()
