@@ -83,7 +83,7 @@ func validateWalkthrough(e *Walkthrough) (_err error) {
 }
 
 func afterWalkthroughSchemaSQL(sql string) (_sql string) {
-	return `
+	return sql + `
 		CREATE TYPE walkthrough_severity AS ENUM ('tour', 'content', 'configuration');
 
 		ALTER TABLE walkthrough ADD CONSTRAINT walkthrough_uuid_fkey FOREIGN KEY (uid)
