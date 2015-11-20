@@ -49,17 +49,15 @@ func afterUserSchemaSQL(sql string) (_sql string) {
 func afterUserServiceRegister(h *hitch.Hitch) {
 	h.Get("/api/user", http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		sess := session.GetSession(r)
-		if sess["uid"] == "" {
-			ab.Fail(r, http.StatusForbidden, errors.New("user is not logged in"))
+		if sess["uid"] != "" {
+			db := ab.GetDB(r)
+
+			user, err := LoadUser(db, sess["uid"])
+			ab.MaybeFail(r, http.StatusInternalServerError, err)
+
+			ab.Render(r).
+				JSON(user)
 		}
-
-		db := ab.GetDB(r)
-
-		user, err := LoadUser(db, sess["uid"])
-		ab.MaybeFail(r, http.StatusInternalServerError, err)
-
-		ab.Render(r).
-			JSON(user)
 	}))
 }
 
