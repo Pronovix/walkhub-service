@@ -13,6 +13,7 @@
 //
 // You should have received a copy of the GNU Affero General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
+@import url(https://fonts.googleapis.com/css?family=Open+Sans:300);
 
 @MAXIMUM_ZINDEX: 2147483647;
 
@@ -142,4 +143,25 @@ div.nocookie {
 	max-width: 800px;
 	margin: auto;
 	margin-top: 20px;
+}
+
+@media screen and (min-width: @screen-sm-min) {
+	.navbar-inverse ul.navbar-nav li {
+		transition: background .5s ease, box-shadow 0.25s ease;
+		-webkit-transition: background .5s ease, box-shadow 0.25s ease;
+		&:hover {
+			background: rgba(255,255,255,0.05);
+			box-shadow: 0 5px 1px -2px @navbar-inverse-link-hover-color;
+		}
+		a {
+			transition: all .5s ease;
+			-webkit-transition: all .5s ease;
+		}
+	}
+}
+
+.navbar-inverse .navbar-header a {
+	&:hover, &:focus {
+		color: @navbar-inverse-link-color;
+	}
 }
