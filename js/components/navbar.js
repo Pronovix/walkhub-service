@@ -29,22 +29,28 @@ class Navbar extends React.Component {
 		const loggedin = this.props.loggedin;
 		const logoutUrl = `/api/auth/logout?token=${csrfToken}`;
 		const loginlogout = loggedin ?
-			<a href={logoutUrl}>{t("Logout")}</a> :
-			<Link to="/connect">{t("Connect")}</Link>;
+			<a href={logoutUrl}><span className="glyphicon glyphicon-log-out" aria-hidden="true"></span></a> :
+			<Link to="/connect"><span className="glyphicon glyphicon-log-in" aria-hidden="true"></span></Link>;
 		const recordLink = loggedin ?
 			<li><Link to="/record">{t("Record")}</Link></li> :
 			null;
 
 		return (
-			<nav className="navbar navbar-inverse">
+			<nav className="navbar navbar-inverse" role="navigation">
 				<div className="container-fluid">
 					<div className="navbar-header">
+						<button type="button" className="navbar-toggle" data-toggle="collapse" data-target="#navbar-to-collapse">
+							<span className="sr-only">Toggle navigation</span>
+							<span className="icon-bar"></span>
+							<span className="icon-bar"></span>
+							<span className="icon-bar"></span>
+						</button>
+						<Link to="/" className="navbar-brand">WalkHub</Link>
+					</div>
+					<div className="collapse navbar-collapse" id="navbar-to-collapse">
 						<ul className="nav navbar-nav">
-							<li><Link to="/" className="navbar-brand">WalkHub</Link></li>
 							<li><a target="_blank" href="https://github.com/Pronovix/walkhub-service">{t("Download from GitHub")}</a></li>
 						</ul>
-					</div>
-					<div className="collapse navbar-collapse">
 						<ul className="nav navbar-nav navbar-right">
 							<li><Link to="/search">{t("Search")}</Link></li>
 							{recordLink}
@@ -55,7 +61,6 @@ class Navbar extends React.Component {
 			</nav>
 		);
 	}
-
 }
 
 export default Navbar;
