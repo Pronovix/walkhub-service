@@ -5,8 +5,12 @@
 	"cookiesecret": "",
 	"baseurl": "http://localhost:8080/",
 	"httpaddr": "",
+	"httporigin": "",
 	"redirectall": false,
+	"host": "localhost",
+	"port": "8080",
 	"embedurl": "",
+	"cookieurl": "",
 	"google": {
 		"id": "",
 		"secret": ""

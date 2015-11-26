@@ -177,10 +177,21 @@ class Executor {
 	}
 
 	static negotiateWalkhubOrigin() {
+		let origins = [];
+		origins.push(WALKHUB_URL);
+
 		const url = URI(WALKHUB_URL);
 		url.protocol(window.location.protocol.slice(0, -1));
 		const protoURL = url.toString();
-		return protoURL === WALKHUB_URL ? [WALKHUB_URL] : [protoURL, WALKHUB_URL];
+		if (protoURL != WALKHUB_URL) {
+			origins.push(protoURL);
+		}
+
+		if (WALKHUB_HTTP_URL != WALKHUB_URL) {
+			origins.push(WALKHUB_HTTP_URL);
+		}
+
+		return origins;
 	}
 
 }

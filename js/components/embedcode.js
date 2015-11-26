@@ -28,7 +28,7 @@ class EmbedCode extends React.Component {
 	};
 
 	render() {
-		const origin = WALKHUB_EMBED_URL || WALKHUB_URL;
+		const origin = WALKHUB_URL;
 		const clienturl = origin + "assets/client.js";
 		const scripturl = origin + "assets/embed.js";
 

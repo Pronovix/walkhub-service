@@ -18,13 +18,14 @@ package main
 
 import (
 	"encoding/hex"
-	"log"
 	"net/url"
 	"runtime"
+	"time"
 
 	"github.com/Pronovix/walkhub-service"
 	"github.com/spf13/viper"
 	"github.com/tamasd/ab"
+	"github.com/tamasd/ab/lib/log"
 	"github.com/tamasd/ab/services/auth"
 	"github.com/tamasd/ab/util"
 )
@@ -32,7 +33,7 @@ import (
 func isHTTPS(baseurl string) bool {
 	u, err := url.Parse(baseurl)
 	if err != nil {
-		log.Fatalln(err)
+		panic(err)
 	}
 
 	return u.Scheme == "https"
@@ -46,22 +47,54 @@ func main() {
 	viper.AutomaticEnv()
 	viper.ReadInConfig()
 
+	level := log.LOG_USER
+	if viper.GetBool("trace") {
+		level = log.LOG_TRACE
+	} else if viper.GetBool("debug") {
+		level = log.LOG_VERBOSE
+	}
+
+	whlogger := log.DefaultOSLogger()
+	whlogger.Level = level
+
 	secret, err := hex.DecodeString(viper.GetString("secret"))
 	if err != nil {
-		log.Println(err)
+		whlogger.User().Println(err)
 	}
 	cookieSecret, err := hex.DecodeString(viper.GetString("cookiesecret"))
 	if err != nil {
-		log.Println(err)
+		whlogger.User().Println(err)
 	}
 
 	baseurl := viper.GetString("baseurl")
+	httpOrigin := viper.GetString("httporigin")
+	hstsHostBlacklist := []string{}
+	if httpOrigin != "" {
+		hstsHostBlacklist = append(hstsHostBlacklist, httpOrigin)
+	}
+
+	var cookieurl *url.URL = nil
+
+	if cookieurlstr := viper.GetString("cookieurl"); cookieurlstr != "" {
+		cookieurl, err = url.Parse(cookieurlstr)
+		if err != nil {
+			panic(err)
+		}
+	}
 
 	cfg := ab.ServerConfig{
 		PGConnectString: viper.GetString("db"),
 		CookiePrefix:    "WALKHUB",
 		CookieSecret:    cookieSecret,
-		DevelopmentMode: viper.GetBool("debug"),
+		Level:           level,
+		Logger:          whlogger,
+		DisableGzip:     true, // TODO temporary fix to make metrics work
+		CookieURL:       cookieurl,
+		HSTS: &ab.HSTSConfig{
+			MaxAge:            time.Hour * 24 * 365,
+			IncludeSubDomains: false,
+			HostBlacklist:     hstsHostBlacklist,
+		},
 	}
 
 	util.SetKey(secret)
@@ -69,6 +102,7 @@ func main() {
 	s := walkhub.NewServer(cfg)
 	s.BaseURL = baseurl
 	s.HTTPAddr = viper.GetString("httpaddr")
+	s.HTTPOrigin = httpOrigin
 	s.RedirectAll = viper.GetBool("redirectall")
 	s.AuthCreds.Google = auth.OAuthCredentials{
 		ID:     viper.GetString("google.id"),
@@ -83,5 +117,5 @@ func main() {
 	if port == "" {
 		port = "8080"
 	}
-	s.Start(host+":"+port, viper.GetString("certfile"), viper.GetString("keyfile"))
+	whlogger.User().Println(s.Start(host+":"+port, viper.GetString("certfile"), viper.GetString("keyfile")))
 }

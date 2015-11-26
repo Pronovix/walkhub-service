@@ -27,7 +27,6 @@ import (
 	"github.com/nbio/hitch"
 	stdprometheus "github.com/prometheus/client_golang/prometheus"
 	"github.com/tamasd/ab"
-	"github.com/tamasd/hitch-session"
 )
 
 //go:generate abt --output=loggen.go --generate-crud-update=false --generate-crud-delete=false --generate-service-struct=false --generate-service-struct-name=LogService --generate-service-list=false --generate-service-get=false --generate-service-post=false --generate-service-put=false --generate-service-delete=false --generate-service-patch=false entity Log
@@ -67,7 +66,7 @@ type walkthroughPageVisitedLog struct {
 func getLogUserID(r *http.Request) string {
 	db := ab.GetDB(r)
 	userid := r.RemoteAddr
-	uid := session.GetSession(r)["uid"]
+	uid := ab.GetSession(r)["uid"]
 	if uid != "" {
 		user, err := LoadUser(db, uid)
 		if err != nil {

@@ -127,3 +127,7 @@ export function selectAll(element) {
 		textRange.select();
 	}
 };
+
+export function isHTTPSPage() {
+	return window.location.protocol.slice(0, -1) === "https";
+};

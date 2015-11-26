@@ -75,7 +75,8 @@ module.exports = {
 		}),
 		new webpack.DefinePlugin({
 			WALKHUB_URL: JSON.stringify(serverConfig.baseurl),
-			WALKHUB_EMBED_URL: JSON.stringify(serverConfig.embedurl)
+			WALKHUB_EMBED_URL: JSON.stringify(serverConfig.embedurl ? serverConfig.embedurl : serverConfig.baseurl),
+			WALKHUB_HTTP_URL: JSON.stringify(serverConfig.httporigin ? serverConfig.httporigin : serverConfig.baseurl)
 		}),
 		new webpack.NoErrorsPlugin(),
 		new webpack.optimize.OccurenceOrderPlugin(),

@@ -25,7 +25,6 @@ import (
 	"github.com/tamasd/ab"
 	"github.com/tamasd/ab/providers/auth/google"
 	"github.com/tamasd/ab/services/auth"
-	"github.com/tamasd/hitch-session"
 	"google.golang.org/api/plus/v1"
 )
 
@@ -48,7 +47,7 @@ func afterUserSchemaSQL(sql string) (_sql string) {
 
 func afterUserServiceRegister(h *hitch.Hitch) {
 	h.Get("/api/user", http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		sess := session.GetSession(r)
+		sess := ab.GetSession(r)
 		if sess["uid"] != "" {
 			db := ab.GetDB(r)
 

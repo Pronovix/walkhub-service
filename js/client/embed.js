@@ -15,7 +15,7 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 import $ from "jquery";
-import {MAXIMUM_ZINDEX} from "util";
+import {MAXIMUM_ZINDEX, isHTTPSPage} from "util";
 
 window.WalkhubWidgetPositions = {
 	"bottom-left": [],
@@ -138,13 +138,14 @@ function processButton(button) {
 	const uuid = button.data("uuid") || null;
 	const position = button.data("position") || "";
 	const search = button.data("search") || null;
-	let uri = WALKHUB_EMBED_URL + "record?embedded=1&start=" + encodeURIComponent(window.location.href);
+	const origin = isHTTPSPage() ? WALKHUB_URL : WALKHUB_HTTP_URL;
+	let uri = origin + "record?embedded=1&start=" + encodeURIComponent(window.location.href);
 	let type = "record";
 	if (uuid) {
-		uri = WALKHUB_EMBED_URL + "walkthrough/" + uuid + "?embedded=1";
+		uri = origin + "walkthrough/" + uuid + "?embedded=1";
 		type = "play";
 	} else if (search) {
-		uri = WALKHUB_EMBED_URL + "search?embedded=1&q=" + encodeURIComponent(search);
+		uri = origin + "search?embedded=1&q=" + encodeURIComponent(search);
 		type = "search";
 	}
 	const iframe = $("<iframe />")
