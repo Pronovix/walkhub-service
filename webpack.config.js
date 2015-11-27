@@ -3,7 +3,18 @@
 var webpack = require("webpack");
 var HtmlWebpackPlugin = require("html-webpack-plugin");
 var ExtractTextPlugin = require("extract-text-webpack-plugin");
-var serverConfig = require("./config.json");
+var serverConfig = {};
+try {
+	serverConfig = require("./config.json");
+} catch (e) {
+	console.log(e);
+}
+var contentpages = process.env.CONTENTPAGES || serverConfig.contentpages;
+var menuitems = process.env.MENUITEMS || serverConfig.menuitems;
+var frontpagecomponent = process.env.FRONTPAGECOMPONENT || serverConfig.frontpagecomponent;
+var baseurl = process.env.BASEURL || serverConfig.baseurl;
+var embedurl = process.env.EMBEDURL || serverConfig.embedurl;
+var httporigin = process.env.HTTPORIGIN || serverConfig.httporigin;
 
 var path = require("path");
 var srcPath = path.join(__dirname, "js");
@@ -29,19 +40,19 @@ var loaders = [
 	{ test: /.*\.(gif|png|jpe?g|ico)$/i, loader: "file?name=[name]-[sha512:hash:hex:6].[ext]" }
 ];
 
-if (serverConfig.contentpages) {
+if (contentpages) {
 	loaders.push({
 		test: function(absPath) {
-			return absPath.endsWith(serverConfig.contentpages);
+			return absPath.endsWith(contentpages);
 		},
 		loader: "contentpageconfig"
 	});
 }
 
-if (serverConfig.menuitems) {
+if (menuitems) {
 	loaders.push({
 		test: function(absPath) {
-			return absPath.endsWith(serverConfig.menuitems);
+			return absPath.endsWith(menuitems);
 		},
 		loader: "json"
 	});
@@ -68,9 +79,9 @@ module.exports = {
 	},
 	resolve: {
 		alias: {
-			CONTENT_PAGES: serverConfig.contentpages,
-			MENU_ITEMS: serverConfig.menuitems,
-			FRONT_PAGE: serverConfig.frontpagecomponent || "components/wrappers/frontpage"
+			CONTENT_PAGES: contentpages,
+			MENU_ITEMS: menuitems,
+			FRONT_PAGE: frontpagecomponent || "components/wrappers/frontpage"
 		},
 		root: srcPath,
 		extensions: ["", ".js", ".less"],
@@ -78,7 +89,7 @@ module.exports = {
 	},
 	output: {
 		path: path.join(__dirname, "assets"),
-		publicPath: serverConfig.baseurl + "assets/",
+		publicPath: baseurl + "assets/",
 		filename: "[name].js",
 		pathInfo: true
 	},
@@ -105,11 +116,11 @@ module.exports = {
 			hash: true
 		}),
 		new webpack.DefinePlugin({
-			WALKHUB_URL: JSON.stringify(serverConfig.baseurl),
-			WALKHUB_EMBED_URL: JSON.stringify(serverConfig.embedurl ? serverConfig.embedurl : serverConfig.baseurl),
-			WALKHUB_HTTP_URL: JSON.stringify(serverConfig.httporigin ? serverConfig.httporigin : serverConfig.baseurl),
-			WALKHUB_MENU_ITEMS: !!serverConfig.menuitems,
-			WALKHUB_CONTENT_PAGES: !!serverConfig.contentpages
+			WALKHUB_URL: JSON.stringify(baseurl),
+			WALKHUB_EMBED_URL: JSON.stringify(embedurl ? embedurl : baseurl),
+			WALKHUB_HTTP_URL: JSON.stringify(httporigin ? httporigin : baseurl),
+			WALKHUB_MENU_ITEMS: !!menuitems,
+			WALKHUB_CONTENT_PAGES: !!contentpages
 		}),
 		new webpack.NoErrorsPlugin(),
 		new webpack.optimize.OccurenceOrderPlugin(),
