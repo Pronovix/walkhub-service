@@ -23,6 +23,10 @@ export default function(content) {
 		}
 
 		render() {
+			if (typeof content === "function") {
+				return content(this.props);
+			}
+
 			return content;
 		}
 	}
