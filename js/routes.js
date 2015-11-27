@@ -21,7 +21,7 @@ import AppWrapper from "components/wrappers/app";
 import User from "components/user";
 import RecordWrapper from "components/wrappers/record";
 import WalkthroughWrapper from "components/wrappers/walkthrough";
-import FrontpageWrapper from "components/wrappers/frontpage";
+import FrontpageComponent from "FRONT_PAGE";
 import ConnectWrapper from "components/wrappers/connect";
 import SearchWrapper from "components/wrappers/search";
 import EmbedCodeBuilderWrapper from "components/wrappers/embedcodebuilder";
@@ -38,7 +38,7 @@ const contentPages = Object.keys(contentPagesConfig).map(function(path) {
 
 const Routes = (
 	<Route component={AppWrapper}>
-		<Route path="/" component={FrontpageWrapper} />
+		<Route path="/" component={FrontpageComponent} />
 		<Route path="/connect" component={ConnectWrapper} />
 		<Route path="/user/:UUID" component={User} />
 		<Route path="/record" component={RecordWrapper} />

@@ -57,6 +57,7 @@ module.exports = {
 	resolve: {
 		alias: {
 			CONTENT_PAGES: serverConfig.contentpages,
+			FRONT_PAGE: serverConfig.frontpagecomponent || "components/wrappers/frontpage"
 		},
 		root: srcPath,
 		extensions: ["", ".js", ".less"],
