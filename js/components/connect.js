@@ -18,6 +18,8 @@ import React from "react";
 import {csrfToken} from "util";
 import {t} from "t";
 
+import logo from "images/walkhub-official-logo.jpg"
+
 class Connect extends React.Component {
 
 	static defaultProps = {
@@ -37,7 +39,7 @@ class Connect extends React.Component {
 			<section className="wh-connect">
 				<div className="row">
 					<div className="col-xs-12 text-center">
-						<p><img src="/assets/images/walkhub-official-logo.jpg" width="300" height="300" /></p>
+						<p><img src={logo} width="300" height="300" /></p>
 						<h4>{t("Record walkthroughs and play them on top of websites")}</h4>
 						<hr />
 					</div>

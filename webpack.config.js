@@ -23,7 +23,7 @@ var loaders = [
 	{ test: /\.svg(\?v=\d+\.\d+\.\d+)?$/,    loader: "url?limit=10000&mimetype=image/svg+xml" },
 	{ test: /\.scss$/, loader: "style!css!sass?"+sassIncludePaths },
 	{ test: /\.sass$/, loader: "style!css!sass?indentedSyntax&"+sassIncludePaths },
-	{ test: /.*\.(gif|png|jpe?g|svg)$/i, loader: "file" }
+	{ test: /.*\.(gif|png|jpe?g|svg)$/i, loader: "file?name=[path][name]-[sha512:hash:hex:6].[ext]" }
 ];
 
 if (serverConfig.contentpages) {
