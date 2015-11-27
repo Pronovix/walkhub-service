@@ -1,6 +1,9 @@
 "use strict";
 
+var ExtractTextPlugin = require("extract-text-webpack-plugin");
+
 module.exports = {
+	styleLoader: ExtractTextPlugin.extract("style-loader", "css-loader!less-loader"),
 	scripts: {
 		"transition": true,
 		"alert": true,

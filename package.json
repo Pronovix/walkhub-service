@@ -19,6 +19,7 @@
     "compass-mixins": "^0.12",
     "crypto-js": "^3.1.5",
     "css-loader": "^0.22",
+    "extract-text-webpack-plugin": "^0.9.1",
     "file-loader": "^0.8",
     "history": "^1.13",
     "html-loader": "^0.4.0",

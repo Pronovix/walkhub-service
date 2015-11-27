@@ -2,6 +2,7 @@
 
 var webpack = require("webpack");
 var HtmlWebpackPlugin = require("html-webpack-plugin");
+var ExtractTextPlugin = require("extract-text-webpack-plugin");
 var serverConfig = require("./config.json");
 
 var path = require("path");
@@ -21,6 +22,8 @@ var loaders = [
 	{ test: /\.ttf(\?v=\d+\.\d+\.\d+)?$/,    loader: "url?limit=10000&mimetype=application/octet-stream" },
 	{ test: /\.eot(\?v=\d+\.\d+\.\d+)?$/,    loader: "file" },
 	{ test: /\.svg(\?v=\d+\.\d+\.\d+)?$/,    loader: "url?limit=10000&mimetype=image/svg+xml" },
+	{ test: /\.less$/, loader: ExtractTextPlugin.extract("style-loader", "css-loader!less-loader") },
+	{ test: /\.css$/, loader: ExtractTextPlugin.extract("style-loader", "css-loader") },
 	{ test: /\.scss$/, loader: "style!css!sass?"+sassIncludePaths },
 	{ test: /\.sass$/, loader: "style!css!sass?indentedSyntax&"+sassIncludePaths },
 	{ test: /.*\.(gif|png|jpe?g|svg|ico)$/i, loader: "file?name=[name]-[sha512:hash:hex:6].[ext]" }
@@ -77,6 +80,7 @@ module.exports = {
 			$: "jquery",
 			jQuery: "jquery"
 		}),
+		new ExtractTextPlugin("[name].css"),
 		new HtmlWebpackPlugin({
 			inject: true,
 			template: "html?attrs[]=link:href!html/index.html",
