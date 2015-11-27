@@ -26,8 +26,9 @@ Check the [landing page](http://pronovix.com/walkhub) for more information.
 * `httporigin`: if this is set, the HTTP requests will be forced to a separate domain.
 * `embedurl`: overwrites the embedding base url if set
 * `redirectall`: redirects all HTTP requests to HTTPS if the server is running in HTTPS mode. If this is set to false, only a few pages will be enabled in HTTP mode
-* `contentpages`: path to a JSON file which describes custom pages. The JSON file is a simple dictionary, where the key is the path (see react-router for the syntax) and the value is the `require()` path for the component
+* `contentpages`: path to a JSON file that describes custom pages. The JSON file is a simple dictionary, where the key is the path (see react-router for the syntax) and the value is the `require()` path for the component
 * `frontpagecomponent`: overrides the component for the front page
+* `menuitems`: path to a JSON file that describes menu paths. See `js/components/wrappers/app.js` for more info on the structure
 * `google`: OAuth2 tokens for Google
 
 Currently only OAuth2 through Google is supported as an authentication mechanism, but other OAuth2 providers and password authentication (with 2FA support) are coming soon.

@@ -22,21 +22,48 @@ import {t} from "t";
 class Navbar extends React.Component {
 
 	static defaultProps = {
-		loggedin: false
+		loggedin: false,
+		config: {},
+		className: "",
 	}
 
-	render() {
-		const loggedin = this.props.loggedin;
-		const logoutUrl = `/api/auth/logout?token=${csrfToken}`;
-		const loginlogout = loggedin ?
-			<a href={logoutUrl}><span className="glyphicon glyphicon-log-out" aria-hidden="true"></span></a> :
-			<Link to="/connect"><span className="glyphicon glyphicon-log-in" aria-hidden="true"></span></Link>;
-		const recordLink = loggedin ?
-			<li><Link to="/record">{t("Record")}</Link></li> :
+	isExternal(link) {
+		return link.indexOf("http") === 0 || link.indexOf("/api") === 0;
+	}
+
+	linkTarget(link) {
+		return link.indexOf("http") === 0 ? "_blank" : "_self";
+	}
+
+	renderMenuItem = (item, i) => {
+		if (!(item.loggedin === null || item.loggedin === undefined) && item.loggedin != this.props.loggedin) {
+			return null;
+		}
+
+		const icon = item.icon ?
+			<span className={"glyphicon glyphicon-"+item.icon} aria-hidden="true"></span> :
 			null;
 
+		item.label = t(item.label);
+		item.path = item.path.replace("CSRF_TOKEN", csrfToken);
+
+		const target = this.linkTarget(item.path);
+		return this.isExternal(item.path) ?
+			<a key={i} href={item.path} className={item.className} target={target}>{icon} {item.label}</a> :
+			<Link key={i} to={item.path} className={item.className}>{icon} {item.label}</Link>;
+	};
+
+	wrapInLi = (item, i) => {
+		return <li key={i}>{item}</li>;
+	};
+
+	render() {
+		const header = this.props.config.header ? this.props.config.header.map(this.renderMenuItem) : null;
+		const left = this.props.config.left ? this.props.config.left.map(this.renderMenuItem).map(this.wrapInLi) : null;
+		const right = this.props.config.right ? this.props.config.right.map(this.renderMenuItem).map(this.wrapInLi) : null;
+
 		return (
-			<nav className="navbar navbar-inverse" role="navigation">
+			<nav className={"navbar "+this.props.className} role="navigation">
 				<div className="container-fluid">
 					<div className="navbar-header">
 						<button type="button" className="navbar-toggle" data-toggle="collapse" data-target="#navbar-to-collapse">
@@ -45,16 +72,14 @@ class Navbar extends React.Component {
 							<span className="icon-bar"></span>
 							<span className="icon-bar"></span>
 						</button>
-						<Link to="/" className="navbar-brand">WalkHub</Link>
+						{header}
 					</div>
 					<div className="collapse navbar-collapse" id="navbar-to-collapse">
 						<ul className="nav navbar-nav">
-							<li><a target="_blank" href="https://github.com/Pronovix/walkhub-service">{t("Download from GitHub")}</a></li>
+							{left}
 						</ul>
 						<ul className="nav navbar-nav navbar-right">
-							<li><Link to="/search">{t("Search")}</Link></li>
-							{recordLink}
-							<li>{loginlogout}</li>
+							{right}
 						</ul>
 					</div>
 				</div>

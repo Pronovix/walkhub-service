@@ -38,6 +38,15 @@ if (serverConfig.contentpages) {
 	});
 }
 
+if (serverConfig.menuitems) {
+	loaders.push({
+		test: function(absPath) {
+			return absPath.endsWith(serverConfig.menuitems);
+		},
+		loader: "json"
+	});
+}
+
 module.exports = {
 	target: "web",
 	cache: true,
@@ -60,6 +69,7 @@ module.exports = {
 	resolve: {
 		alias: {
 			CONTENT_PAGES: serverConfig.contentpages,
+			MENU_ITEMS: serverConfig.menuitems,
 			FRONT_PAGE: serverConfig.frontpagecomponent || "components/wrappers/frontpage"
 		},
 		root: srcPath,
@@ -98,6 +108,7 @@ module.exports = {
 			WALKHUB_URL: JSON.stringify(serverConfig.baseurl),
 			WALKHUB_EMBED_URL: JSON.stringify(serverConfig.embedurl ? serverConfig.embedurl : serverConfig.baseurl),
 			WALKHUB_HTTP_URL: JSON.stringify(serverConfig.httporigin ? serverConfig.httporigin : serverConfig.baseurl),
+			WALKHUB_MENU_ITEMS: !!serverConfig.menuitems,
 			WALKHUB_CONTENT_PAGES: !!serverConfig.contentpages
 		}),
 		new webpack.NoErrorsPlugin(),

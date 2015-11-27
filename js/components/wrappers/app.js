@@ -27,6 +27,33 @@ import RouterActions from "actions/router";
 import WalkhubBackend from "walkhub_backend";
 import $ from "jquery";
 
+let menuItems = {
+	navbar: {
+		header: [
+			{path: "/", label: "WalkHub", className: "navbar-brand"},
+		],
+		left: [
+			{path: "https://github.com/Pronovix/walkhub-service", label: "Download from GitHub"},
+		],
+		right: [
+			{path: "/search", label: "Search"},
+			{path: "/record", label: "Record", loggedin: true},
+			{path: "/connect", icon: "log-in", loggedin: false},
+			{path: "/api/auth/logout?token=CSRF_TOKEN", icon: "log-out", loggedin: true},
+		],
+	},
+	footer: {
+		left: [
+		],
+		right: [
+		],
+	},
+};
+
+if (WALKHUB_MENU_ITEMS) {
+	menuItems = require("MENU_ITEMS");
+}
+
 @connectToStores
 class AppWrapper extends React.Component {
 
@@ -98,6 +125,8 @@ class AppWrapper extends React.Component {
 				embedded={!!this.context.location.query.embedded}
 				messages={this.state.messages}
 				onMessageClose={this.onMessageClose}
+				navbarConfig={menuItems.navbar}
+				footerConfig={menuItems.footer}
 				>
 				{this.props.children}
 			</App>
