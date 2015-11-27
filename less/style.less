@@ -13,15 +13,15 @@
 //
 // You should have received a copy of the GNU Affero General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
-@import url(https://fonts.googleapis.com/css?family=Open+Sans:300);
+@import url('https://fonts.googleapis.com/css?family=Open+Sans:300');
 
 // Customized Bootstrap variables.
-@font-family-sans-serif: 										'Open Sans',Helvetica,Arial,sans-serif;
-@navbar-border-radius: 											0px;
-@navbar-inverse-color: 											lighten(@gray-light, 10%);
-@navbar-inverse-bg: 												lighten(#222, 10%);
-@navbar-inverse-link-hover-color:           #84c441;
-@navbar-inverse-link-color:                 lighten(@gray-light, 30%);
+@font-family-sans-serif: 'Open Sans',Helvetica,Arial,sans-serif;
+@navbar-border-radius: 0px;
+@navbar-inverse-color: lighten(@gray-light, 10%);
+@navbar-inverse-bg: lighten(#222, 10%);
+@navbar-inverse-link-hover-color: #84c441;
+@navbar-inverse-link-color: lighten(@gray-light, 30%);
 
 @MAXIMUM_ZINDEX: 2147483647;
 
@@ -168,8 +168,15 @@ div.nocookie {
 	}
 }
 
-.navbar-inverse .navbar-header a {
-	&:hover, &:focus {
-		color: @navbar-inverse-link-color;
+.navbar-inverse .navbar-header {
+	a {
+		padding: 5px;
+		&:hover, &:focus {
+			color: @navbar-inverse-link-color;
+		}
+	}
+	.navbar-brand object {
+		width: 90px;
+		pointer-events: none;
 	}
 }

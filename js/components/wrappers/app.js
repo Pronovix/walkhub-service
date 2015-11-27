@@ -29,9 +29,6 @@ import $ from "jquery";
 
 let menuItems = {
 	navbar: {
-		header: [
-			{path: "/", label: "WalkHub", className: "navbar-brand"},
-		],
 		left: [
 			{path: "https://github.com/Pronovix/walkhub-service", label: "Download from GitHub"},
 		],

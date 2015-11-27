@@ -19,12 +19,15 @@ import {Link} from "react-router";
 import {csrfToken} from "util";
 import {t} from "t";
 
+import logo from "images/walkhub-navbar-logo.svg";
+
 class Navbar extends React.Component {
 
 	static defaultProps = {
 		loggedin: false,
 		config: {},
 		className: "",
+		hasHeader: false,
 	}
 
 	isExternal(link) {
@@ -48,19 +51,23 @@ class Navbar extends React.Component {
 		item.path = item.path.replace("CSRF_TOKEN", csrfToken);
 
 		const target = this.linkTarget(item.path);
-		return this.isExternal(item.path) ?
+		const link = this.isExternal(item.path) ?
 			<a key={i} href={item.path} className={item.className} target={target}>{icon} {item.label}</a> :
 			<Link key={i} to={item.path} className={item.className}>{icon} {item.label}</Link>;
-	};
-
-	wrapInLi = (item, i) => {
-		return <li key={i}>{item}</li>;
+		return <li key={i}>{link}</li>;
 	};
 
 	render() {
-		const header = this.props.config.header ? this.props.config.header.map(this.renderMenuItem) : null;
-		const left = this.props.config.left ? this.props.config.left.map(this.renderMenuItem).map(this.wrapInLi) : null;
-		const right = this.props.config.right ? this.props.config.right.map(this.renderMenuItem).map(this.wrapInLi) : null;
+		const left = this.props.config.left ? this.props.config.left.map(this.renderMenuItem) : null;
+		const right = this.props.config.right ? this.props.config.right.map(this.renderMenuItem) : null;
+
+		const header = this.props.hasHeader ?
+			(
+				<Link to="/" className="navbar-brand">
+					<object type="image/svg+xml" data={logo}>{t("WalkHub")}</object>
+				</Link>
+			) :
+			null;
 
 		return (
 			<nav className={"navbar "+this.props.className} role="navigation">
