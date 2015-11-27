@@ -2,7 +2,6 @@ config.json
 config.json.*
 !config.json.sample
 assets/*
-!assets/images/
 dist
 public/*
 test.toml

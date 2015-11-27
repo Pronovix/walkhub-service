@@ -4,7 +4,7 @@
     "build": "webpack --progress --profile --colors",
     "watch": "webpack --progress --profile --colors --watch",
     "test": "exit 1",
-	"debug": "webpack --progress --profile --colors --watch --display-chunks --display-reasons --display-error-details --display-modules",
+    "debug": "webpack --progress --profile --colors --watch --display-chunks --display-reasons --display-error-details --display-modules",
     "check": "npm-check -s",
     "update": "npm-check -u"
   },
@@ -21,6 +21,7 @@
     "css-loader": "^0.22",
     "file-loader": "^0.8",
     "history": "^1.13",
+    "html-loader": "^0.4.0",
     "imports-loader": "^0.6",
     "jquery": "^2.1",
     "json-loader": "^0.5.4",
@@ -36,7 +37,7 @@
   },
   "devDependencies": {
     "babel-loader": "^5.3",
-    "html-webpack-plugin": "^2.0",
+    "html-webpack-plugin": "^2.1.0",
     "npm-check": "^4.1.2",
     "webpack": "^1.12"
   }

@@ -23,7 +23,7 @@ var loaders = [
 	{ test: /\.svg(\?v=\d+\.\d+\.\d+)?$/,    loader: "url?limit=10000&mimetype=image/svg+xml" },
 	{ test: /\.scss$/, loader: "style!css!sass?"+sassIncludePaths },
 	{ test: /\.sass$/, loader: "style!css!sass?indentedSyntax&"+sassIncludePaths },
-	{ test: /.*\.(gif|png|jpe?g|svg)$/i, loader: "file?name=[path][name]-[sha512:hash:hex:6].[ext]" }
+	{ test: /.*\.(gif|png|jpe?g|svg|ico)$/i, loader: "file?name=[name]-[sha512:hash:hex:6].[ext]" }
 ];
 
 if (serverConfig.contentpages) {
@@ -79,14 +79,16 @@ module.exports = {
 		}),
 		new HtmlWebpackPlugin({
 			inject: true,
-			template: "html/index.html",
-			excludeChunks: ["client", "embed"]
+			template: "html?attrs[]=link:href!html/index.html",
+			chunks: ["app"],
+			hash: true
 		}),
 		new HtmlWebpackPlugin({
 			inject: true,
 			template: "html/start.html",
-			excludeChunks: ["app", "embed"],
-			filename: "start.html"
+			chunks: ["client"],
+			filename: "start.html",
+			hash: true
 		}),
 		new webpack.DefinePlugin({
 			WALKHUB_URL: JSON.stringify(serverConfig.baseurl),
