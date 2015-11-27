@@ -22,13 +22,8 @@ import {validURL} from "util";
 
 class EmbedCodeBuilderWrapper extends React.Component {
 
-	static contextTypes = {
-		router: React.PropTypes.func.isRequired,
-	};
-
-	constructor(props) {
-		super(props);
-		this.state = {
+	defaultState() {
+		return {
 			url: "",
 			email: "",
 			record: true,
@@ -38,6 +33,11 @@ class EmbedCodeBuilderWrapper extends React.Component {
 			showAdvanced: false,
 			urlHasError: false,
 		};
+	}
+
+	constructor(props) {
+		super(props);
+		this.state = this.defaultState();
 	}
 
 	urlChange = (evt) => {
@@ -80,6 +80,11 @@ class EmbedCodeBuilderWrapper extends React.Component {
 		}
 	};
 
+	resetClick = (evt) => {
+		noop(evt);
+		this.setState(this.defaultState());
+	};
+
 	advancedClick = (evt) => {
 		noop(evt);
 		this.setState({showAdvanced: true});
@@ -97,6 +102,7 @@ class EmbedCodeBuilderWrapper extends React.Component {
 				showAdvanced={this.state.showAdvanced}
 				enableAdvanced={true}
 				generateClick={this.generateClick}
+				resetClick={this.resetClick}
 				advancedClick={this.advancedClick}
 				urlChange={this.urlChange}
 				emailChange={this.emailChange}

@@ -34,6 +34,7 @@ class EmbedCodeBuilder extends React.Component {
 		urlHasError: false,
 
 		generateClick: noop,
+		resetClick: noop,
 		advancedClick: noop,
 		urlChange: noop,
 		emailChange: noop,
@@ -116,6 +117,14 @@ class EmbedCodeBuilder extends React.Component {
 			<span className="help-block">{t("Invalid url")}</span> :
 			null;
 
+		const button = this.props.showCode ?
+			(
+				<a href="#" onClick={this.props.resetClick} className="btn btn-warning">{t("Reset form")}</a>
+			) :
+			(
+				<a href="#" onClick={this.props.generateClick} className="btn btn-success">{t("Generate my code!")}</a>
+			);
+
 		return (
 			<form className="embed-code-builder">
 				<div className="row">
@@ -128,7 +137,7 @@ class EmbedCodeBuilder extends React.Component {
 						<p className={"form-group" + (this.props.urlHasError ? " has-error" : "")}><input type="text" className="form-control" name="url" value={this.props.url} onChange={this.props.urlChange} placeholder={t("website url")} />{urlHelpBlock}</p>
 						<p><input type="text" className="form-control" name="email" value={this.props.email} onChange={this.props.emailChange} placeholder={t("email")} /></p>
 						<p>{advancedSettings}</p>
-						<p><a href="#" onClick={this.props.showCode ? noop : this.props.generateClick} className={"btn btn-" + (this.props.showCode ? "default disabled" : "success")}>{t("Generate my code!")}</a></p>
+						<p>{button}</p>
 					</div>
 					<div className="col-xs-8">
 						{code}
