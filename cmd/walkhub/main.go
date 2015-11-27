@@ -18,7 +18,9 @@ package main
 
 import (
 	"encoding/hex"
+	"encoding/json"
 	"net/url"
+	"os"
 	"runtime"
 	"time"
 
@@ -104,6 +106,10 @@ func main() {
 	s.HTTPAddr = viper.GetString("httpaddr")
 	s.HTTPOrigin = httpOrigin
 	s.RedirectAll = viper.GetBool("redirectall")
+	if cp := viper.GetString("contentpages"); cp != "" {
+		s.CustomPaths = loadContentPages(cp)
+		whlogger.Verbose().Println("custom paths", s.CustomPaths)
+	}
 	s.AuthCreds.Google = auth.OAuthCredentials{
 		ID:     viper.GetString("google.id"),
 		Secret: viper.GetString("google.secret"),
@@ -118,4 +124,27 @@ func main() {
 		port = "8080"
 	}
 	whlogger.User().Println(s.Start(host+":"+port, viper.GetString("certfile"), viper.GetString("keyfile")))
+}
+
+func loadContentPages(path string) []string {
+	f, err := os.Open(path)
+	if err != nil {
+		panic(err)
+	}
+	defer f.Close()
+
+	cfg := map[string]interface{}{}
+
+	err = json.NewDecoder(f).Decode(&cfg)
+	if err != nil {
+		panic(err)
+	}
+
+	pages := []string{}
+
+	for page := range cfg {
+		pages = append(pages, page)
+	}
+
+	return pages
 }

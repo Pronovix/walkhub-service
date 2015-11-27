@@ -25,7 +25,8 @@ Check the [landing page](http://pronovix.com/walkhub) for more information.
 * `httpaddr`: enables HTTP to HTTPS automatic redirection. The format of the address is `host:port`.
 * `httporigin`: if this is set, the HTTP requests will be forced to a separate domain.
 * `embedurl`: overwrites the embedding base url if set
-* `redirectall`: redirects all HTTP requests to HTTPS if the server is running in HTTPS mode. If this is set to false, only a few pages will be enabled in HTTP mode,
+* `redirectall`: redirects all HTTP requests to HTTPS if the server is running in HTTPS mode. If this is set to false, only a few pages will be enabled in HTTP mode
+* `contentpages`: path to a JSON file which describes custom pages. The JSON file is a simple dictionary, where the key is the path (see react-router for the syntax) and the value is the `require()` path for the component
 * `google`: OAuth2 tokens for Google
 
 Currently only OAuth2 through Google is supported as an authentication mechanism, but other OAuth2 providers and password authentication (with 2FA support) are coming soon.

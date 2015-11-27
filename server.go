@@ -38,6 +38,7 @@ type WalkhubServer struct {
 	HTTPAddr    string
 	HTTPOrigin  string
 	RedirectAll bool
+	CustomPaths []string
 	AuthCreds   struct {
 		Google auth.OAuthCredentials
 	}
@@ -228,7 +229,7 @@ func (s *WalkhubServer) Start(addr string, certfile string, keyfile string) erro
 		"/search",
 		"/embedcode",
 	}
-	for _, path := range frontendPaths {
+	for _, path := range append(frontendPaths, s.CustomPaths...) {
 		s.AddFile(path, "assets/index.html")
 	}
 

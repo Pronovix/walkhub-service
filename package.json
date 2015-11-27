@@ -4,8 +4,9 @@
     "build": "webpack --progress --profile --colors",
     "watch": "webpack --progress --profile --colors --watch",
     "test": "exit 1",
-	"check": "npm-check -s",
-	"update": "npm-check -u"
+	"debug": "webpack --progress --profile --colors --watch --display-chunks --display-reasons --display-error-details --display-modules",
+    "check": "npm-check -s",
+    "update": "npm-check -u"
   },
   "license": "AGPL-3.0",
   "dependencies": {
@@ -22,6 +23,7 @@
     "history": "^1.13",
     "imports-loader": "^0.6",
     "jquery": "^2.1",
+    "json-loader": "^0.5.4",
     "less": "^2.5",
     "less-loader": "^2.2",
     "node-sass": "^3.4",

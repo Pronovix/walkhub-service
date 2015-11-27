@@ -10,6 +10,31 @@ var compassPath = path.resolve(__dirname, "./node_modules/compass-mixins/lib");
 var sassPath = path.resolve(__dirname, "sass");
 var sassIncludePaths = "includePaths[]="+compassPath+"&includePaths[]="+sassPath;
 
+var loaders = [
+	{
+		test: /\.js?$/,
+		exclude: [/node_modules/, /bootstrap\.config\.js/],
+		loader: "babel-loader"
+	},
+	{ test: /bootstrap\/js\//, loader: 'imports?jQuery=jquery' },
+	{ test: /\.(woff|woff2)(\?v=\d+\.\d+\.\d+)?$/,   loader: "url?limit=10000&mimetype=application/font-woff" },
+	{ test: /\.ttf(\?v=\d+\.\d+\.\d+)?$/,    loader: "url?limit=10000&mimetype=application/octet-stream" },
+	{ test: /\.eot(\?v=\d+\.\d+\.\d+)?$/,    loader: "file" },
+	{ test: /\.svg(\?v=\d+\.\d+\.\d+)?$/,    loader: "url?limit=10000&mimetype=image/svg+xml" },
+	{ test: /\.scss$/, loader: "style!css!sass?"+sassIncludePaths },
+	{ test: /\.sass$/, loader: "style!css!sass?indentedSyntax&"+sassIncludePaths },
+	{ test: /.*\.(gif|png|jpe?g|svg)$/i, loader: "file" }
+];
+
+if (serverConfig.contentpages) {
+	loaders.push({
+		test: function(absPath) {
+			return absPath.endsWith(serverConfig.contentpages);
+		},
+		loader: "contentpageconfig"
+	});
+}
+
 module.exports = {
 	target: "web",
 	cache: true,
@@ -30,6 +55,9 @@ module.exports = {
 		]
 	},
 	resolve: {
+		alias: {
+			CONTENT_PAGES: serverConfig.contentpages,
+		},
 		root: srcPath,
 		extensions: ["", ".js", ".less"],
 		modulesDirectories: ["node_modules", "js", "sass", "."],
@@ -41,21 +69,7 @@ module.exports = {
 		pathInfo: true
 	},
 	module: {
-		loaders: [
-			{
-				test: /\.js?$/,
-				exclude: [/node_modules/, /bootstrap\.config\.js/],
-				loader: "babel-loader"
-			},
-			{ test: /bootstrap\/js\//, loader: 'imports?jQuery=jquery' },
-			{ test: /\.(woff|woff2)(\?v=\d+\.\d+\.\d+)?$/,   loader: "url?limit=10000&mimetype=application/font-woff" },
-			{ test: /\.ttf(\?v=\d+\.\d+\.\d+)?$/,    loader: "url?limit=10000&mimetype=application/octet-stream" },
-			{ test: /\.eot(\?v=\d+\.\d+\.\d+)?$/,    loader: "file" },
-			{ test: /\.svg(\?v=\d+\.\d+\.\d+)?$/,    loader: "url?limit=10000&mimetype=image/svg+xml" },
-			{ test: /\.scss$/, loader: "style!css!sass?"+sassIncludePaths },
-			{ test: /\.sass$/, loader: "style!css!sass?indentedSyntax&"+sassIncludePaths },
-			{ test: /.*\.(gif|png|jpe?g|svg)$/i, loader: "file" }
-		]
+		loaders: loaders
 	},
 	plugins: [
 		new webpack.ProvidePlugin({
@@ -76,12 +90,17 @@ module.exports = {
 		new webpack.DefinePlugin({
 			WALKHUB_URL: JSON.stringify(serverConfig.baseurl),
 			WALKHUB_EMBED_URL: JSON.stringify(serverConfig.embedurl ? serverConfig.embedurl : serverConfig.baseurl),
-			WALKHUB_HTTP_URL: JSON.stringify(serverConfig.httporigin ? serverConfig.httporigin : serverConfig.baseurl)
+			WALKHUB_HTTP_URL: JSON.stringify(serverConfig.httporigin ? serverConfig.httporigin : serverConfig.baseurl),
+			WALKHUB_CONTENT_PAGES: !!serverConfig.contentpages
 		}),
 		new webpack.NoErrorsPlugin(),
 		new webpack.optimize.OccurenceOrderPlugin(),
 		new webpack.optimize.DedupePlugin()
 	],
+	resolveLoader: {
+		extensions: ["", ".js"],
+		modulesDirectories: ["node_modules", "js/build"]
+	},
 	debug: true,
 	devtool: "source-map",
 	devServer: {

@@ -26,6 +26,16 @@ import ConnectWrapper from "components/wrappers/connect";
 import SearchWrapper from "components/wrappers/search";
 import EmbedCodeBuilderWrapper from "components/wrappers/embedcodebuilder";
 
+let contentPagesConfig = {};
+
+if (WALKHUB_CONTENT_PAGES) {
+	contentPagesConfig = require("CONTENT_PAGES");
+}
+
+const contentPages = Object.keys(contentPagesConfig).map(function(path) {
+	return <Route key={path} path={path} component={contentPagesConfig[path]} />;
+});
+
 const Routes = (
 	<Route component={AppWrapper}>
 		<Route path="/" component={FrontpageWrapper} />
@@ -35,6 +45,7 @@ const Routes = (
 		<Route path="/walkthrough/:uuid" component={WalkthroughWrapper} />
 		<Route path="/search" component={SearchWrapper} />
 		<Route path="/embedcode" component={EmbedCodeBuilderWrapper} />
+		{contentPages}
 	</Route>
 );
 
