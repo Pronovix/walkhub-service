@@ -26,6 +26,7 @@ import (
 	"github.com/go-kit/kit/metrics"
 	"github.com/go-kit/kit/metrics/prometheus"
 	stdprometheus "github.com/prometheus/client_golang/prometheus"
+	"github.com/spf13/viper"
 	"github.com/tamasd/ab"
 	"github.com/tamasd/ab/providers/auth/google"
 	"github.com/tamasd/ab/services/auth"
@@ -34,12 +35,13 @@ import (
 
 type WalkhubServer struct {
 	*ab.Server
-	BaseURL     string
-	HTTPAddr    string
-	HTTPOrigin  string
-	RedirectAll bool
-	CustomPaths []string
-	AuthCreds   struct {
+	BaseURL        string
+	HTTPAddr       string
+	HTTPOrigin     string
+	RedirectAll    bool
+	EnforceDomains bool
+	CustomPaths    []string
+	AuthCreds      struct {
 		Google auth.OAuthCredentials
 	}
 }
@@ -68,12 +70,34 @@ func prometheusMiddleware() func(http.Handler) http.Handler {
 	}
 }
 
-func NewServer(cfg ab.ServerConfig) *WalkhubServer {
-	s := &WalkhubServer{
-		Server: ab.PetBunny(cfg, prometheusMiddleware()),
+func domainEnforcerMiddleware(httpsHost, httpHost string) func(http.Handler) http.Handler {
+	return func(next http.Handler) http.Handler {
+		return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+			if httpsHost != "" && r.TLS != nil && r.Host != httpsHost {
+				http.Redirect(w, r, "https://"+httpsHost+"/"+r.RequestURI, http.StatusMovedPermanently)
+				return
+			}
+			if httpHost != "" && r.TLS == nil && r.Host != httpHost {
+				http.Redirect(w, r, "http://"+httpHost+"/"+r.RequestURI, http.StatusMovedPermanently)
+				return
+			}
+
+			next.ServeHTTP(w, r)
+		})
+	}
+}
+
+func NewServer(cfg *viper.Viper) (*WalkhubServer, error) {
+	b, err := ab.PetBunny(cfg, nil, nil, prometheusMiddleware())
+	if err != nil {
+		return nil, err
 	}
 
-	return s
+	s := &WalkhubServer{
+		Server: b,
+	}
+
+	return s, nil
 }
 
 func (s *WalkhubServer) setupHTTPS() {

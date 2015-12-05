@@ -22,11 +22,9 @@ import (
 	"net/url"
 	"os"
 	"runtime"
-	"time"
 
 	"github.com/Pronovix/walkhub-service"
 	"github.com/spf13/viper"
-	"github.com/tamasd/ab"
 	"github.com/tamasd/ab/lib/log"
 	"github.com/tamasd/ab/services/auth"
 	"github.com/tamasd/ab/util"
@@ -43,87 +41,68 @@ func isHTTPS(baseurl string) bool {
 
 func main() {
 	runtime.GOMAXPROCS(runtime.NumCPU())
+	cfg := viper.New()
 
-	viper.SetConfigName("config")
-	viper.AddConfigPath(".")
-	viper.AutomaticEnv()
-	viper.ReadInConfig()
+	cfg.SetConfigName("config")
+	cfg.AddConfigPath(".")
+	cfg.AutomaticEnv()
+	cfg.ReadInConfig()
+
+	cfg.Set("gzip", false)
+	cfg.RegisterAlias("db", "PGConnectString")
 
 	level := log.LOG_USER
-	if viper.GetBool("trace") {
+	if cfg.GetBool("trace") {
 		level = log.LOG_TRACE
-	} else if viper.GetBool("debug") {
+	} else if cfg.GetBool("debug") {
 		level = log.LOG_VERBOSE
 	}
+	cfg.Set("LogLevel", level)
 
 	whlogger := log.DefaultOSLogger()
 	whlogger.Level = level
 
-	secret, err := hex.DecodeString(viper.GetString("secret"))
-	if err != nil {
-		whlogger.User().Println(err)
-	}
-	cookieSecret, err := hex.DecodeString(viper.GetString("cookiesecret"))
+	secret, err := hex.DecodeString(cfg.GetString("secret"))
 	if err != nil {
 		whlogger.User().Println(err)
 	}
 
-	baseurl := viper.GetString("baseurl")
-	httpOrigin := viper.GetString("httporigin")
+	baseurl := cfg.GetString("baseurl")
+	httpOrigin := cfg.GetString("httporigin")
 	hstsHostBlacklist := []string{}
 	if httpOrigin != "" {
 		hstsHostBlacklist = append(hstsHostBlacklist, httpOrigin)
 	}
 
-	var cookieurl *url.URL = nil
-
-	if cookieurlstr := viper.GetString("cookieurl"); cookieurlstr != "" {
-		cookieurl, err = url.Parse(cookieurlstr)
-		if err != nil {
-			panic(err)
-		}
-	}
-
-	cfg := ab.ServerConfig{
-		PGConnectString: viper.GetString("db"),
-		CookiePrefix:    "WALKHUB",
-		CookieSecret:    cookieSecret,
-		Level:           level,
-		Logger:          whlogger,
-		DisableGzip:     true, // TODO temporary fix to make metrics work
-		CookieURL:       cookieurl,
-		HSTS: &ab.HSTSConfig{
-			MaxAge:            time.Hour * 24 * 365,
-			IncludeSubDomains: false,
-			HostBlacklist:     hstsHostBlacklist,
-		},
-	}
-
 	util.SetKey(secret)
 
-	s := walkhub.NewServer(cfg)
+	s, err := walkhub.NewServer(cfg)
+	if err != nil {
+		whlogger.Fatalln(err)
+	}
 	s.BaseURL = baseurl
-	s.HTTPAddr = viper.GetString("httpaddr")
+	s.HTTPAddr = cfg.GetString("httpaddr")
 	s.HTTPOrigin = httpOrigin
-	s.RedirectAll = viper.GetBool("redirectall")
-	if cp := viper.GetString("contentpages"); cp != "" {
+	s.RedirectAll = cfg.GetBool("redirectall")
+	s.EnforceDomains = cfg.GetBool("enforcedomains")
+	if cp := cfg.GetString("contentpages"); cp != "" {
 		s.CustomPaths = loadContentPages(cp)
 		whlogger.Verbose().Println("custom paths", s.CustomPaths)
 	}
 	s.AuthCreds.Google = auth.OAuthCredentials{
-		ID:     viper.GetString("google.id"),
-		Secret: viper.GetString("google.secret"),
+		ID:     cfg.GetString("google.id"),
+		Secret: cfg.GetString("google.secret"),
 	}
 
-	host := viper.GetString("HOST")
+	host := cfg.GetString("HOST")
 	if host == "" {
 		host = "localhost"
 	}
-	port := viper.GetString("PORT")
+	port := cfg.GetString("PORT")
 	if port == "" {
 		port = "8080"
 	}
-	whlogger.User().Println(s.Start(host+":"+port, viper.GetString("certfile"), viper.GetString("keyfile")))
+	whlogger.User().Println(s.Start(host+":"+port, cfg.GetString("certfile"), cfg.GetString("keyfile")))
 }
 
 func loadContentPages(path string) []string {
