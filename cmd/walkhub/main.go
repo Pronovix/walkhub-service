@@ -61,7 +61,7 @@ func main() {
 	} else if cfg.GetBool("debug") {
 		level = log.LOG_VERBOSE
 	}
-	cfg.Set("LogLevel", level)
+	cfg.Set("LogLevel", int(level))
 
 	whlogger := log.DefaultOSLogger()
 	whlogger.Level = level
