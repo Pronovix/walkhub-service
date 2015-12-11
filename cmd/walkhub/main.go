@@ -46,9 +46,13 @@ func main() {
 	cfg.SetConfigName("config")
 	cfg.AddConfigPath(".")
 	cfg.AutomaticEnv()
-	cfg.ReadInConfig()
+	if err := cfg.ReadInConfig(); err != nil {
+		tmplog := log.DefaultOSLogger()
+		tmplog.User().Println(err)
+	}
 
 	cfg.Set("gzip", false)
+	cfg.Set("CookiePrefix", "WALKHUB")
 	cfg.RegisterAlias("db", "PGConnectString")
 
 	level := log.LOG_USER
