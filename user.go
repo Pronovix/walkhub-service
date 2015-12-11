@@ -80,7 +80,7 @@ var _ google.GoogleUserDelegate = &GoogleUserDelegate{}
 type GoogleUserDelegate struct {
 }
 
-func (gud *GoogleUserDelegate) Convert(u *plus.Person) ab.Entity {
+func (gud *GoogleUserDelegate) Convert(u *plus.Person) (ab.Entity, error) {
 	mail := ""
 	for _, m := range u.Emails {
 		if m != nil && m.Type == "account" {
@@ -89,5 +89,11 @@ func (gud *GoogleUserDelegate) Convert(u *plus.Person) ab.Entity {
 		}
 	}
 
-	return NewUser(u.DisplayName, mail)
+	if mail == "" {
+		return nil, google.ErrorNoEmail{
+			Emails: u.Emails,
+		}
+	}
+
+	return NewUser(u.DisplayName, mail), nil
 }
