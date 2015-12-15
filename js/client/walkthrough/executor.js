@@ -83,7 +83,7 @@ class Executor {
 
 		setTimeout(function () {
 			if (!success) {
-				that.showExitDialog("<p>This website is associated with another WalkHub. Please make sure to use its own WalkHub to play this Walkthrough.</p>");
+				that.showExitDialog("<p>Failed to connect to WalkHub. Please try reloading the page.</p>");
 			}
 		}, 1000);
 	}
