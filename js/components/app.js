@@ -27,6 +27,7 @@ class App extends React.Component {
 		onMessageClose: noop,
 		navbarConfig: {},
 		footerConfig: {},
+		className: "",
 	};
 
 	configEmpty(cfg) {
@@ -52,7 +53,7 @@ class App extends React.Component {
 	render() {
 		if (this.props.embedded) {
 			return (
-				<div className="embeddedapp">
+				<div className={"embeddedapp " + this.props.className}>
 					{this.props.children}
 				</div>
 			);
@@ -64,7 +65,7 @@ class App extends React.Component {
 				<Navbar config={this.props.footerConfig} loggedin={!!this.props.currentUser.UUID} className="navbar-default" />;
 
 		return (
-			<div>
+			<div className={this.props.className}>
 				{navbar}
 				<div className="container">
 					<ErrorBar

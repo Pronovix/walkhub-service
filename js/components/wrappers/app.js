@@ -24,6 +24,7 @@ import {noop} from "form";
 import {t} from "t";
 import {capitalizeFirstLetter} from "util";
 import RouterActions from "actions/router";
+import OuterClassActions from "actions/outerclass";
 import WalkhubBackend from "walkhub_backend";
 import $ from "jquery";
 
@@ -71,6 +72,7 @@ class AppWrapper extends React.Component {
 
 	state = {
 		messages: [],
+		classes: {},
 	}
 
 	dispatcherToken = null;
@@ -102,7 +104,22 @@ class AppWrapper extends React.Component {
 			}
 		}
 
-		this.setState({messages: messages});
+		let classes = this.state.classes;
+		if (event.action === OuterClassActions.CHANGE_OUTER_CLASSES) {
+			Object.keys(event.data).map((k) => {
+				const v = event.data[k];
+				if (v) {
+					classes[k] = v;
+				} else {
+					delete classes[k];
+				}
+			});
+		}
+
+		this.setState({
+			messages: messages,
+			classes: classes,
+		});
 	};
 
 	onMessageClose = (evt) => {
@@ -116,6 +133,10 @@ class AppWrapper extends React.Component {
 	};
 
 	render() {
+		let className = "app";
+		Object.keys(this.state.classes).map((k) => {
+			className += ` ${k}-${this.state.classes[k]}`;
+		});
 		return (
 			<App
 				currentUser={this.props.currentUser}
@@ -124,6 +145,7 @@ class AppWrapper extends React.Component {
 				onMessageClose={this.onMessageClose}
 				navbarConfig={menuItems.navbar}
 				footerConfig={menuItems.footer}
+				className={className}
 				>
 				{this.props.children}
 			</App>

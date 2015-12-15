@@ -23,6 +23,7 @@ import {t} from "t";
 import WalkhubBackendActions from "actions/walkhub_backend";
 import WalkthroughStore from "stores/walkthrough";
 import LogStore from "stores/log";
+import OuterClassActions from "actions/outerclass";
 
 const getdata = window.location.search.substr(1).split("&").reduce(function (obj, str) {
 	var arrstr = str.split("=");
@@ -168,6 +169,9 @@ class WalkhubBackend {
 			const jsonmsg = JSON.stringify(msg);
 			console.log("EMBED SEND " + jsonmsg);
 			window.parent.postMessage(jsonmsg, decodeURIComponent(origin));
+			if (msg.type === "embedState") {
+				OuterClassActions.changeOuterClasses({state: msg.state});
+			}
 		}
 	}
 

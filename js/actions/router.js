@@ -1,4 +1,3 @@
-
 // Walkhub
 // Copyright (C) 2015 Pronovix
 //
