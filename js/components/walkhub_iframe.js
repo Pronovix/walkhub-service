@@ -15,6 +15,7 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 import React from "react";
+import ReactDOM from "react-dom";
 import Modal from "components/modal";
 import {noop} from "form";
 import {t} from "t";
@@ -60,16 +61,20 @@ class WalkhubIframe extends React.Component {
 
 	componentDidMount() {
 		this.dispatcherToken = flux.dispatcher.register(this.onChange);
+		window.addEventListener("resize", this.resize);
+		this.resize(null);
 	}
 
 	componentWillUnmount() {
 		if (this.dispatcherToken) {
 			flux.dispatcher.unregister(this.dispatcherToken);
 		}
+		window.removeEventListener("resize", this.resize);
 	}
 
 	state = {
 		errors: {},
+		height: window.innerHeight,
 	};
 
 	clearError(id) {
@@ -94,12 +99,15 @@ class WalkhubIframe extends React.Component {
 		});
 	}
 
-	render() {
-		const iframeStyle = {
-			height: "100%",
-			overflow: "auto",
-		};
+	resize = (evt) => {
+		const iframe = ReactDOM.findDOMNode(this.refs.contentIframe);
+		const top = iframe.getBoundingClientRect().top;
+		this.setState({
+			height: window.innerHeight - top,
+		});
+	}
 
+	render() {
 		const errors = this.state.errors;
 		const errs = Object.keys(errors).map(function(errid) {
 			return (
@@ -120,9 +128,9 @@ class WalkhubIframe extends React.Component {
 					>
 					{errs}
 				</Bar>
-				<div className="container-fluid" style={{height: "100%"}}>
-					<div className="row" style={{height: "100%"}}>
-						<iframe className="col-xs-12" style={iframeStyle} src={this.props.src} frameBorder="0" scrolling="auto" allowTransparency="true"></iframe>
+				<div className="container-fluid iframe-container">
+					<div className="row">
+						<iframe ref="contentIframe" style={{height: `${this.state.height}px`}} className="col-xs-12" src={this.props.src} frameBorder="0" scrolling="auto" allowTransparency="true"></iframe>
 					</div>
 				</div>
 			</Modal>
