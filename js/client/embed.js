@@ -121,6 +121,18 @@ function fixIFrameSize(iframe) {
 					break;
 			}
 			break;
+		case "list":
+			switch (state) {
+				case "":
+					width = 50;
+					height = 50;
+					break;
+				case "list":
+					width = 800;
+					height = 400;
+					break;
+			}
+			break;
 	}
 
 	iframe
@@ -138,6 +150,7 @@ function processButton(button) {
 	const uuid = button.data("uuid") || null;
 	const position = button.data("position") || "";
 	const search = button.data("search") || null;
+	const listURL = button.data("listUrl") || null;
 	const origin = isHTTPSPage() ? WALKHUB_URL : WALKHUB_HTTP_URL;
 	let uri = origin + "record?embedded=1&start=" + encodeURIComponent(window.location.href);
 	let type = "record";
@@ -147,6 +160,9 @@ function processButton(button) {
 	} else if (search) {
 		uri = origin + "search?embedded=1&q=" + encodeURIComponent(search);
 		type = "search";
+	} else if (listURL) {
+		uri = origin + "helpcenterlist?embedded=1&url=" + encodeURIComponent(listURL);
+		type = "list";
 	}
 	const iframe = $("<iframe />")
 		.attr("src", uri +

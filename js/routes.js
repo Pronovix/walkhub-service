@@ -25,6 +25,7 @@ import FrontpageComponent from "FRONT_PAGE";
 import ConnectWrapper from "components/wrappers/connect";
 import SearchWrapper from "components/wrappers/search";
 import EmbedCodeBuilderWrapper from "components/wrappers/embedcodebuilder";
+import HelpCenterListWrapper  from "components/wrappers/helpcenterlist";
 
 let contentPagesConfig = {};
 
@@ -45,6 +46,7 @@ const Routes = (
 		<Route path="/walkthrough/:uuid" component={WalkthroughWrapper} />
 		<Route path="/search" component={SearchWrapper} />
 		<Route path="/embedcode" component={EmbedCodeBuilderWrapper} />
+		<Route path="/helpcenterlist" component={HelpCenterListWrapper} />
 		{contentPages}
 	</Route>
 );

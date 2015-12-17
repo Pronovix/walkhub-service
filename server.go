@@ -252,6 +252,7 @@ func (s *WalkhubServer) Start(addr string, certfile string, keyfile string) erro
 		"/walkthrough/:uuid",
 		"/search",
 		"/embedcode",
+		"/helpcenterlist",
 	}
 	for _, path := range append(frontendPaths, s.CustomPaths...) {
 		s.AddFile(path, "assets/index.html")
