@@ -27,6 +27,10 @@
 @navbar-inverse-bg: lighten(#222, 10%);
 @navbar-inverse-link-hover-color: #84c441;
 @navbar-inverse-link-color: lighten(@gray-light, 30%);
+@body-bg: transparent;
+@btn-border-radius-base: 0px;
+@btn-warning-bg: #efa843;
+
 
 @MAXIMUM_ZINDEX: 2147483647;
 
@@ -130,8 +134,6 @@ fieldset.wh-edit-step {
 div div.helpbutton-container {
 	padding: 0;
 	line-height: 1;
-	width: 48px;
-	height: 48px;
 	overflow: hidden;
 }
 
@@ -185,5 +187,56 @@ div.nocookie {
 	.navbar-brand object {
 		width: 90px;
 		pointer-events: none;
+	}
+}
+
+div.state-list, div.state-recorded, div.state-saved {
+	background: white;
+}
+
+div.state-list {
+	min-height: 400px;
+	border: 1px solid darken(@navbar-default-bg, 6.5%);
+
+	.navbar-record {
+		border-top: 0;
+		border-left: 0;
+		border-right: 0;
+	}
+}
+
+div.state-saved, div.state-recorded {
+	padding: 5px;
+}
+
+.help-button {
+	img {
+		height: 18px;
+	}
+}
+
+.wh-record {
+	.btn-record-true {
+		img {
+			height: 15px;
+		}
+	}
+}
+
+.btn-record-false img {
+	height: 15px;
+}
+
+div.wh-modal {
+	.navbar-record {
+		.btn-close .glyphicon {
+			color: #ff4d4d;
+			&:hover {
+				color: darken(@navbar-inverse-link-color, 50%);
+			}
+		}
+		.btn-finishsave {
+			color: #00b300;
+		}
 	}
 }

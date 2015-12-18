@@ -120,7 +120,7 @@ class WalkhubBackend {
 				recdot={this.recording}
 				onClose={onclose}
 				actionButton={this.recording ? t("Finish & Save") : null}
-				actionButtonClassName="btn-success"
+				actionButtonClassName="btn-finishsave"
 				onActionButtonClick={onsave}
 			/>
 		);

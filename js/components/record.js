@@ -53,7 +53,7 @@ class Record extends React.Component {
 		}, {});
 
 		const reset = hasSteps ?
-			<ButtonSetButton onClick={this.props.onResetClick} className="btn-warning">{t("Reset")}</ButtonSetButton> :
+			<ButtonSetButton onClick={this.props.onResetClick} className="btn-default">{t("Reset")}</ButtonSetButton> :
 			null;
 
 		const embed = this.props.embedded ? null : (
@@ -67,6 +67,8 @@ class Record extends React.Component {
 			</div>
 		);
 
+		const recordButtonClass = "btn-danger btn-record-" + this.props.embedded;
+
 		return (
 			<section className={"wh-record " + (this.props.embedded ? "embedded" : "container") + (hasSteps ? " has-steps" : " no-steps")}>
 				<h1> {t("Record walkthrough")} </h1>
@@ -74,7 +76,7 @@ class Record extends React.Component {
 					<TextField id="input-title" label={t("Title")} value={this.props.title} onChange={this.props.onTitleChange} />
 					<Radios name="input-severity" checked={this.props.severity} options={this.props.embedded ? shortSeverities : severities} onChange={this.props.onSeverityChange} />
 					<TextField id="input-starting-url" label={t("Starting URL")} value={this.props.startingUrl} onChange={this.props.onStartingUrlChange} />
-					<Button grid={!this.props.embedded} onClick={this.props.onRecordClick} containerClassName="record" className="btn-info">{t("Record")}</Button>
+					<Button grid={!this.props.embedded} onClick={this.props.onRecordClick} containerClassName="record" className={recordButtonClass}><strong>{t("Record")}</strong> <img src="assets/icons/record.svg" /></Button>
 					<div className="form-group steps">
 						<h3 className="col-sm-offset-2 col-sm-10">{t("Recorded steps")}</h3>
 						<div className="col-sm-offset-2 col-sm-10">
