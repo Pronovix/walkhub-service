@@ -192,11 +192,12 @@ class WalkthroughWrapper extends React.Component {
 	};
 
 	componentDidMount() {
-		WalkthroughStore.performLoad(this.props.params.uuid);
+		setTimeout(() => {
+			WalkthroughStore.performLoad(this.props.params.uuid);
+			LogStore.performWalkthroughPageVisited(this.props.params.uuid, this.context.location.query.embedorigin);
+		}, 0);
 
 		this.dispatcherToken = flux.dispatcher.register(this.walkthroughSaved);
-
-		LogStore.performWalkthroughPageVisited(this.props.params.uuid, this.context.location.query.embedorigin);
 	}
 
 	componentWillUnmount() {
