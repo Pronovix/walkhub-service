@@ -196,16 +196,20 @@ class WalkhubBackend {
 	}
 
 	onMessageEventHandler = (event) => {
-		const data = JSON.parse(event.data);
-		const handler = data && data.type && !!this["handle" + capitalizeFirstLetter(data.type)];
-		if (handler && (WalkhubBackend.keyBypass[data.type] || (data.key && data.key === this.key))) {
-			this.logMessage(data, "<< ");
-			this["handle" + capitalizeFirstLetter(data.type)](data, event.source);
-			if (WalkhubBackendActions[data.type]) {
-				WalkhubBackendActions[data.type](data, event.source);
+		try {
+			const data = JSON.parse(event.data);
+			const handler = data && data.type && !!this["handle" + capitalizeFirstLetter(data.type)];
+			if (handler && (WalkhubBackend.keyBypass[data.type] || (data.key && data.key === this.key))) {
+				this.logMessage(data, "<< ");
+				this["handle" + capitalizeFirstLetter(data.type)](data, event.source);
+				if (WalkhubBackendActions[data.type]) {
+					WalkhubBackendActions[data.type](data, event.source);
+				}
+			} else {
+				console.log("Message discarded", JSON.stringify(data), event);
 			}
-		} else {
-			console.log("Message discarded", JSON.stringify(data), event);
+		} catch (ex) {
+			console.log(event, ex);
 		}
 	}
 
