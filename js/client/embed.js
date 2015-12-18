@@ -91,29 +91,29 @@ function fixIFrameSize(iframe) {
 		case "record":
 			switch (state) {
 				case "": // starting state
-					width = 75;
+					width = 90;
 					height = 35;
 					break;
 				case "recorded":
 					width = null; // 100%
-					height = 220;
+					height = 230;
 					break;
 				case "saved":
-					width = 120;
-					height = 135;
+					width = null;
+					height = 230;
 					break;
 			}
 
 			iframe
 				.css("max-width", "200px")
-				.css("max-height", "220px")
+				.css("max-height", "230px")
 			;
 			break;
 		case "search":
 			switch (state) {
 				case "":
-					width = 50;
-					height = 50;
+					width = 105;
+					height = 35;
 					break;
 				case "list":
 					width = 800;
@@ -124,8 +124,8 @@ function fixIFrameSize(iframe) {
 		case "list":
 			switch (state) {
 				case "":
-					width = 50;
-					height = 50;
+					width = 105;
+					height = 35;
 					break;
 				case "list":
 					width = 800;
@@ -164,6 +164,7 @@ function processButton(button) {
 		uri = origin + "helpcenterlist?embedded=1&url=" + encodeURIComponent(listURL);
 		type = "list";
 	}
+
 	const iframe = $("<iframe />")
 		.attr("src", uri +
 			"&embedorigin=" + encodeURIComponent(window.location.origin) +

@@ -31,10 +31,10 @@ class Bar extends React.Component {
 
 	render() {
 		const btn = this.props.actionButton ?
-			<li><a href="#" onClick={this.props.onActionButtonClick} className={"btn " + this.props.actionButtonClassName}>{this.props.actionButton}</a></li> :
+			<li><a href="#" onClick={this.props.onActionButtonClick} className={"btn " + this.props.actionButtonClassName}><strong>{this.props.actionButton}</strong></a></li> :
 			" ";
 
-		const navbarClass = this.props.inverse ? "navbar navbar-inverse" : "navbar navbar-default";
+		const navbarClass = this.props.inverse ? "navbar navbar-inverse" : "navbar navbar-default navbar-record";
 
 		return (
 			<nav className={navbarClass}>
@@ -46,8 +46,8 @@ class Bar extends React.Component {
 						{btn}
 						{this.props.children}
 						<li>
-							<a href="#" onClick={this.props.onClose} className="btn btn-danger" ariaLabel={t("Close")}>
-								<span className="glyphicon glyphicon-remove" ariaHidden="true"></span>
+							<a href="#" onClick={this.props.onClose} className="btn btn-close" ariaLabel={t("Close")}>
+								<strong><span className="glyphicon glyphicon-remove" ariaHidden="true"></span></strong>
 							</a>
 						</li>
 					</ul>
