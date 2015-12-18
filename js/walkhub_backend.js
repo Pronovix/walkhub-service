@@ -170,7 +170,9 @@ class WalkhubBackend {
 			console.log("EMBED SEND " + jsonmsg);
 			window.parent.postMessage(jsonmsg, decodeURIComponent(origin));
 			if (msg.type === "embedState") {
-				OuterClassActions.changeOuterClasses({state: msg.state});
+				setTimeout(() => {
+					OuterClassActions.changeOuterClasses({state: msg.state});
+				}, 0);
 			}
 		}
 	}
