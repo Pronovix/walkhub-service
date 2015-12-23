@@ -67,6 +67,7 @@ module.exports = {
 			"react-router",
 			"alt",
 			"bootstrap-webpack!"+path.join(__dirname, "bootstrap.config.js"),
+			"less/helpcenter.less",
 			path.join(srcPath, "module.js")
 		],
 		client: [

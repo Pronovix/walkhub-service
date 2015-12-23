@@ -98,8 +98,15 @@ class HelpCenterListWrapper extends React.Component {
 
 		const bar = this.isEmbedded() ? (
 			<Bar
-				brand={t("Help")}
+				brand={t("Help Center")}
 				onClose={this.onBarCloseClick}
+				helpcenter={true}
+			/>
+		) : null;
+
+		const footer = this.isEmbedded() ? (
+			<Bar
+				footer={true}
 			/>
 		) : null;
 
@@ -114,6 +121,7 @@ class HelpCenterListWrapper extends React.Component {
 					linkClick={this.linkClick}
 					onClose={this.onClose}
 				/>
+				{footer}
 			</div>
 		);
 	}

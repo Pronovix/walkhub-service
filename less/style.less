@@ -20,6 +20,11 @@
 	src: url('fonts/OpenSans-Light.ttf');
 }
 
+@font-face {
+	font-family: 'Open Sans';
+	src: url('fonts/OpenSans-Regular.ttf');
+}
+
 // Customized Bootstrap variables.
 @font-family-sans-serif: 'Open Sans Light',Helvetica,Arial,sans-serif;
 @navbar-border-radius: 0px;
@@ -29,8 +34,8 @@
 @navbar-inverse-link-color: lighten(@gray-light, 30%);
 @body-bg: transparent;
 @btn-border-radius-base: 0px;
+@btn-border-radius-small: 0px;
 @btn-warning-bg: #efa843;
-
 
 @MAXIMUM_ZINDEX: 2147483647;
 
@@ -203,6 +208,10 @@ div.state-list {
 		border-left: 0;
 		border-right: 0;
 	}
+
+	.navbar-right {
+		margin-right: 0px;
+	}
 }
 
 div.state-saved, div.state-recorded {
@@ -231,12 +240,18 @@ div.wh-modal {
 	.navbar-record {
 		.btn-close .glyphicon {
 			color: #ff4d4d;
+
 			&:hover {
 				color: darken(@navbar-inverse-link-color, 50%);
 			}
 		}
+
 		.btn-finishsave {
 			color: #00b300;
 		}
 	}
+}
+
+.input-group {
+	margin-bottom: 10px;
 }

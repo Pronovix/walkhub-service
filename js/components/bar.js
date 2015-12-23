@@ -27,6 +27,8 @@ class Bar extends React.Component {
 		brand: "",
 		inverse: false,
 		onClose: noop,
+		footer: false,
+		helpcenter: false,
 	};
 
 	render() {
@@ -34,26 +36,43 @@ class Bar extends React.Component {
 			<li><a href="#" onClick={this.props.onActionButtonClick} className={"btn " + this.props.actionButtonClassName}><strong>{this.props.actionButton}</strong></a></li> :
 			" ";
 
-		const navbarClass = this.props.inverse ? "navbar navbar-inverse" : "navbar navbar-default navbar-record";
+		const navbarClass = this.props.inverse ? "navbar navbar-inverse" : (
+			this.props.helpcenter ? "navbar navbar-default navbar-fixed-top navbar-record" : "navbar navbar-default navbar-record"
+			);
 
-		return (
-			<nav className={navbarClass}>
-				<div className="navbar-header">
-					<span className="navbar-brand">{this.props.brand}</span>
-				</div>
-				<div className="collapse navbar-collapse">
-					<ul className="nav navbar-nav navbar-right">
-						{btn}
-						{this.props.children}
-						<li>
-							<a href="#" onClick={this.props.onClose} className="btn btn-close" ariaLabel={t("Close")}>
-								<strong><span className="glyphicon glyphicon-remove" ariaHidden="true"></span></strong>
-							</a>
-						</li>
-					</ul>
-				</div>
-			</nav>
-		);
+		if (!this.props.footer) {
+			return (
+				<nav className={navbarClass}>
+					<div className="navbar-header">
+						<span className="navbar-brand">{this.props.brand}</span>
+					</div>
+					<div>
+						<ul className="nav navbar-nav navbar-right">
+							{btn}
+							{this.props.children}
+							<li>
+								<a href="#" onClick={this.props.onClose} className="btn btn-close" ariaLabel={t("Close")}>
+									<strong><span className="glyphicon glyphicon-remove" ariaHidden="true"></span></strong>
+								</a>
+							</li>
+						</ul>
+					</div>
+				</nav>
+			);
+		} else {
+			return (
+				<nav className="navbar navbar-default navbar-fixed-bottom navbar-footer">
+					<div className="container-fluid">
+						<div>
+							<ul className="nav navbar-nav navbar-right">
+									<li>Powered by <a target="_blank" href="http://next.walkhub.net"><strong>WalkHub</strong></a> a <a target="_blank" href="http://pronovix.com"><strong>Pronovix</strong></a> product</li>
+							</ul>
+						</div>
+					</div>
+				</nav>
+			);
+		}
+
 	}
 
 }

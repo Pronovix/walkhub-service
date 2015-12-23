@@ -88,7 +88,7 @@ class WalkthroughPlay extends React.Component {
 		}
 
 		return (
-			<div>
+			<div className="list-wt">
 				<Walkthrough
 					onPlayClick={this.playWalkthrough}
 					editable={this.props.currentUser.UUID === this.props.walkthrough.uid}
