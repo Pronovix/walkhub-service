@@ -40,6 +40,7 @@ class HelpCenterList extends React.Component {
 							walkthrough={this.props.walkthroughs[item.uuid]}
 							compact={true}
 							linkTo={false}
+							helpcenter={true}
 						/>
 					) : (<p key={i}>{t("Loading ...")}</p>);
 					break;
@@ -49,20 +50,10 @@ class HelpCenterList extends React.Component {
 						this.props.linkClick(e, item);
 					};
 					return (
-						<div key={i}>
+						<div className="list-link" key={i}>
 							<div className="row">
 								<div className="col-xs-10 col-md-9">
-									<h2>{item.title}</h2>
-								</div>
-								<div className="col-xs-2 col-md-3">
-									<h2>
-										<a onClick={c} className="btn btn-info">{t("Open")}</a>
-									</h2>
-								</div>
-							</div>
-							<div className="row">
-								<div className="col-xs-12">
-									<p> {item.description} </p>
+									<h5 className="list-link-title"><a href="#" onClick={c}>{item.title}</a> <small>{item.description}</small></h5>
 								</div>
 							</div>
 						</div>
@@ -70,7 +61,9 @@ class HelpCenterList extends React.Component {
 					break;
 				case "group":
 					return (
-						<h1 key={i}>{item.group}</h1>
+						<div className="list-group" key={i}>
+							<h4 className="group-title">{item.group}</h4>
+						</div>
 					);
 					break;
 				default:
