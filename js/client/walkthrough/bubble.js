@@ -235,7 +235,7 @@ class Bubble {
 			if (newLocator) {
 				that.moveBubble(clickedElement);
 				that.element = clickedElement;
-				$("#firstarg", that.editdialog.form).val(newLocator);
+				$("#arg0", that.editdialog.form).val(newLocator);
 			} else {
 				that.resetBubble();
 			}

@@ -186,11 +186,28 @@ class editDialog {
 				return false;
 			});
 
+		const arg0 = $("<input />")
+			.attr("type", "hidden")
+			.attr("name", "arg0")
+			.attr("id", "arg0")
+			.val(this.step.arg0)
+			.appendTo(fieldset);
+
+		const arg1 = $("<input />")
+			.attr("type", "hidden")
+			.attr("name", "arg1")
+			.attr("id", "arg1")
+			.val(this.step.arg1)
+			.appendTo(fieldset);
+
 		this.form.submit(function (event) {
 			event.preventDefault();
 
 			that.step.title = title.val();
 			that.step.description = description.val();
+			that.step.arg0 = arg0.val();
+			that.step.highlight = that.step.arg0;
+			that.step.arg1 = arg1.val();
 			that.submit();
 			that.form.remove();
 			that.form = null;
