@@ -131,3 +131,9 @@ export function selectAll(element) {
 export function isHTTPSPage() {
 	return window.location.protocol.slice(0, -1) === "https";
 };
+
+export const getdata = window.location.search.substr(1).split("&").reduce(function (obj, str) {
+	var arrstr = str.split("=");
+	obj[arrstr.shift()] = arrstr.join("=");
+	return obj;
+}, {});

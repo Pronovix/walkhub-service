@@ -14,9 +14,24 @@
 // You should have received a copy of the GNU Affero General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
+import Walkhub from "client/walkhub";
+
 function Enforcer(wh) {
-	if (!Enforcer.tries) {
-		Enforcer.tries = 0;
+	window.Walkhub = window.Walkhub || {};
+
+	if (!wh) {
+		wh = Walkhub.getInstance();
+	}
+
+	if (window.parent !== window && !window.Walkhub[WALKHUB_URL]) {
+		window.Walkhub[WALKHUB_URL] = true;
+		enforce(wh);
+	}
+}
+
+function enforce(wh) {
+	if (!enforce.tries) {
+		enforce.tries = 0;
 	}
 
 	if (wh.initialized) {
@@ -24,14 +39,13 @@ function Enforcer(wh) {
 	}
 
 	if (window.document.readyState === "complete") {
-		if (Enforcer.tries > 4) {
+		if (enforce.tries > 4 || enforce.tries == 0) {
 			wh.currentExecutor.start();
-		} else {
-			Enforcer.tries++;
 		}
+		enforce.tries++;
 	}
 
-	setTimeout(() => Enforcer(wh), 500);
+	setTimeout(() => enforce(wh), 500);
 };
 
-export default Enforcer;	
+export default Enforcer;

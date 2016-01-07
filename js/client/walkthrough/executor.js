@@ -26,6 +26,7 @@ import CommandDispatcher from "client/walkthrough/command_dispatcher";
 import Translator from "client/walkthrough/translator";
 import {t} from "t";
 import URI from "URIjs";
+import {getdata} from "util";
 
 class Executor {
 
@@ -82,10 +83,14 @@ class Executor {
 		}
 
 		setTimeout(function () {
-			if (!success) {
+			if (!success && !Executor.isEmbeddedWalkhub()) {
 				that.showExitDialog("<p>Failed to connect to WalkHub. Please try reloading the page.</p>");
 			}
 		}, 1000);
+	}
+
+	static isEmbeddedWalkhub() {
+		return `${window.location.origin}/` === WALKHUB_URL && getdata.embedded;
 	}
 
 	showExitDialog(message, buttons) {
