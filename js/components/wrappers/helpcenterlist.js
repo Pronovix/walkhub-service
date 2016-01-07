@@ -58,6 +58,8 @@ class HelpCenterListWrapper extends React.Component {
 			escapeStringRegexp(WALKHUB_URL + "walkthrough/") +
 			"([\\da-f]{8}-[\\da-f]{4}-[\\da-f]{4}-[\\da-f]{4}-[\\da-f]{12})$"
 		);
+		this.youtubeRegexp = /((http(s)?:\/\/)?)(www\.)?((youtube\.com\/)|(youtu.be\/))[\S]+/;
+		this.youtubeID = /^.*(?:(?:youtu\.be\/|v\/|vi\/|u\/\w\/|embed\/)|(?:(?:watch)?\?v(?:i)?=|\&v(?:i)?=))([^#\&\?]*).*/;
 		this.loadTriggered = {};
 		this.state = {
 			iframeLink: "",
@@ -85,6 +87,15 @@ class HelpCenterListWrapper extends React.Component {
 					link: item.link,
 					type: "walkthrough",
 					uuid: uuid,
+				});
+			} else if (this.youtubeRegexp.test(item.link)) {
+				const id = this.youtubeID.exec(item.link)[1];
+				items.push({
+					link: `https://www.youtube.com/embed/${id}`,
+					title: item.title,
+					description: item.description,
+					type: "youtube",
+					id: id,
 				});
 			} else {
 				items.push({

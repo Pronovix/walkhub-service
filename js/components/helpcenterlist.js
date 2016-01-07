@@ -44,6 +44,7 @@ class HelpCenterList extends React.Component {
 						/>
 					) : (<p key={i}>{t("Loading ...")}</p>);
 					break;
+				case "youtube":
 				case "iframe":
 					const c = (e) => {
 						noop(e);
