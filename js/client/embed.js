@@ -17,7 +17,7 @@
 import $ from "jquery";
 import {MAXIMUM_ZINDEX, isHTTPSPage} from "util";
 
-window.WalkhubWidgetPositions = {
+window.WalkhubWidgetPositions = window.WalkhubWidgetPositions || {
 	"bottom-left": [],
 	"bottom-right": [],
 	"top-left": [],
@@ -35,7 +35,7 @@ function reposition(iframe) {
 
 	const ticket = iframe.data("ticket");
 	if (!ticket) {
-		return ticket;
+		return;
 	}
 
 	let iframeIdx = -1;
@@ -96,11 +96,11 @@ function fixIFrameSize(iframe) {
 					break;
 				case "recorded":
 					width = null; // 100%
-					height = 230;
+					height = 220;
 					break;
 				case "saved":
 					width = null;
-					height = 230;
+					height = 140;
 					break;
 			}
 
@@ -142,6 +142,12 @@ function fixIFrameSize(iframe) {
 		.css("position", "relative")
 	;
 
+	// Reposition multiple times with a delay.
+	// This is needed, because sometimes the CSS application above
+	// does not execute fast enough, and the reposition() call uses
+	// wrong widths.
+	setTimeout(() => reposition(iframe), 500);
+	setTimeout(() => reposition(iframe), 1000);
 	reposition(iframe);
 }
 
