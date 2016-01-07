@@ -152,7 +152,7 @@ class editDialog {
 			.appendTo(fieldset);
 
 		var description = $("<textarea />")
-			.val(this.step.descriptionDescription)
+			.val(this.step.description)
 			.attr("name", "description")
 			.attr("id", "description")
 			.appendTo(fieldset);
