@@ -79,7 +79,7 @@ class Walkthrough extends React.Component {
 				</div>
 				<div className="col-xs-11 col-md-9">
 					<h5 className="wt-title">
-						{titleName}
+						<a href="#" onClick={this.props.onPlayClick}>{titleName}</a>
 					</h5>
 				</div>
 			</div>
