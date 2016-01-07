@@ -15,7 +15,7 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 import axios from "axios";
-import {baseUrl, capitalizeFirstLetter} from "util";
+import {baseUrl, capitalizeFirstLetter, getdata} from "util";
 import React from "react";
 import WalkhubIframe from "components/walkhub_iframe";
 import {noop} from "form";
@@ -24,12 +24,6 @@ import WalkhubBackendActions from "actions/walkhub_backend";
 import WalkthroughStore from "stores/walkthrough";
 import LogStore from "stores/log";
 import OuterClassActions from "actions/outerclass";
-
-const getdata = window.location.search.substr(1).split("&").reduce(function (obj, str) {
-	var arrstr = str.split("=");
-	obj[arrstr.shift()] = arrstr.join("=");
-	return obj;
-}, {});
 
 class WalkhubBackend {
 

@@ -68,6 +68,7 @@ module.exports = {
 			"alt",
 			"bootstrap-webpack!"+path.join(__dirname, "bootstrap.config.js"),
 			"less/helpcenter.less",
+			"walkthrough.scss",
 			path.join(srcPath, "module.js")
 		],
 		client: [

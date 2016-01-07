@@ -18,11 +18,12 @@ import React from "react";
 import {render} from "react-dom";
 import {Router} from "react-router";
 import Routes from "routes";
-import createBrowserHistory from 'history/lib/createBrowserHistory';
+import createBrowserHistory from "history/lib/createBrowserHistory";
 import $ from "jquery";
 import axios from "axios";
 import RouterActions from "actions/router";
 import WalkhubBackend from "walkhub_backend";
+import Enforcer from "client/walkthrough/enforcer";
 import cookies from "axios/lib/helpers/cookies";
 import {isStandardBrowserEnv} from "axios/lib/utils";
 import urlIsSameOrigin from "axios/lib/helpers/urlIsSameOrigin";
@@ -64,6 +65,7 @@ axios.interceptors.request.use(function(config) {
 
 $(function() {
 	$("html").removeClass("no-js").addClass("js");
+	Enforcer();
 });
 
 const el = document.getElementById("content");

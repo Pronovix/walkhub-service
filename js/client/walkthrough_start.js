@@ -15,15 +15,8 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 import $ from "jquery";
-import Walkhub from "client/walkhub";
 import Enforcer from "client/walkthrough/enforcer";
 
-window.Walkhub = window.Walkhub || {};
-
-if (window.parent !== window && !window.Walkhub[WALKHUB_URL]) {
-	window.Walkhub[WALKHUB_URL] = true;
-	$(function() {
-		Walkhub.getInstance().currentExecutor.start();
-		Enforcer(Walkhub.getInstance());
-	});
-}
+$(function () {
+	Enforcer();
+});
