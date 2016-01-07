@@ -20,6 +20,8 @@ import WalkhubIframe from "components/walkhub_iframe";
 import {t} from "t";
 import {noop} from "form";
 
+import youtubeIcon from "images/youtube-icon.png";
+
 class HelpCenterList extends React.Component {
 	static defaultProps = {
 		items: [],
@@ -45,20 +47,37 @@ class HelpCenterList extends React.Component {
 					) : (<p key={i}>{t("Loading ...")}</p>);
 					break;
 				case "youtube":
+					const youtube = true;
 				case "iframe":
 					const c = (e) => {
 						noop(e);
 						this.props.linkClick(e, item);
 					};
-					return (
-						<div className="list-link" key={i}>
-							<div className="row">
-								<div className="col-xs-10 col-md-9">
-									<h5 className="list-link-title"><a href="#" onClick={c}>{item.title}</a> <small>{item.description}</small></h5>
+					if (youtube) {
+						return (
+							<div className="list-link" key={i}>
+								<div className="row">
+									<div className="col-xs-10 col-md-9">
+										<h5 className="list-link-title yt-title">
+											<a href="#" onClick={c}><span className="yt-span"><img onClick={c} href="#" className="yt-icon" src={youtubeIcon}/></span>{item.title}</a> <small>{item.description}</small>
+										</h5>
+									</div>
 								</div>
 							</div>
-						</div>
 					);
+					} else {
+						return (
+							<div className="list-link" key={i}>
+								<div className="row">
+									<div className="col-xs-10 col-md-9">
+										<h5 className="list-link-title">
+											<a href="#" onClick={c}>{item.title}</a> <small>{item.description}</small>
+										</h5>
+									</div>
+								</div>
+							</div>
+						);
+					}
 					break;
 				case "group":
 					return (
