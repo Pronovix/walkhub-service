@@ -41,21 +41,28 @@ class EmbedCode extends React.Component {
 		}
 		if (this.props.buttons) {
 			this.props.buttons.forEach((button) => {
+				let uuid = null;
+
 				const addData = (dict) => {
 					return (name) => {
 						if (name === "client" || name === "script" || name === "buttons" || name === "autoselect") {
 							return;
 						}
+
+						if (name === "uuid") {
+							uuid = dict[name];
+						}
+
 						const val = JSON.stringify(dict[name]);
 						embedcode += ` data-${name}=${val}`;
 					};
 				};
-				embedcode += `<div class="walkthroughbutton" data-origin="${WALKHUB_URL}"`;
+				embedcode += `<a class="walkthroughbutton" data-origin="${WALKHUB_URL}"`;
 
 				Object.keys(this.props).forEach(addData(this.props));
 				Object.keys(button).forEach(addData(button));
 
-				embedcode += `></div>\n`;
+				embedcode += ` href="` + WALKHUB_URL + (uuid ? `walkthrough/${uuid}` : "") + `"></a>\n`;
 			});
 		}
 

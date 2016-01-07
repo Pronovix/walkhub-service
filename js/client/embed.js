@@ -190,14 +190,14 @@ function onMessageEventHandler(event) {
 	// If we intercept a connect_ok message, it means that we are in a
 	// playing or recording session.
 	if (msg.type === "connect_ok") {
-		$("div.walkthroughbutton")
+		$(".walkthroughbutton")
 			.filter(function() { return $(this).data("origin") === WALKHUB_URL; })
 			.html("");
 		window.removeEventListener(onMessageEventHandler);
 		return;
 	}
 
-	const iframe = $("div.walkthroughbutton")
+	const iframe = $(".walkthroughbutton")
 		.filter(function() { return $(this).data("ticket") === msg.ticket; })
 		.find("iframe");
 
@@ -249,7 +249,7 @@ window.WalkhubEmbedJS = window.WalkhubEmbedJS || {};
 if (!window.WalkhubEmbedJS[WALKHUB_URL]) {
 	window.WalkhubEmbedJS[WALKHUB_URL] = true;
 	$(function() {
-		$("div.walkthroughbutton:not(.processed)")
+		$(".walkthroughbutton:not(.processed)")
 			.filter(function() { return $(this).data("origin") === WALKHUB_URL; })
 			.addClass("processed")
 			.each(function() {
