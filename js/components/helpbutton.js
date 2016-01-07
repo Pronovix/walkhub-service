@@ -18,6 +18,8 @@ import React from "react";
 import {noop} from "form";
 import {t} from "t";
 
+import helpIcon from "images/light-bulb.svg";
+
 class HelpButton extends React.Component {
 
 	static defaultProps = {
@@ -28,7 +30,7 @@ class HelpButton extends React.Component {
 		return (
 			<div className="info helpbutton-container text-center">
 				<button type="button" className="btn btn-default btn-warning btn-md help-button" onClick={this.props.helpClick}>
-					<strong>{t("Get help")}</strong> <img src="assets/icons/light-bulb.svg" />
+					<strong>{t("Get help")}</strong> <span><object className="help-icon" type="image/svg+xml" data={helpIcon}></object></span>
 				</button>
 			</div>
 		);
