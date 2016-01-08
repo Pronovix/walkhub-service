@@ -57,9 +57,12 @@ class HelpCenterList extends React.Component {
 						return (
 							<div className="list-link" key={i}>
 								<div className="row">
-									<div className="col-xs-10 col-md-9">
+									<div className="col-xs-1">
+										<a href="#" onClick={c}><span className="yt-span"><img onClick={c} href="#" className="yt-icon" src={youtubeIcon}/></span></a>
+									</div>
+									<div className="col-xs-11">
 										<h5 className="list-link-title yt-title">
-											<a href="#" onClick={c}><span className="yt-span"><img onClick={c} href="#" className="yt-icon" src={youtubeIcon}/></span>{item.title}</a> <small>{item.description}</small>
+											<a href="#" onClick={c}>{item.title}</a> <small>{item.description}</small>
 										</h5>
 									</div>
 								</div>
@@ -69,8 +72,11 @@ class HelpCenterList extends React.Component {
 						return (
 							<div className="list-link" key={i}>
 								<div className="row">
-									<div className="col-xs-10 col-md-9">
-										<h5 className="list-link-title">
+									<div className="col-xs-1">
+										<a href="#" onClick={c}><span className="glyphicon glyphicon-link" aria-hidden="true"></span></a>
+									</div>
+									<div className="col-xs-11">
+										<h5 className="list-link-title link-title">
 											<a href="#" onClick={c}>{item.title}</a> <small>{item.description}</small>
 										</h5>
 									</div>

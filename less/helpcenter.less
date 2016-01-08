@@ -1,3 +1,5 @@
+// Helpcenter theming.
+
 div.state-list {
 	font-family: 'Open Sans',Helvetica,Arial,sans-serif;
 
@@ -27,8 +29,7 @@ div.state-list {
 			}
 
 			.yt-icon {
-				height: 15px;
-				margin-right: 10px;
+				height: 13px;
 			}
 
 			.yt-title {
@@ -39,12 +40,22 @@ div.state-list {
 
 			.list-link-title {
 				margin: 2px 0;
+
+				.glyphicon-link {
+					height: 15px;
+					margin-right: 10px;
+				}
 			}
 		}
 
 		.list-wt {
-			.helpcenter-play .glyphicon {
-				color: #84c441;
+			a {
+				text-decoration: none;
+
+				.glyphicon {
+					color: #84c441;
+					margin-right: 10px;
+				}
 			}
 
 			.wt-title {
@@ -52,9 +63,18 @@ div.state-list {
 				font-size: 13px;
 			}
 
-			.row-wt-helpcenter .play-col {
-				padding-top: 2px;
+			.glyphicon-link, .glyphicon-play-circle {
+				font-size: 15px;
 			}
+		}
+
+		.col-xs-1 {
+			padding: 0 0 0 15px;
+			text-align: center;
+		}
+
+		.col-xs-11 {
+			padding-left: 6px;
 		}
 	}
 
@@ -74,6 +94,10 @@ div.state-list {
 		border-bottom: 1px solid #e7e7e7;
 		border-left: 1px solid #e7e7e7;
 		border-right: 1px solid #e7e7e7;
+		font-family: 'Open Sans Light',Helvetica,Arial,sans-serif;
+		height: 30px;
+		min-height: 0px;
+	  font-size: 12px;
 
 		ul.navbar-right {
 			position: absolute;
@@ -81,24 +105,19 @@ div.state-list {
 			bottom: 0px;
 			margin: 0;
 		}
-	}
-}
 
-.navbar-footer {
-	font-family: 'Open Sans Light',Helvetica,Arial,sans-serif;
-	height: 30px;
-	min-height: 0px;
-  font-size: 12px;
+		li {
+	    padding: 5px;
 
-  li {
-    padding: 5px;
-
-		a {
-			display: inline;
-			padding: 0;
+			a {
+				display: inline;
+				padding: 0;
+			}
 		}
 	}
 }
+
+// Theming on search and record buttons.
 
 .row-wt-no-helpcenter {
 	margin: 10px 0;
