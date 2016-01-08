@@ -45,7 +45,7 @@ class Walkthrough extends React.Component {
 	render() {
 		const walkthrough = this.props.walkthrough;
 
-		const playButton = this.props.helpcenter ? <a onClick={this.props.onPlayClick} href="#" className="helpcenter-play"><span className="glyphicon glyphicon-play-circle" aria-hidden="true" data-toggle="tooltip" title={t("Play walkthrough")}></span></a> :
+		const playButton = this.props.helpcenter ? <a href="#" onClick={this.props.onPlayClick}><span className="glyphicon glyphicon-play-circle" aria-hidden="true" data-toggle="tooltip" title={t("Play walkthrough")}></span></a> :
 			<a onClick={this.props.onPlayClick} className="btn btn-success btn-sm">{t("Play")}</a>;
 
 		if (this.props.embedded) {
@@ -74,10 +74,10 @@ class Walkthrough extends React.Component {
 
 		const title = this.props.helpcenter ? (
 			<div className="row row-wt-helpcenter">
-				<div className="col-xs-1 col-md-3 play-col">
+				<div className="col-xs-1">
 					{playButton}
 				</div>
-				<div className="col-xs-11 col-md-9">
+				<div className="col-xs-11">
 					<h5 className="wt-title">
 						<a href="#" onClick={this.props.onPlayClick}>{titleName}</a>
 					</h5>
