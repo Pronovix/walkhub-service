@@ -45,7 +45,7 @@ class Walkthrough extends React.Component {
 	render() {
 		const walkthrough = this.props.walkthrough;
 
-		const playButton = this.props.helpcenter ? <a href="#" onClick={this.props.onPlayClick}><span className="glyphicon glyphicon-play-circle" aria-hidden="true" data-toggle="tooltip" title={t("Play walkthrough")}></span></a> :
+		const playButton = this.props.helpcenter ? <a href="#" onClick={this.props.onPlayClick}><span className="glyphicon glyphicon-play-circle list-play-button" aria-hidden="true" data-toggle="tooltip" title={t("Play walkthrough")}></span></a> :
 			<a onClick={this.props.onPlayClick} className="btn btn-success btn-sm">{t("Play")}</a>;
 
 		if (this.props.embedded) {
