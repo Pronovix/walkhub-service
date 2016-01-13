@@ -81,16 +81,6 @@ class Executor {
 				}
 			});
 		}
-
-		setTimeout(function () {
-			if (!success && !Executor.isEmbeddedWalkhub()) {
-				that.showExitDialog("<p>Failed to connect to WalkHub. Please try reloading the page.</p>");
-			}
-		}, 1000);
-	}
-
-	static isEmbeddedWalkhub() {
-		return `${window.location.origin}/` === WALKHUB_URL && getdata.embedded;
 	}
 
 	showExitDialog(message, buttons) {
