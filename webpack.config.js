@@ -106,13 +106,13 @@ module.exports = {
 		new ExtractTextPlugin("[name].css"),
 		new HtmlWebpackPlugin({
 			inject: true,
-			template: "html?attrs[]=link:href!html/index.html",
+			template: "html?attrs[]=link:href&-removeOptionalTags!html/index.html",
 			chunks: ["app"],
 			hash: true
 		}),
 		new HtmlWebpackPlugin({
 			inject: true,
-			template: "html/start.html",
+			template: "html?-removeOptionalTags!html/start.html",
 			chunks: ["client"],
 			filename: "start.html",
 			hash: true
@@ -126,7 +126,25 @@ module.exports = {
 		}),
 		new webpack.NoErrorsPlugin(),
 		new webpack.optimize.OccurenceOrderPlugin(),
-		new webpack.optimize.DedupePlugin()
+		new webpack.optimize.DedupePlugin(),
+		new webpack.optimize.UglifyJsPlugin({
+			compress: {
+				warnings: false,
+			},
+			mangle: {
+				except: [
+					"$",
+					"AuthProviderStore",
+					"CurrentUserStore",
+					"EmbedLogStore",
+					"LogStore",
+					"RemoteStore",
+					"SearchStore",
+					"UserStore",
+					"WalkthroughStore",
+				],
+			},
+		}),
 	],
 	resolveLoader: {
 		extensions: ["", ".js"],
