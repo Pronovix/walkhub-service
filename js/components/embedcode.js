@@ -34,10 +34,10 @@ class EmbedCode extends React.Component {
 
 		let embedcode = "";
 		if (this.props.client) {
-			embedcode += `<script src="${clienturl}"></script>\n`;
+			embedcode += `<script src="${clienturl}" defer></script>\n`;
 		}
 		if (this.props.script) {
-			embedcode += `<script src="${scripturl}"></script>\n`;
+			embedcode += `<script src="${scripturl}" defer></script>\n`;
 		}
 		if (this.props.buttons) {
 			this.props.buttons.forEach((button) => {
