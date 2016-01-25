@@ -1,5 +1,6 @@
 web:
     image: pronovix/walkhub-service
+    restart: always
     ports:
         - "80:80"
         - "443:443"
@@ -7,6 +8,7 @@ web:
         - db
 db:
     image: postgres:latest
+    restart: always
     environment:
         POSTGRES_PASSWORD: docker
         POSTGRES_USER: docker
