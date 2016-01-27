@@ -34,6 +34,7 @@ class HelpCenterList extends React.Component {
 
 	render() {
 		const items = this.props.items.map((item, i) => {
+			let youtube = false;
 			switch (item.type) {
 				case "walkthrough":
 					return this.props.walkthroughs[item.uuid] ? (
@@ -47,7 +48,7 @@ class HelpCenterList extends React.Component {
 					) : (<p key={i}>{t("Loading ...")}</p>);
 					break;
 				case "youtube":
-					const youtube = true;
+					youtube = true;
 				case "iframe":
 					const c = (e) => {
 						noop(e);

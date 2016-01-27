@@ -106,6 +106,8 @@ class WalkhubBackend {
 			WalkhubBackend.embeddedPost({type: "embedState", state: "saved"});
 		};
 
+		const wt = WalkthroughStore.getState().walkthroughs[this.state.walkthrough];
+
 		WalkhubBackend.embeddedPost({type: "start"});
 		window.addEventListener("message", this.onMessageEventHandler);
 		this.widget = (
@@ -116,6 +118,7 @@ class WalkhubBackend {
 				actionButton={this.recording ? t("Finish & Save") : null}
 				actionButtonClassName="btn-finishsave"
 				onActionButtonClick={onsave}
+				title={wt && wt.name}
 			/>
 		);
 		console.log("Starting walkhub backend...");

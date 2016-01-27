@@ -159,7 +159,7 @@ class HelpCenterListWrapper extends React.Component {
 		noop(e);
 		this.setState({
 			iframeLink: item.link,
-			iframeTitle: item.iframeTitle,
+			iframeTitle: item.title,
 		});
 		WalkhubBackend.embeddedPost({type: "start"});
 	}
