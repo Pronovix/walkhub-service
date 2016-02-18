@@ -9,28 +9,38 @@ Check the [landing page](http://pronovix.com/walkhub) for more information.
 
 ## Dependencies
 
-* Go 1.5
-* PostgreSQL 9.4 (older versions might work too)
+* Go 1.5+
+* PostgreSQL 9.4+ (older versions might work too)
 * NPM
+* Node.js 4.x ([5.x does not work](https://github.com/Pronovix/walkhub-service/issues/12))
 
 ## Configuration
 
-	cp config.json.sample config.json
+	cp config.json.minimal config.json
 	$EDITOR config.json
+
+### Mandatory values
 
 * `db`: connection string to the PostgreSQL database
 * `secret`: 32 bytes long random byte sequence, encoded with hex encoding
 * `cookiesecret`: 32 bytes long random byte sequence, encoded with hex encoding
-* `baseurl`: the url where WalkHub will be
+* `baseurl`: the url where WalkHub will be. A default is set in the example config files.
+* `google`: OAuth2 tokens for Google
+
+Currently only OAuth2 through Google is supported as an authentication mechanism, but other OAuth2 providers and password authentication (with 2FA support) are coming soon.
+
+### Optional values
+
+If unsure, leave them empty.
+
+* `host`: host to listen on. Defaults to `localhost`.
+* `port`: port to listen on. Defaults to `8080`.
 * `httpaddr`: enables HTTP to HTTPS automatic redirection. The format of the address is `host:port`.
 * `httporigin`: if this is set, the HTTP requests will be forced to a separate domain.
 * `redirectall`: redirects all HTTP requests to HTTPS if the server is running in HTTPS mode. If this is set to false, only a few pages will be enabled in HTTP mode
 * `contentpages`: path to a JSON file that describes custom pages. The JSON file is a simple dictionary, where the key is the path (see react-router for the syntax) and the value is the `require()` path for the component
 * `frontpagecomponent`: overrides the component for the front page
-* `menuitems`: path to a JSON file that describes menu paths. See `js/components/wrappers/app.js` for more info on the structure
-* `google`: OAuth2 tokens for Google
-
-Currently only OAuth2 through Google is supported as an authentication mechanism, but other OAuth2 providers and password authentication (with 2FA support) are coming soon.
+* `menuitems`: path to a JSON file that describes menu paths. Only change this if you want to change the menu of the site. See `js/components/wrappers/app.js` for more info on the structure.
 
 ## Build & Run
 

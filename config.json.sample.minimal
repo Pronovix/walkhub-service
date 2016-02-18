@@ -1,0 +1,10 @@
+{
+	"db": "",
+	"secret": "",
+	"cookiesecret": "",
+	"baseurl": "http://localhost:8080/",
+	"google": {
+		"id": "",
+		"secret": ""
+	}
+}
