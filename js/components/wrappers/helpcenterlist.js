@@ -109,7 +109,7 @@ class HelpCenterListWrapper extends React.Component {
 
 		const bar = this.isEmbedded() ? (
 			<Bar
-				brand={t("Help Center")}
+				brand={t("Get help")}
 				onClose={this.onBarCloseClick}
 				helpcenter={true}
 			/>
