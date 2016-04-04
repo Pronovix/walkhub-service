@@ -65,7 +65,7 @@ class Bar extends React.Component {
 					<div className="container-fluid">
 						<div>
 							<ul className="nav navbar-nav navbar-right">
-									<li>Powered by <a target="_blank" href="http://embedthedocs.com/"><strong>EmbedHelp</strong></a> a <a target="_blank" href="http://pronovix.com"><strong>Pronovix</strong></a> product</li>
+									<li>Powered by <a target="_blank" href="http://embedthedocs.com/"><strong>WalkHub Help Widget</strong></a> a <a target="_blank" href="http://pronovix.com"><strong>Pronovix</strong></a> product</li>
 							</ul>
 						</div>
 					</div>
