@@ -28,6 +28,7 @@ class App extends React.Component {
 		navbarConfig: {},
 		footerConfig: {},
 		className: "",
+		containerClassName: "",
 	};
 
 	configEmpty(cfg) {
@@ -67,7 +68,7 @@ class App extends React.Component {
 		return (
 			<div className={this.props.className}>
 				{navbar}
-				<div className="container">
+				<div className={"container "+this.props.containerClassName}>
 					<ErrorBar
 						messages={this.props.messages}
 						onMessageClose={this.props.onMessageClose}

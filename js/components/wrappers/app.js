@@ -132,6 +132,15 @@ class AppWrapper extends React.Component {
 		this.setState({messages: messages});
 	};
 
+	getContainerClassName() {
+		const path = this.context.location.pathname;
+		if (path === "/" || !path) {
+			return "frontpage";
+		}
+
+		return path.split("/")[1];
+	}
+
 	render() {
 		let className = "app";
 		Object.keys(this.state.classes).map((k) => {
@@ -146,6 +155,7 @@ class AppWrapper extends React.Component {
 				navbarConfig={menuItems.navbar}
 				footerConfig={menuItems.footer}
 				className={className}
+				containerClassName={this.getContainerClassName()}
 				>
 				{this.props.children}
 			</App>
