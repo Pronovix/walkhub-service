@@ -37,7 +37,8 @@ var loaders = [
 	{ test: /\.css$/, loader: ExtractTextPlugin.extract("style-loader", "css-loader") },
 	{ test: /\.scss$/, loader: "style!css!sass?"+sassIncludePaths },
 	{ test: /\.sass$/, loader: "style!css!sass?indentedSyntax&"+sassIncludePaths },
-	{ test: /.*\.(gif|png|jpe?g|ico)$/i, loader: "file?name=[name]-[sha512:hash:hex:6].[ext]" }
+	{ test: /.*\.(gif|png|jpe?g|ico)$/i, loader: "file?name=[name]-[sha512:hash:hex:6].[ext]" },
+	{ test: /\.md*/, loader: "babel-loader!react-markdown!markdown" }
 ];
 
 if (contentpages) {
