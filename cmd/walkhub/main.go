@@ -54,6 +54,7 @@ func main() {
 	cfg.Set("gzip", false)
 	cfg.Set("CookiePrefix", "WALKHUB")
 	cfg.RegisterAlias("db", "PGConnectString")
+	cfg.SetDefault("pwauth", true)
 
 	level := log.LOG_USER
 	if cfg.GetBool("trace") {
@@ -89,10 +90,16 @@ func main() {
 	s.HTTPOrigin = httpOrigin
 	s.RedirectAll = cfg.GetBool("redirectall")
 	s.EnforceDomains = cfg.GetBool("enforcedomains")
+	s.PWAuth = cfg.GetBool("pwauth")
 	if cp := cfg.GetString("contentpages"); cp != "" {
 		s.CustomPaths = loadContentPages(cp)
 		whlogger.Verbose().Println("custom paths", s.CustomPaths)
 	}
+	s.AuthCreds.SMTP.Addr = cfg.GetString("smtp.addr")
+	s.AuthCreds.SMTP.Identity = cfg.GetString("smtp.identity")
+	s.AuthCreds.SMTP.Username = cfg.GetString("smtp.username")
+	s.AuthCreds.SMTP.Password = cfg.GetString("smtp.password")
+	s.AuthCreds.SMTP.Host = cfg.GetString("smtp.host")
 	s.AuthCreds.Google = auth.OAuthCredentials{
 		ID:     cfg.GetString("google.id"),
 		Secret: cfg.GetString("google.secret"),

@@ -19,7 +19,7 @@ import WalkthroughPlay from "components/wrappers/walkthroughplay";
 import WalkthroughEdit from "components/walkthroughedit";
 import WalkthroughStore from "stores/walkthrough";
 import WalkthroughActions from "actions/walkthrough";
-import CurrentUserStore from "stores/currentuser";
+import UserStore from "stores/user";
 import UserActions from "actions/user";
 import connectToStores from "alt/utils/connectToStores";
 import {noop} from "form";
@@ -34,10 +34,12 @@ class WalkthroughWrapper extends React.Component {
 		params: {
 			uuid: null,
 		},
+		walkthrough: {},
+		user: {},
 	};
 
 	static getStores(props) {
-		return [WalkthroughStore, CurrentUserStore];
+		return [WalkthroughStore, UserStore];
 	}
 
 	static contextTypes = {
@@ -53,11 +55,11 @@ class WalkthroughWrapper extends React.Component {
 
 	static getPropsFromStores(props) {
 		const walkthroughStoreState = WalkthroughStore.getState();
-		const currentUserStoreState = CurrentUserStore.getState();
+		const userStoreState = UserStore.getState();
 
 		return {
 			walkthrough: walkthroughStoreState.walkthroughs[props.params.uuid],
-			user: currentUserStoreState.users[null],
+			user: userStoreState.users[userStoreState.currentUser] || {},
 		};
 	}
 

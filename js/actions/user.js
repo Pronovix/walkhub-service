@@ -25,7 +25,57 @@ class UserActions {
 			"receivedUser",
 			"fetchingUserFailed",
 
-			"loadUser"
+			"updatingUser",
+			"updatedUser",
+			"updatingUserFailed",
+
+			"registeringUser",
+			"registeredUser",
+			"registeringUserFailed",
+
+			"logginginUser",
+			"loggedinUser",
+			"logginginUserFailed",
+
+			"logginginSecondFactorUser",
+			"loggedinSecondFactorUser",
+			"loggingInSecondFactorUserFailed",
+
+			"loadingHas2fa",
+			"loadedHas2fa",
+			"loadingHas2faFailed",
+
+			"adding2fa",
+			"added2fa",
+			"adding2faFailed",
+
+			"disabling2fa",
+			"disabled2fa",
+			"disabling2faFailed",
+
+			"changingPassword",
+			"changedPassword",
+			"changingPasswordFailed",
+
+			"requestingLostPassword",
+			"requestedLostPassword",
+			"requestingLostPasswordFailed",
+
+			"loadingUsersAuthProvider",
+			"receivedUsersAuthProvider",
+			"fetchingUsersAuthProviderFailed",
+
+			"loadUser",
+			"updateUser",
+			"registerUser",
+			"loginUser",
+			"loginSecondFactorUser",
+			"load2fa",
+			"add2fa",
+			"disable2fa",
+			"changePassword",
+			"lostPassword",
+			"loadUsersAuthProvider"
 		);
 	}
 }

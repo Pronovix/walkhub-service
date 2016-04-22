@@ -23,7 +23,10 @@ import UserSource from "sources/user";
 class UserStore {
 	constructor() {
 		this.state = {
-			users: {}
+			users: {},
+			has2fa: null,
+			authproviders: {},
+			currentUser: null,
 		};
 
 		this.registerAsync(UserSource);
@@ -31,14 +34,45 @@ class UserStore {
 
 	@bind(UserActions.receivedUser)
 	receivedUser(result) {
-		var user = result.data;
+		const user = result.data;
+		this.state.users[user.UUID] = user;
+		if (result.config.url.match(/\/api\/user$/)) {
+			this.state.currentUser = user.UUID;
+		}
+	}
+
+	@bind(UserActions.updatedUser)
+	updatedUser(result) {
+		const user = result.data;
 		this.state.users[user.UUID] = user;
 	}
 
-	@bind(UserActions.loadUser)
-	loadUser(uuid) {
-		this.getInstance().performLoad(uuid);
+	@bind(UserActions.loadedHas2fa)
+	loadedHas2fa(result) {
+		this.state.has2fa = result.data.has2fa;
 	}
+
+	@bind(UserActions.receivedUsersAuthProvider)
+	receivedUsersAuthProvider(result) {
+		const uuid = result.config.url.split("/").slice(-1)[0];
+		this.state.authproviders[uuid] = result.data;
+	}
+
+	@bind(UserActions.changedPassword)
+	changedPassword(result) {
+		this.state.authproviders = {};
+		this.state.has2fa = null;
+	}
+
+	@bind(UserActions.added2fa)
+	added2fa(result) {
+		this.state.has2fa = true;
+	}
+
+	@bind(UserActions.disabled2fa)
+	disabled2fa(result) {
+		this.state.has2fa = false;
+	};
 }
 
 export default UserStore;

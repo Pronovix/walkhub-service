@@ -24,9 +24,9 @@ class AuthProviderStore {
 	constructor() {
 		this.state = {
 			providers: [],
-			loaded: false
+			loaded: false,
+			users: {},
 		};
-
 		this.registerAsync(AuthProviderSource);
 	}
 

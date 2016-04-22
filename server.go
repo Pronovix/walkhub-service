@@ -18,9 +18,12 @@ package walkhub
 
 import (
 	"crypto/tls"
+	"errors"
 	"net/http"
+	"net/smtp"
 	"net/url"
 	"strings"
+	"text/template"
 	"time"
 
 	"github.com/go-kit/kit/metrics"
@@ -41,7 +44,12 @@ type WalkhubServer struct {
 	RedirectAll    bool
 	EnforceDomains bool
 	CustomPaths    []string
+	PWAuth         bool
 	AuthCreds      struct {
+		SMTP struct {
+			Addr                               string
+			Identity, Username, Password, Host string
+		}
 		Google auth.OAuthCredentials
 	}
 }
@@ -253,6 +261,7 @@ func (s *WalkhubServer) Start(addr string, certfile string, keyfile string) erro
 		"/search",
 		"/embedcode",
 		"/helpcenterlist",
+		"/profile/:uuid",
 	}
 	for _, path := range append(frontendPaths, s.CustomPaths...) {
 		s.AddFile(path, "assets/index.html")
@@ -264,8 +273,23 @@ func (s *WalkhubServer) Start(addr string, certfile string, keyfile string) erro
 
 	UserDelegate.DB = s.GetDBConnection()
 
-	gauth := google.NewGoogleAuthProvider(s.AuthCreds.Google, &GoogleUserDelegate{})
-	authsvc := auth.NewService(s.BaseURL, UserDelegate, s.GetDBConnection(), gauth)
+	authProviders := []auth.AuthProvider{}
+	if s.PWAuth {
+		smtpAuth := smtp.PlainAuth(s.AuthCreds.SMTP.Identity, s.AuthCreds.SMTP.Username, s.AuthCreds.SMTP.Password, s.AuthCreds.SMTP.Host)
+		delegate := auth.NewPasswordAuthSMTPEmailSenderDelegate(s.AuthCreds.SMTP.Addr, smtpAuth, s.BaseURL)
+		delegate.RegistrationEmailTemplate = regMailTemplate
+		delegate.LostPasswordEmailTemplate = lostpwMailTemplate
+		pwauth := auth.NewPasswordAuthProvider(NewPasswordDelegate(s.GetDBConnection()), delegate)
+		authProviders = append(authProviders, pwauth)
+	}
+	if !s.AuthCreds.Google.Empty() {
+		gauth := google.NewGoogleAuthProvider(s.AuthCreds.Google, &GoogleUserDelegate{})
+		authProviders = append(authProviders, gauth)
+	}
+	if len(authProviders) == 0 {
+		return errors.New("no authentication providers are enabled")
+	}
+	authsvc := auth.NewService(s.BaseURL, UserDelegate, s.GetDBConnection(), authProviders...)
 	s.RegisterService(authsvc)
 
 	s.RegisterService(&UserService{})
@@ -302,3 +326,38 @@ func (s *WalkhubServer) Start(addr string, certfile string, keyfile string) erro
 
 	return s.StartHTTPS(addr, certfile, keyfile)
 }
+
+var (
+	regMailTemplate = template.Must(template.New("regMailTemplate").Parse(
+		"To: {{.Mail}}" +
+			"Subject: Activate your WalkHub account\r\n" +
+			"\r\n" +
+			"Hi {{.Mail}},\r\n" +
+			"\r\n" +
+			"Welcome to WalkHub. Thank you for joining us.\r\n" +
+			"WalkHub helps you to create walkthroughs for your website to support your users.\r\n" +
+			"Click the following link to activate your account and set up your password:\r\n" +
+			"{{.Url}}\r\n" +
+			"\r\n" +
+			"Have any questions? We’re always here to help.\r\n" +
+			"\r\n" +
+			"Cheers,\r\n" +
+			"The WalkHub Team\r\n" +
+			"\r\n"))
+	lostpwMailTemplate = template.Must(template.New("lostpwMailTemplate").Parse(
+		"To: {{.Mail}}\r\n" +
+			"Subject: Reset your WalkHub password\r\n" +
+			"\r\n" +
+			"Hi {{.Mail}},\r\n" +
+			"\r\n" +
+			"You requested to reset your password for your WalkHub account.\r\n" +
+			"Click the link to reset it:\r\n" +
+			"{{.Url}}\r\n" +
+			"\r\n" +
+			"This password reset link is one-time only.\r\n" +
+			"If you did not request a password reset, please ignore this email.\r\n" +
+			"\r\n" +
+			"Thank you,\r\n" +
+			"The WalkHub Team\r\n" +
+			"\r\n"))
+)

@@ -13,8 +13,16 @@
 	"contentpages": "",
 	"frontpagecomponent": "",
 	"menuitems": "",
+	"pwauth": true,
 	"google": {
 		"id": "",
 		"secret": ""
+	},
+	"smtp": {
+		"addr": "",
+		"identity": "",
+		"username": "",
+		"password": "",
+		"host": ""
 	}
 }

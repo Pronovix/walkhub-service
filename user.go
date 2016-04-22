@@ -21,6 +21,7 @@ import (
 	"net/http"
 	"time"
 
+	"github.com/lib/pq"
 	"github.com/nbio/hitch"
 	"github.com/tamasd/ab"
 	"github.com/tamasd/ab/providers/auth/google"
@@ -96,4 +97,76 @@ func (gud *GoogleUserDelegate) Convert(u *plus.Person) (ab.Entity, error) {
 	}
 
 	return NewUser(u.DisplayName, mail), nil
+}
+
+type userRegData struct {
+	*User
+	auth.PasswordFields
+}
+
+var _ auth.PasswordAuthProviderDelegate = &PasswordDelegate{}
+
+type PasswordDelegate struct {
+	db ab.DB
+}
+
+func NewPasswordDelegate(db ab.DB) *PasswordDelegate {
+	return &PasswordDelegate{
+		db: db,
+	}
+}
+
+func (d *PasswordDelegate) GetPassword() auth.Password {
+	return &userRegData{
+		User:           EmptyUser(),
+		PasswordFields: auth.PasswordFields{},
+	}
+}
+
+func (d *PasswordDelegate) GetDBErrorConverter() func(err *pq.Error) ab.VerboseError {
+	return func(err *pq.Error) ab.VerboseError {
+		return ab.NewVerboseError(err.Error(), "")
+	}
+}
+
+func (d *PasswordDelegate) GetAuthID(entity ab.Entity) string {
+	return d.GetEmail(entity)
+}
+
+func (d *PasswordDelegate) GetEmail(entity ab.Entity) string {
+	if rd, ok := entity.(*userRegData); ok {
+		return rd.Mail
+	}
+
+	if u, ok := entity.(*User); ok {
+		return u.Mail
+	}
+
+	return ""
+}
+
+func (d *PasswordDelegate) Get2FAIssuer() string {
+	return "WalkHub"
+}
+
+func (d *PasswordDelegate) LoadUser(uuid string) (ab.Entity, error) {
+	user, err := LoadUser(d.db, uuid)
+	if err != nil {
+		return nil, err
+	}
+	if user == nil {
+		return nil, nil
+	}
+
+	return user, nil
+}
+
+func (d *PasswordDelegate) LoadUserByMail(mail string) (ab.Entity, error) {
+	user, err := selectSingleUserFromQuery(d.db, "SELECT "+userFields+" FROM \"user\" u WHERE u.mail = $1", mail)
+	// this is here to make sure that the returned interface is nil,
+	// not just the interface data
+	if user == nil {
+		return nil, err
+	}
+	return user, err
 }

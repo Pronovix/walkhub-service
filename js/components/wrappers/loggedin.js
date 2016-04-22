@@ -16,7 +16,7 @@
 
 import React from "react";
 import connectToStores from "alt/utils/connectToStores";
-import CurrentUserStore from "stores/currentuser";
+import UserStore from "stores/user";
 import NotLoggedIn from "components/notloggedin";
 import {noop} from "form";
 import {popupWindowFeatures} from "util";
@@ -30,23 +30,24 @@ class LoggedIn extends React.Component {
 	};
 
 	static getStores(props) {
-		return [CurrentUserStore];
+		return [UserStore];
 	}
 
 	static getPropsFromStores() {
-		const storeState = CurrentUserStore.getState();
+		const storeState = UserStore.getState();
 		return {
-			currentUser: storeState.users[null] ? storeState.users[null] : {},
+			currentUser: storeState.users[storeState.currentUser] || {},
 		};
 	}
 
 	static defaultProps = {
 		color: "danger",
 		label: t("Log in"),
+		currentUser: {},
 	};
 
 	componentDidMount() {
-		CurrentUserStore.performLoad();
+		UserStore.performLoad(null);
 	}
 
 	render() {
@@ -58,7 +59,7 @@ class LoggedIn extends React.Component {
 			const intervalID = setInterval(() => {
 				if (w.closed) {
 					clearInterval(intervalID);
-					CurrentUserStore.performLoad();
+					UserStore.performLoad(null);
 					return;
 				}
 

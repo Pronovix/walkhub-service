@@ -10,7 +10,7 @@ Check the [landing page](http://pronovix.com/walkhub) for more information.
 ## Dependencies
 
 * Go 1.5+
-* PostgreSQL 9.4+ (older versions might work too)
+* PostgreSQL 9.5
 * NPM
 * Node.js 4.x ([5.x does not work](https://github.com/Pronovix/walkhub-service/issues/12))
 
@@ -25,9 +25,15 @@ Check the [landing page](http://pronovix.com/walkhub) for more information.
 * `secret`: 32 bytes long random byte sequence, encoded with hex encoding
 * `cookiesecret`: 32 bytes long random byte sequence, encoded with hex encoding
 * `baseurl`: the url where WalkHub will be. A default is set in the example config files.
-* `google`: OAuth2 tokens for Google
 
-Currently only OAuth2 through Google is supported as an authentication mechanism, but other OAuth2 providers and password authentication (with 2FA support) are coming soon.
+At least one of the following authentication providers are mandatory:
+
+* `google`: OAuth2 tokens for Google (see config.json.sample.full)
+* `pwauth`: password authentication
+
+If password authentication is enabled, then SMTP credentials are mandatory:
+
+* `smtp`: SMTP credentials (see config.json.sample.full)
 
 ### Optional values
 

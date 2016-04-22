@@ -1,5 +1,5 @@
 // Walkhub
-// Copyright (C) 2015 Pronovix
+// Copyright (C) 2016 Pronovix
 //
 // This program is free software: you can redistribute it and/or modify
 // it under the terms of the GNU Affero General Public License as
@@ -14,16 +14,16 @@
 // You should have received a copy of the GNU Affero General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-import React from "react";
+import flux from "control";
+import {createActions} from 'alt/utils/decorators';
 
-class User extends React.Component {
-
-	render() {
-		return (
-			<h1> User </h1>
+@createActions(flux)
+class MessageActions {
+	constructor() {
+		this.generateActions(
+			"flashMessage"
 		);
 	}
-
 }
 
-export default User;
+export default MessageActions;

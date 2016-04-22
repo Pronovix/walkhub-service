@@ -27,8 +27,8 @@ const AuthProviderSource = {
 		},
 		loading: AuthProviderActions.loadingAuthProvider,
 		success: AuthProviderActions.receivedAuthProvider,
-		error: AuthProviderActions.fetchingAuthProviderFailed
-	}
+		error: AuthProviderActions.fetchingAuthProviderFailed,
+	},
 };
 
 export default AuthProviderSource;

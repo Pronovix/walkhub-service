@@ -32,8 +32,12 @@ export function noop(e) {
 
 export class Form extends React.Component {
 
+	static defaultProps = {
+		onSubmit: noop,
+	};
+
 	render() {
-		return <form className="form-horizontal">{this.props.children}</form>;
+		return <form className="form-horizontal" onSubmit={this.props.onSubmit}>{this.props.children}</form>;
 	}
 
 }
@@ -45,6 +49,9 @@ export class TextField extends ImmutableFormItem {
 		label: "",
 		value: "",
 		onChange: noop,
+		type: "text",
+		placeholder: "",
+		attributes: {},
 	};
 
 	render() {
@@ -52,7 +59,16 @@ export class TextField extends ImmutableFormItem {
 			<div className={"form-group " + this.props.id}>
 				<label className="col-sm-2 control-label" htmlFor={this.props.id}>{this.props.label}</label>
 				<div className="col-sm-10">
-					<input type="text" className="form-control" id={this.props.id} name={this.props.name || this.props.id} value={this.props.value} onChange={this.props.onChange} />
+					<input
+						type={this.props.type}
+						className="form-control"
+						id={this.props.id}
+						name={this.props.name || this.props.id}
+						value={this.props.value}
+						onChange={this.props.onChange}
+						placeholder={this.props.placeholder}
+						{...this.props.attributes}
+					/>
 				</div>
 			</div>
 		);

@@ -18,7 +18,6 @@ import React from "react";
 import {Route} from "react-router";
 
 import AppWrapper from "components/wrappers/app";
-import User from "components/user";
 import RecordWrapper from "components/wrappers/record";
 import WalkthroughWrapper from "components/wrappers/walkthrough";
 import FrontpageComponent from "FRONT_PAGE";
@@ -26,6 +25,7 @@ import ConnectWrapper from "components/wrappers/connect";
 import SearchWrapper from "components/wrappers/search";
 import EmbedCodeBuilderWrapper from "components/wrappers/embedcodebuilder";
 import HelpCenterListWrapper  from "components/wrappers/helpcenterlist";
+import ProfileWrapper from "components/wrappers/profile";
 
 let contentPagesConfig = {};
 
@@ -41,12 +41,12 @@ const Routes = (
 	<Route component={AppWrapper}>
 		<Route path="/" component={FrontpageComponent} />
 		<Route path="/connect" component={ConnectWrapper} />
-		<Route path="/user/:UUID" component={User} />
 		<Route path="/record" component={RecordWrapper} />
 		<Route path="/walkthrough/:uuid" component={WalkthroughWrapper} />
 		<Route path="/search" component={SearchWrapper} />
 		<Route path="/embedcode" component={EmbedCodeBuilderWrapper} />
 		<Route path="/helpcenterlist" component={HelpCenterListWrapper} />
+		<Route path="/profile/:UUID" component={ProfileWrapper} />
 		{contentPages}
 	</Route>
 );

@@ -25,7 +25,7 @@ class AuthProviderActions {
 			"receivedAuthProvider",
 			"fetchingAuthProviderFailed",
 
-			"loadAuthProvider"
+			"loadAuthProvider",
 		);
 	}
 }

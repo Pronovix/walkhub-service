@@ -19,7 +19,7 @@ import WalkhubBackend from "walkhub_backend";
 import {noop} from "form";
 import Walkthrough from "components/walkthrough";
 import connectToStores from "alt/utils/connectToStores";
-import CurrentUserStore from "stores/currentuser";
+import UserStore from "stores/user";
 import URI from "URIjs";
 import {isHTTPSPage} from "util";
 
@@ -31,13 +31,13 @@ class WalkthroughPlay extends React.Component {
 	};
 
 	static getStores(props) {
-		return [CurrentUserStore];
+		return [UserStore];
 	}
 
 	static getPropsFromStores(props) {
-		const state = CurrentUserStore.getState();
+		const state = UserStore.getState();
 		return {
-			currentUser: state.users[null],
+			currentUser: state.users[state.currentUser] || {},
 		};
 	}
 

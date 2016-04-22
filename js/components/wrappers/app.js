@@ -16,7 +16,7 @@
 
 import React from "react";
 import App from "components/app";
-import CurrentUserStore from "stores/currentuser";
+import UserStore from "stores/user";
 import UserActions from "actions/user";
 import connectToStores from "alt/utils/connectToStores";
 import flux from "control";
@@ -25,6 +25,7 @@ import {t} from "t";
 import {capitalizeFirstLetter} from "util";
 import RouterActions from "actions/router";
 import OuterClassActions from "actions/outerclass";
+import MessageActions from "actions/message";
 import WalkhubBackend from "walkhub_backend";
 import $ from "jquery";
 
@@ -35,6 +36,7 @@ let menuItems = {
 		],
 		right: [
 			{path: "/search", label: "Search"},
+			{path: "/profile/me", label: "My Profile", loggedin: true},
 			{path: "/record", label: "Record", loggedin: true},
 			{path: "/connect", icon: "log-in", loggedin: false},
 			{path: "/api/auth/logout?token=CSRF_TOKEN", icon: "log-out", loggedin: true},
@@ -56,18 +58,19 @@ if (WALKHUB_MENU_ITEMS) {
 class AppWrapper extends React.Component {
 
 	static getStores(props) {
-		return [CurrentUserStore];
+		return [UserStore];
 	}
 
 	static getPropsFromStores() {
-		var storeState = CurrentUserStore.getState();
+		const storeState = UserStore.getState();
 		return {
-			currentUser: storeState.users[null] ? storeState.users[null] : {}
+			currentUser: storeState.users[storeState.currentUser] || {},
 		};
 	}
 
 	static contextTypes = {
 		location: React.PropTypes.shape,
+		history: React.PropTypes.shape,
 	};
 
 	state = {
@@ -78,7 +81,7 @@ class AppWrapper extends React.Component {
 	dispatcherToken = null;
 
 	componentDidMount() {
-		CurrentUserStore.performLoad();
+		UserStore.performLoad(null);
 		this.dispatcherToken = flux.dispatcher.register(this.onChange);
 	}
 
@@ -89,10 +92,19 @@ class AppWrapper extends React.Component {
 	}
 
 	onChange = (event) => {
+		const messages = this.state.messages;
+		let classes = this.state.classes;
+
 		// handle messages
+		if (event.action === MessageActions.FLASH_MESSAGE) {
+			messages.push({
+				type: "success",
+				message: event.data,
+				key: Math.random().toString(),
+			});
+		}
 
 		// error, failed
-		const messages = this.state.messages;
 		if (event.action.match(/(error|fail)/i)) {
 			if (event.data && event.data.status && !(event.data.config.method === "get" && event.data.config.url === "/api/user")) { // Network error, but not related to the current user.
 				messages.push({
@@ -104,7 +116,6 @@ class AppWrapper extends React.Component {
 			}
 		}
 
-		let classes = this.state.classes;
 		if (event.action === OuterClassActions.CHANGE_OUTER_CLASSES) {
 			Object.keys(event.data).map((k) => {
 				const v = event.data[k];
