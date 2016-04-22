@@ -329,7 +329,7 @@ func (s *WalkhubServer) Start(addr string, certfile string, keyfile string) erro
 
 var (
 	regMailTemplate = template.Must(template.New("regMailTemplate").Parse(
-		"To: {{.Mail}}" +
+		"To: {{.Mail}}\r\n" +
 			"Subject: Activate your WalkHub account\r\n" +
 			"\r\n" +
 			"Hi {{.Mail}},\r\n" +
