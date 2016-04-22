@@ -88,7 +88,7 @@ class Connect extends React.Component {
 							value={this.props.signin2faToken}
 							onChange={this.props.signinTokenChange}
 							placeholder="123456"
-							attributes={{autocomplete: "off"}}
+							attributes={{autoComplete: "off"}}
 						/>
 						<ButtonSet>
 							<ButtonSetButton
