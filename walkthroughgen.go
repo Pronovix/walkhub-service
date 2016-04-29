@@ -176,7 +176,7 @@ func (s *WalkthroughService) walkthroughListHandler() http.Handler {
 			start = (pagenum - 1) * limit
 		}
 
-		loadFunc = beforeWalkthroughListHandler()
+		loadFunc = beforeWalkthroughListHandler(r)
 
 		if abort {
 			return

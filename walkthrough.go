@@ -114,6 +114,15 @@ func (e *Walkthrough) Delete(db ab.DB) error {
 	return nil
 }
 
+func LoadUserActualWalkthroughs(uid string) func(db ab.DB, start, limit int) ([]*Walkthrough, error) {
+	return func(db ab.DB, start, limit int) ([]*Walkthrough, error) {
+		return selectWalkthroughFromQuery(db, `WITH
+		latestwt AS (SELECT uuid, MAX(updated) u FROM walkthrough WHERE published = true GROUP BY uuid ORDER BY u DESC),
+		latestuuid AS (SELECT w.revision FROM latestwt l JOIN walkthrough w ON l.uuid = w.uuid AND l.u = w.updated)
+		SELECT `+walkthroughFields+` FROM walkthrough w JOIN latestuuid l ON l.revision = w.revision WHERE uid = $1 ORDER BY updated DESC`, uid)
+	}
+}
+
 func LoadAllActualWalkthroughs(db ab.DB, start, limit int) ([]*Walkthrough, error) {
 	return selectWalkthroughFromQuery(db, `WITH
 	latestwt AS (SELECT uuid, MAX(updated) u FROM walkthrough WHERE published = true GROUP BY uuid ORDER BY u DESC),
@@ -192,7 +201,11 @@ func afterWalkthroughServiceRegister(s *WalkthroughService, h *hitch.Hitch) {
 
 }
 
-func beforeWalkthroughListHandler() (_loadFunc func(ab.DB, int, int) ([]*Walkthrough, error)) {
+func beforeWalkthroughListHandler(r *http.Request) (_loadFunc func(ab.DB, int, int) ([]*Walkthrough, error)) {
+	if uid := r.URL.Query().Get("uid"); uid != "" {
+		return LoadUserActualWalkthroughs(uid)
+	}
+
 	return LoadAllActualWalkthroughs
 }
 

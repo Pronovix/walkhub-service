@@ -1,5 +1,5 @@
 // Walkhub
-// Copyright (C) 2016 Pronovix
+// Copyright (C) 2015 Pronovix
 //
 // This program is free software: you can redistribute it and/or modify
 // it under the terms of the GNU Affero General Public License as
@@ -15,19 +15,29 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 import React from "react";
-import WalkthroughListWrapper from "components/wrappers/walkthroughlist";
-import {t} from "t";
+import WalkthroughPlay from "components/wrappers/walkthroughplay";
 
-class Frontpage extends React.Component {
+class WalkthroughList extends React.Component {
+
+	static defaultProps = {
+		walkthroughs: [],
+	};
 
 	render() {
+		const walkthroughs = this.props.walkthroughs.map((walkthrough) => {
+			return <WalkthroughPlay key={walkthrough.uuid} walkthrough={walkthrough} compact={true} />;
+		});
+
 		return (
-			<WalkthroughListWrapper>
-				<h1> {t("Welcome to WalkHub!")} </h1>
-			</WalkthroughListWrapper>
+			<section className="row">
+				<div className="col-xs-12">
+					{this.props.children}
+					{walkthroughs}
+				</div>
+			</section>
 		);
 	}
 
 }
 
-export default Frontpage;
+export default WalkthroughList;

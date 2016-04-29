@@ -84,7 +84,7 @@ module.exports = {
 		alias: {
 			CONTENT_PAGES: contentpages,
 			MENU_ITEMS: menuitems,
-			FRONT_PAGE: frontpagecomponent || "components/wrappers/frontpage"
+			FRONT_PAGE: frontpagecomponent || "components/frontpage"
 		},
 		root: srcPath,
 		extensions: ["", ".js", ".less"],

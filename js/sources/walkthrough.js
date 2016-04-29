@@ -19,11 +19,11 @@ import WalkthroughActions from "actions/walkthrough";
 
 const WalkthroughSource = {
 	performList: {
-		remote(state) {
-			return axios.get("/api/walkthrough");
+		remote(state, uid) {
+			return axios.get("/api/walkthrough" + (uid ? `?uid=${uid}` : ""));
 		},
-		local(state) {
-			return null; // TODO figure out a smart way to cache this
+		local(state, uid) {
+			return null;
 		},
 		shouldFetch() {
 			return true;

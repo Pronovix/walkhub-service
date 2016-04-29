@@ -18,6 +18,7 @@ import flux from "control";
 import {createStore, bind} from "alt/utils/decorators";
 import WalkthroughActions from "actions/walkthrough";
 import WalkthroughSource from "sources/walkthrough";
+import URI from "URIjs";
 
 @createStore(flux)
 class WalkthroughStore {
@@ -26,6 +27,7 @@ class WalkthroughStore {
 		this.state = {
 			walkthroughs: {},
 			walkthroughList: [],
+			walkthroughuidlist: {},
 		};
 
 		this.registerAsync(WalkthroughSource);
@@ -42,7 +44,13 @@ class WalkthroughStore {
 	@bind(WalkthroughActions.receivedWalkthroughs)
 	receivedWalkthroughs(result) {
 		let walkthroughList = result.data;
-		this.state.walkthroughList = walkthroughList;
+		const url = URI(result.config.url);
+		const uid = url.search(true).uid;
+		if (uid) {
+			this.state.walkthroughuidlist[uid] = walkthroughList;
+		} else {
+			this.state.walkthroughList = walkthroughList;
+		}
 		walkthroughList.forEach((wt) => {
 			this.state.walkthroughs[wt.uuid] = wt;
 		});
