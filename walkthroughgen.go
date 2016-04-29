@@ -43,7 +43,7 @@ func (e *Walkthrough) GetID() string {
 
 var WalkthroughNotFoundError = errors.New("walkthrough not found")
 
-const walkthroughFields = "w.revision, w.uuid, w.uid, w.name, w.description, w.severity, w.steps, w.updated, w.published"
+const walkthroughFields = "w.revision, w.uuid, w.uid, w.name, w.description, w.steps, w.updated, w.published"
 
 func selectWalkthroughFromQuery(db ab.DB, query string, args ...interface{}) ([]*Walkthrough, error) {
 	// HOOK: beforeWalkthroughSelect()
@@ -60,7 +60,7 @@ func selectWalkthroughFromQuery(db ab.DB, query string, args ...interface{}) ([]
 		e := EmptyWalkthrough()
 		jsonSteps := ""
 
-		if err = rows.Scan(&e.Revision, &e.UUID, &e.UID, &e.Name, &e.Description, &e.Severity, &jsonSteps, &e.Updated, &e.Published); err != nil {
+		if err = rows.Scan(&e.Revision, &e.UUID, &e.UID, &e.Name, &e.Description, &jsonSteps, &e.Updated, &e.Published); err != nil {
 			return []*Walkthrough{}, err
 		}
 
@@ -94,7 +94,7 @@ func (e *Walkthrough) Insert(db ab.DB) error {
 
 	bjsonSteps, _ := json.Marshal(e.Steps)
 	jsonSteps = string(bjsonSteps)
-	err := db.QueryRow("INSERT INTO \"walkthrough\"(uuid, uid, name, description, severity, steps, updated, published) VALUES($1, $2, $3, $4, $5, $6, $7, $8) RETURNING revision", e.UUID, e.UID, e.Name, e.Description, e.Severity, jsonSteps, e.Updated, e.Published).Scan(&e.Revision)
+	err := db.QueryRow("INSERT INTO \"walkthrough\"(uuid, uid, name, description, steps, updated, published) VALUES($1, $2, $3, $4, $5, $6, $7) RETURNING revision", e.UUID, e.UID, e.Name, e.Description, jsonSteps, e.Updated, e.Published).Scan(&e.Revision)
 
 	// HOOK: afterWalkthroughInsert()
 
@@ -340,7 +340,6 @@ func (s *WalkthroughService) SchemaSQL() string {
 		"\t\"uid\" uuid NOT NULL,\n" +
 		"\t\"name\" character varying NOT NULL,\n" +
 		"\t\"description\" text NOT NULL,\n" +
-		"\t\"severity\" walkthrough_severity DEFAULT 'tour' NOT NULL,\n" +
 		"\t\"steps\" jsonb NOT NULL,\n" +
 		"\t\"updated\" timestamp with time zone NOT NULL,\n" +
 		"\t\"published\" bool NOT NULL,\n" +

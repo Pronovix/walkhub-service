@@ -17,7 +17,6 @@
 import React from "react";
 import {t} from "t";
 import {noop, Form, TextField, Radios, Button, ButtonSet, ButtonSetButton} from "form";
-import {severities} from "util";
 import EmbedCode from "components/embedcode";
 
 import recordIcon from "images/record.svg";
@@ -30,9 +29,6 @@ class Record extends React.Component {
 
 		title: "",
 		onTitleChange: noop,
-
-		severity: "tour",
-		onSeverityChange: noop,
 
 		startingUrl: "",
 		onStartingUrlChange: noop,
@@ -48,11 +44,6 @@ class Record extends React.Component {
 		});
 
 		const hasSteps = !!this.props.steps.length;
-
-		const shortSeverities = Object.keys(severities).reduce(function(previous, current) {
-			previous[current] = current;
-			return previous;
-		}, {});
 
 		const reset = hasSteps ?
 			<ButtonSetButton onClick={this.props.onResetClick} className="btn-default">{t("Reset")}</ButtonSetButton> :
@@ -76,7 +67,6 @@ class Record extends React.Component {
 				<h1> {t("Record walkthrough")} </h1>
 				<Form>
 					<TextField id="input-title" label={t("Title")} value={this.props.title} onChange={this.props.onTitleChange} />
-					<Radios name="input-severity" checked={this.props.severity} options={this.props.embedded ? shortSeverities : severities} onChange={this.props.onSeverityChange} />
 					<TextField id="input-starting-url" label={t("Starting URL")} value={this.props.startingUrl} onChange={this.props.onStartingUrlChange} />
 					<Button grid={!this.props.embedded} onClick={this.props.onRecordClick} containerClassName="record" className={recordButtonClass}><strong>{t("Record")}</strong> <span><object className="record-icon" type="image/svg+xml" data={recordIcon}></object></span></Button>
 					<div className="form-group steps">

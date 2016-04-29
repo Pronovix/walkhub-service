@@ -76,7 +76,6 @@ class WalkthroughWrapper extends React.Component {
 					onSaveClick={this.saveWalkthrough}
 
 					onNameChange={this.nameChange}
-					onSeverityChange={this.severityChange}
 					onDescriptionChange={this.descriptionChange}
 
 					onStepTitleChange={this.stepTitleChange}
@@ -129,10 +128,6 @@ class WalkthroughWrapper extends React.Component {
 
 	nameChange = (evt) => {
 		this.changeWalkthroughAttribute("name", evt);
-	};
-
-	severityChange = (evt) => {
-		this.changeWalkthroughAttribute("severity", evt);
 	};
 
 	descriptionChange = (evt) => {

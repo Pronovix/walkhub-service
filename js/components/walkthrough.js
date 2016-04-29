@@ -19,7 +19,6 @@ import Step from "components/step";
 import EmbedCode from "components/embedcode";
 import {noop} from "form";
 import {t} from "t";
-import {severities} from "util";
 import {Link} from "react-router";
 
 class Walkthrough extends React.Component {
@@ -97,16 +96,6 @@ class Walkthrough extends React.Component {
 			</div>
 		);
 
-		const severity = (
-			<div className="row">
-				<div className="col-xs-12">
-					<p> {t("This walkthrough @severity", {
-						"@severity": severities[walkthrough.severity],
-					})} </p>
-				</div>
-			</div>
-		);
-
 		const description = (
 			<div className="row">
 				<div className="col-xs-12">
@@ -143,7 +132,6 @@ class Walkthrough extends React.Component {
 			<section key={walkthrough.revision} className={`walkthrough-uuid-${walkthrough.uuid} walkthrough-revision-${walkthrough.revision}`}>
 				{title}
 				{this.props.compact ? null : reloadHTTP}
-				{this.props.compact ? null : severity}
 				{this.props.compact ? null : description}
 				{this.props.compact ? null : stepsWidget}
 				{this.props.compact ? null : embed}

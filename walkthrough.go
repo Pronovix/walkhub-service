@@ -56,17 +56,12 @@ type Walkthrough struct {
 	UID         string    `dbtype:"uuid" json:"uid"`
 	Name        string    `constructor:"true" json:"name"`
 	Description string    `dbtype:"text" json:"description"`
-	Severity    string    `dbtype:"walkthrough_severity" dbdefault:"'tour'" json:"severity"`
 	Steps       []Step    `dbtype:"jsonb" json:"steps"`
 	Updated     time.Time `json:"updated"`
 	Published   bool      `json:"published"`
 }
 
 func validateWalkthrough(e *Walkthrough) (_err error) {
-	if e.Severity != "tour" && e.Severity != "content" && e.Severity != "configuration" {
-		return ab.NewVerboseError("", "invalid severity")
-	}
-
 	if e.Name == "" {
 		return ab.NewVerboseError("", "name must not be empty")
 	}
@@ -83,9 +78,7 @@ func validateWalkthrough(e *Walkthrough) (_err error) {
 }
 
 func afterWalkthroughSchemaSQL(sql string) (_sql string) {
-	return `
-		CREATE TYPE walkthrough_severity AS ENUM ('tour', 'content', 'configuration');
-		` + sql + `
+	return sql + `
 		ALTER TABLE walkthrough ADD CONSTRAINT walkthrough_uuid_fkey FOREIGN KEY (uid)
 			REFERENCES "user" (uuid) MATCH SIMPLE
 			ON UPDATE CASCADE ON DELETE CASCADE;

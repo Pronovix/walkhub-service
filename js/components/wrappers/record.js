@@ -45,7 +45,6 @@ class RecordWrapper extends React.Component {
 	defaultState() {
 		return {
 			title: "",
-			severity: "tour",
 			startingUrl: "",
 			widget: null,
 			steps: [],
@@ -67,12 +66,10 @@ class RecordWrapper extends React.Component {
 				<Record
 					embedded={this.isEmbedded()}
 					title={this.state.title}
-					severity={this.state.severity}
 					startingUrl={this.state.startingUrl}
 					steps={this.state.steps}
 
 					onTitleChange={this.titleChange}
-					onSeverityChange={this.severityChange}
 					onStartingUrlChange={this.startingUrlChange}
 
 					onRecordClick={this.recordClick}
@@ -92,10 +89,6 @@ class RecordWrapper extends React.Component {
 
 	titleChange = (evt) => {
 		this.setState({title: evt.target.value});
-	};
-
-	severityChange = (evt) => {
-		this.setState({severity: evt.target.value});
 	};
 
 	startingUrlChange = (evt) => {
@@ -146,7 +139,6 @@ class RecordWrapper extends React.Component {
 		const walkthrough = {
 			name: this.state.title,
 			description: "", // TODO
-			severity: this.state.severity,
 			steps: this.state.steps,
 			published: this.state.published,
 		};

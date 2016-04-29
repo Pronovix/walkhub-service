@@ -17,12 +17,6 @@
 import {t} from "t";
 import URI from "URIjs";
 
-export const severities = {
-	tour: t("does not change anything (tour)"),
-	content: t("changes content (run only on sites where this is ok)"),
-	configuration: t("changes configuration (run only on staging or test environments)"),
-};
-
 // taken from https://developer.mozilla.org/en-US/docs/Web/API/Document/cookie
 const docCookies = {
 	getItem: function (sKey) {

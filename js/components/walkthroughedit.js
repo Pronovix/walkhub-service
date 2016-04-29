@@ -18,7 +18,6 @@ import React from "react";
 import {noop, Form, TextField, TextArea, Radios, ButtonSet, ButtonSetButton} from "form";
 import StepEdit from "components/stepedit";
 import {t} from "t";
-import {severities} from "util";
 
 class WalkthroughEdit extends React.Component {
 
@@ -28,7 +27,6 @@ class WalkthroughEdit extends React.Component {
 		onSaveClick: noop,
 
 		onNameChange: noop,
-		onSeverityChange: noop,
 		onDescriptionChange: noop,
 
 		onStepTitleChange: noop,
@@ -69,7 +67,6 @@ class WalkthroughEdit extends React.Component {
 				<h1> {t("Edit walkthrough")} </h1>
 				<Form>
 					<TextField id="input-name" label={t("Name")} value={walkthrough.name} onChange={this.props.onNameChange} />
-					<Radios name="input-severity" checked={walkthrough.severity} options={severities} onChange={this.props.onSeverityChange} />
 					<TextArea id="input-description" label={t("Description")} value={walkthrough.description} onChange={this.props.onDescriptionChange} />
 					<div className="row">
 						<div className="col-xs-12">
