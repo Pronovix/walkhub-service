@@ -28,6 +28,7 @@ import OuterClassActions from "actions/outerclass";
 import MessageActions from "actions/message";
 import WalkhubBackend from "walkhub_backend";
 import $ from "jquery";
+import NetworkActivityWrapper from "components/wrappers/networkactivity";
 
 let menuItems = {
 	navbar: {
@@ -168,6 +169,7 @@ class AppWrapper extends React.Component {
 				className={className}
 				containerClassName={this.getContainerClassName()}
 				>
+				<NetworkActivityWrapper />
 				{this.props.children}
 			</App>
 		);

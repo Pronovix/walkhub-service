@@ -28,6 +28,7 @@ import cookies from "axios/lib/helpers/cookies";
 import {isStandardBrowserEnv} from "axios/lib/utils";
 import urlIsSameOrigin from "axios/lib/helpers/urlIsSameOrigin";
 import {t} from "t";
+import NetworkActivityActions from "actions/networkactivity";
 
 let history = createBrowserHistory();
 
@@ -61,6 +62,20 @@ axios.interceptors.request.use(function(config) {
 	}
 
 	return config;
+});
+
+axios.defaults.transformRequest.push(function(data) {
+	setTimeout(() => {
+		NetworkActivityActions.activityStarted();
+	}, 0);
+	return data;
+});
+
+axios.defaults.transformResponse.push(function(data) {
+	setTimeout(() => {
+		NetworkActivityActions.activityEnded();
+	}, 0);
+	return data;
 });
 
 $(function() {

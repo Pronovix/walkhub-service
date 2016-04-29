@@ -1,5 +1,5 @@
 // Walkhub
-// Copyright (C) 2015 Pronovix
+// Copyright (C) 2016 Pronovix
 //
 // This program is free software: you can redistribute it and/or modify
 // it under the terms of the GNU Affero General Public License as
@@ -15,26 +15,27 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 import React from "react";
-import MAXIMUM_ZINDEX from "util";
 
-class Modal extends React.Component {
+import loading from "images/loading.gif";
 
-	static defaultProps = {
-		className: "",
-	};
+const SIZE = 198;
+
+class NetworkActivity extends React.Component {
 
 	state = {
 		width: window.innerWidth,
 		height: window.innerHeight,
-	}
+	};
 
 	render() {
 		const style = {
-			width: `${this.state.width}px`,
-			height: `${this.state.height}px`,
+			top: (this.state.height/2 - SIZE/2)+"px",
+			left: (this.state.width/2 - SIZE/2)+"px",
+			width: SIZE,
+			height: SIZE,
 		};
 		return (
-			<div className={`wh-modal ${this.props.className}`} style={style}>{this.props.children || " "}</div>
+			<img src={loading} style={style} className="loadingicon" />
 		);
 	}
 
@@ -52,6 +53,7 @@ class Modal extends React.Component {
 	componentWillUnmount() {
 		window.removeEventListener("resize", this.resize);
 	}
+
 }
 
-export default Modal;
+export default NetworkActivity;
