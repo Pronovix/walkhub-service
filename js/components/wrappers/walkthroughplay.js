@@ -45,10 +45,23 @@ class WalkthroughPlay extends React.Component {
 
 	state = {
 		widget: null,
+		autoplayed: false,
+	};
+
+	static contextTypes = {
+		location: React.PropTypes.shape,
+		history: React.PropTypes.shape,
 	};
 
 	playWalkthrough = (evt) => {
 		noop(evt);
+
+		const reloadURL = this.getHTTPReloadURL();
+		if (reloadURL) {
+			window.location = reloadURL;
+			return;
+		}
+
 		this.backend.startPlay(this.props.walkthrough.uuid);
 		this.setState({
 			widget: this.backend.widget,
@@ -57,6 +70,12 @@ class WalkthroughPlay extends React.Component {
 
 	playClose = (evt) => {
 		noop(evt);
+
+		if (this.shouldGoBack()) {
+			// TODO figure out why the last entry gets duplicated in the history
+			window.history.go(-2);
+		}
+
 		this.setState({
 			widget: null,
 		});
@@ -68,31 +87,67 @@ class WalkthroughPlay extends React.Component {
 		this.backend.onclose = this.playClose;
 	}
 
+	componentDidMount() {
+		this.maybeAutoplay(this.props);
+	}
+
 	componentWillUnmount() {
 		this.backend.stop();
+	}
+
+	componentWillReceiveProps(nextProps) {
+		this.maybeAutoplay(nextProps);
+	}
+
+	maybeAutoplay(props) {
+		if (this.shouldAutoplay(props)) {
+			this.setState({
+				autoplayed: true,
+			});
+			setTimeout(() => {
+				this.playWalkthrough();
+			}, 100);
+		}
+	}
+
+	shouldAutoplay(props) {
+		const autoplay = this.context.location.query.autoplay;
+		return !this.state.autoplayed && autoplay && props.walkthrough && autoplay === props.walkthrough.uuid;
+	}
+
+	shouldGoBack() {
+		return !!this.context.location.query.goback;
+	}
+
+	getHTTPReloadURL() {
+		if (this.props.walkthrough && this.props.walkthrough.steps && this.props.walkthrough.steps[0]) {
+			const walkthroughProtocol = URI(this.props.walkthrough.steps[0].arg0).protocol();
+			if (isHTTPSPage() && walkthroughProtocol === "http") {
+				let httpOrigin = URI(WALKHUB_HTTP_URL);
+				return URI(window.location.href)
+					.protocol("http")
+					.host(httpOrigin.host())
+					.path(`/walkthrough/${this.props.walkthrough.uuid}`)
+					.addSearch("autoplay", this.props.walkthrough.uuid)
+					.addSearch("goback", true)
+					.toString();
+			}
+		}
+
+		return "";
 	}
 
 	render() {
 		this.backend.canEdit = this.props.walkthrough.uid !== "" && this.props.walkthrough.uid === this.props.currentUser.UUID;
 
-		let httpReloadURL = "";
-		if (this.props.walkthrough && this.props.walkthrough.steps && this.props.walkthrough.steps[0]) {
-			const walkthroughProtocol = URI(this.props.walkthrough.steps[0].arg0).protocol();
-			if (isHTTPSPage() && walkthroughProtocol === "http") {
-				let httpOrigin = URI(WALKHUB_HTTP_URL);
-				httpReloadURL = URI(window.location.href)
-					.protocol("http")
-					.host(httpOrigin.host())
-					.toString();
-			}
-		}
+		const httpReloadURL = this.getHTTPReloadURL();
 
 		return (
 			<div className="list-wt">
 				<Walkthrough
 					onPlayClick={this.playWalkthrough}
 					editable={this.props.currentUser.UUID === this.props.walkthrough.uid}
-					httpReloadURL={httpReloadURL}
+					httpReload={!!httpReloadURL}
 					{...this.props}
 				/>
 				{this.state.widget}

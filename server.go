@@ -82,11 +82,15 @@ func domainEnforcerMiddleware(httpsHost, httpHost string) func(http.Handler) htt
 	return func(next http.Handler) http.Handler {
 		return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 			if httpsHost != "" && r.TLS != nil && r.Host != httpsHost {
-				http.Redirect(w, r, "https://"+httpsHost+"/"+r.RequestURI, http.StatusMovedPermanently)
+				newUrl := "https://" + httpsHost + "/" + r.RequestURI
+				ab.LogTrace(r).Printf("enforcing https domain: %s -> %s\n", r.URL.String(), newUrl)
+				http.Redirect(w, r, newUrl, http.StatusMovedPermanently)
 				return
 			}
 			if httpHost != "" && r.TLS == nil && r.Host != httpHost {
-				http.Redirect(w, r, "http://"+httpHost+"/"+r.RequestURI, http.StatusMovedPermanently)
+				newUrl := "http://" + httpHost + "/" + r.RequestURI
+				ab.LogTrace(r).Printf("enforcing http domain: %s -> %s\n", r.URL.String(), newUrl)
+				http.Redirect(w, r, newUrl, http.StatusMovedPermanently)
 				return
 			}
 
@@ -179,6 +183,7 @@ func redirectToHTTPS(w http.ResponseWriter, r *http.Request, httpsOrigin *url.UR
 	if httpsOrigin != nil {
 		newurl.Host = httpsOrigin.Host
 	}
+	ab.LogTrace(r).Printf("redirecting to https: %s -> %s\n", r.URL.String(), newurl.String())
 	http.Redirect(w, r, newurl.String(), http.StatusMovedPermanently)
 }
 
@@ -254,7 +259,6 @@ func corsMiddleware(baseURL, httpOrigin string) func(http.Handler) http.Handler 
 
 func (s *WalkhubServer) Start(addr string, certfile string, keyfile string) error {
 	frontendPaths := []string{
-		"/user/:uuid",
 		"/connect",
 		"/record",
 		"/walkthrough/:uuid",

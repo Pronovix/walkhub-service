@@ -32,7 +32,7 @@ class Walkthrough extends React.Component {
 		embedded: false,
 		compact: false,
 		linkTo: true,
-		httpReloadURL: "",
+		httpReload: false,
 		helpcenter: false,
 	};
 
@@ -124,8 +124,8 @@ class Walkthrough extends React.Component {
 			</div>
 		);
 
-		const reloadHTTP = this.props.httpReloadURL ? (
-			<p className="bg-danger walkthrough-http-reload-message">{t("The walkthrough is recorded on an HTTP website.")} <a href={this.props.httpReloadURL}>{t("Click here to reload the page in HTTP.")}</a></p>
+		const reloadHTTP = this.props.httpReload ? (
+			<p className="bg-danger walkthrough-http-reload-message">{t("The walkthrough is recorded on an HTTP website. Playing the walkthrough will temporarly reload the page in HTTP.")}</p>
 		) : null;
 
 		return (
