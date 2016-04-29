@@ -17,13 +17,15 @@
 import React from "react";
 import Profile from "components/profile";
 import ProfileEdit from "components/profileedit";
-import PasswordChange from "components/passwordchange";
 import connectToStores from "alt/utils/connectToStores";
 import UserStore from "stores/user";
 import AuthProviderStore from "stores/auth_provider";
 import UserActions from "actions/user";
 import {noop} from "form";
 import flux from "control";
+import WalkthroughListWrapper from "components/wrappers/walkthroughlist";
+import {t} from "t";
+import {Link} from "react-router";
 
 @connectToStores
 class ProfileWrapper extends React.Component {
@@ -61,7 +63,6 @@ class ProfileWrapper extends React.Component {
 	}
 
 	state = {
-		changingPassword: false,
 		oldPassword: "",
 		newPassword: "",
 		newPasswordConfirm: "",
@@ -72,7 +73,7 @@ class ProfileWrapper extends React.Component {
 
 		enabling2fa: "",
 		disabling2fa: "",
-		token2fa: "",
+		code2fa: "",
 		pw2fa: "",
 	};
 
@@ -151,55 +152,105 @@ class ProfileWrapper extends React.Component {
 	render() {
 		const user = this.getUser();
 
-		return (
-			<Profile user={user} userAuthProviders={this.props.userAuthProviders} authProviders={this.props.authProviders} has2fa={this.props.has2fa}>
-				<ProfileEdit
-					editing={this.state.profileEditing}
+		let content = null;
 
-					name={this.state.name}
-					mail={this.state.mail}
+		const empty = (
+			<div className="row profile-emptywalkthroughlist">
+				<div className="col-xs-12">
+					<h3>{t("It looks like you haven't got a Walkthrough yet. Add an embed code first to your site.")}</h3>
+					<Link to="/embedcode" className="btn btn-default">{t("Generate my embed code!")}</Link>
+				</div>
+			</div>
+		);
 
-					onNameChange={this.textChange("name")}
-					onMailChange={this.textChange("mail")}
-					editingToggleClick={this.editingToggleClick}
-					onSubmit={this.onProfileSubmit}
-					onResetClick={this.onProfileResetClick}
-				/>
-				<PasswordChange
-					changingPassword={this.state.changingPassword}
-					onToggleClick={this.onPasswordChangeToggleClick}
+		const list = (
+			<WalkthroughListWrapper uid={user.UUID} empty={empty}>
+				<div className="row">
+					<div className="col-xs-9">
+						<h3>{t("Your Walkthroughs")}</h3>
+					</div>
+					<div className="col-xs-3">
+						<Link className="btn btn-default" to="/embedcode">{t("Add new site")}</Link>
+					</div>
+				</div>
+			</WalkthroughListWrapper>
+		);
 
+		if (this.state.profileEditing) {
+			const userProviders = this.props.userAuthProviders[user.UUID] || [];
+			const disabledProviders = this.props.authProviders.providers.filter((provider) => {
+				return userProviders.indexOf(provider.id) === -1 && provider.id !== "password";
+			});
+			content = (
+				<div className="row">
+					<div className="col-xs-12">
+						<ProfileEdit
+							name={this.state.name}
+							mail={this.state.mail}
+
+							oldPassword={this.state.oldPassword}
+							newPassword={this.state.newPassword}
+							newPasswordConfirm={this.state.newPasswordConfirm}
+
+							onNameChange={this.textChange("name")}
+							onMailChange={this.textChange("mail")}
+							onSubmit={this.onProfileSubmit}
+							onCancelClick={this.onProfileCancelClick}
+
+							has2fa={this.props.has2fa}
+							hasPassword={this.hasPassword()}
+
+							oldPasswordChange={this.textChange("oldPassword")}
+							newPasswordChange={this.textChange("newPassword")}
+							newPasswordConfirmChange={this.textChange("newPasswordConfirm")}
+
+							enable2faClick={this.enable2faClick}
+							disable2faClick={this.disable2faClick}
+
+							enabling2fa={this.state.enabling2fa}
+							disabling2fa={this.state.disabling2fa}
+
+							code2fa={this.state.code2fa}
+							code2faChange={this.textChange("code2fa")}
+							pw2fa={this.state.pw2fa}
+							pw2faChange={this.textChange("pw2fa")}
+
+							enable2faSubmit={this.enable2faSubmit}
+							enable2faCancel={this.cancel2fa}
+							disable2faSubmit={this.disable2faSubmit}
+							disable2faCancel={this.cancel2fa}
+
+							disabledAuthProviders={disabledProviders}
+						/>
+					</div>
+				</div>
+			);
+		} else {
+			const canEdit = this.props.currentUser && this.props.currentUser === user.UUID;
+
+			content = (
+				<Profile
+					user={user}
+					userAuthProviders={this.props.userAuthProviders}
+					authProviders={this.props.authProviders}
 					has2fa={this.props.has2fa}
-					hasPassword={this.hasPassword()}
-
-					oldPassword={this.state.oldPassword}
-					newPassword={this.state.newPassword}
-					newPasswordConfirm={this.state.newPasswordConfirm}
-
-					oldPasswordChange={this.textChange("oldPassword")}
-					newPasswordChange={this.textChange("newPassword")}
-					newPasswordConfirmChange={this.textChange("newPasswordConfirm")}
-
-					onSubmit={this.onPasswordChangeSubmit}
-					onResetClick={this.onPasswordChangeResetClick}
-
-					enable2faClick={this.enable2faClick}
-					disable2faClick={this.disable2faClick}
-
-					enabling2fa={this.state.enabling2fa}
-					disabling2fa={this.state.disabling2fa}
-
-					token2fa={this.state.token2fa}
-					token2faChange={this.textChange("token2fa")}
-					pw2fa={this.state.pw2fa}
-					pw2faChange={this.textChange("pw2fa")}
-
-					enable2faSubmit={this.enable2faSubmit}
-					enable2faReset={this.reset2fa}
-					disable2faSubmit={this.disable2faSubmit}
-					disable2faReset={this.reset2fa}
+					onEditClick={this.editingToggleClick}
+					canEdit={canEdit}
 				/>
-			</Profile>
+			);
+		}
+
+		const joindate = user.Created;
+
+		return (
+			<section className="profile row">
+				<div className="col-xs-8">
+					{list}
+				</div>
+				<div className="col-xs-4">
+					{content}
+				</div>
+			</section>
 		);
 	}
 
@@ -212,33 +263,6 @@ class ProfileWrapper extends React.Component {
 		};
 	};
 
-	onPasswordChangeToggleClick = (event) => {
-		noop(event);
-		this.setState({
-			changingPassword: true,
-		});
-	};
-
-	onPasswordChangeSubmit = (event) => {
-		noop(event);
-		UserStore.performChangePassword({
-			old_password: this.state.oldPassword,
-			password: this.state.newPassword,
-			password_confirm: this.state.newPasswordConfirm,
-		});
-		this.onPasswordChangeResetClick(event);
-	};
-
-	onPasswordChangeResetClick = (event) => {
-		noop(event);
-		this.setState({
-			oldPassword: "",
-			newPassword: "",
-			newPasswordConfirm: "",
-			changingPassword: false,
-		});
-	}
-
 	editingToggleClick = (event) => {
 		noop(event);
 		const user = this.getUser();
@@ -249,22 +273,36 @@ class ProfileWrapper extends React.Component {
 		});
 	};
 
-	onProfileResetClick = (event) => {
+	onProfileCancelClick = (event) => {
 		noop(event);
 		this.setState({
 			profileEditing: false,
 			name: "",
 			mail: "",
+			oldPassword: "",
+			newPassword: "",
+			newPasswordConfirm: "",
 		});
 	};
 
 	onProfileSubmit = (event) => {
 		noop(event);
 		const user = this.getUser();
-		user.Name = this.state.name;
-		user.Mail = this.state.mail;
-		UserStore.performPut(user);
-		this.onProfileResetClick();
+		if (user.Name !== this.state.name || user.Mail !== this.state.mail) {
+			user.Name = this.state.name;
+			user.Mail = this.state.mail;
+			UserStore.performPut(user);
+		}
+
+		if (this.state.newPassword && this.state.newPasswordConfirm) {
+			UserStore.performChangePassword({
+				old_password: this.state.oldPassword,
+				password: this.state.newPassword,
+				password_confirm: this.state.newPasswordConfirm,
+			});
+		}
+
+		this.onProfileCancelClick();
 	};
 
 	enable2faClick = (event) => {
@@ -272,7 +310,7 @@ class ProfileWrapper extends React.Component {
 		this.setState({
 			enabling2fa: true,
 			disabling2fa: false,
-			token2fa: "",
+			code2fa: "",
 			pw2fa: "",
 		});
 	};
@@ -282,7 +320,7 @@ class ProfileWrapper extends React.Component {
 		this.setState({
 			disabling2fa: true,
 			enabling2fa: false,
-			token2fa: "",
+			code2fa: "",
 			pw2fa: "",
 		});
 	};
@@ -290,16 +328,16 @@ class ProfileWrapper extends React.Component {
 	enable2faSubmit = (event) => {
 		noop(event);
 		UserStore.performAdd2FA({
-			token: this.state.token2fa,
+			token: this.state.code2fa,
 		});
 	};
 
-	reset2fa = (event) => {
+	cancel2fa = (event) => {
 		noop(event);
 		this.setState({
 			disabling2fa: false,
 			enabling2fa: false,
-			token2fa: "",
+			code2fa: "",
 			pw2fa: "",
 		});
 	};

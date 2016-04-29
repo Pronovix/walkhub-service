@@ -17,60 +17,207 @@
 import React from "react";
 import {t} from "t";
 import {noop, TextField, ButtonSet, ButtonSetButton, Button, Form} from "form";
+import {csrfToken} from "util";
 
 class ProfileEdit extends React.Component {
 
 	static defaultProps = {
-		editing: false,
-
 		name: "",
 		mail: "",
+		oldPassword: "",
+		newPassword: "",
+		newPasswordConfirm: "",
+		has2fa: false,
+		hasPassword: false,
+		code2fa: "",
+		pw2fa: "",
+		enabling2fa: false,
+		disabling2fa: false,
 
-		editingToggleClick: noop,
 		onSubmit: noop,
 		onNameChange: noop,
 		onMailChange: noop,
-		onResetClick: noop,
+		onCancelClick: noop,
+		oldPasswordChange: noop,
+		newPasswordChange: noop,
+		newPasswordConfirmChange: noop,
+		enable2faClick: noop,
+		disable2faClick: noop,
+		code2faChange: noop,
+		pw2faChange: noop,
+		enable2faSubmit: noop,
+		enable2faCancel: noop,
+		disable2faSubmit: noop,
+		disable2faCancel: noop,
+
+		disabledAuthProviders: [],
 	};
 
 	render() {
-		if (!this.props.editing) {
-			return <a href="#" onClick={this.props.editingToggleClick} className="btn btn-default">{t("Edit profile")}</a>;
-		}
-
 		return (
 			<Form onSubmit={this.props.onSubmit}>
-				<TextField
-					id="name"
-					label={t("Name")}
-					value={this.props.name}
-					onChange={this.props.onNameChange}
-				/>
+				<div className="row">
+					<div className="col-xs-7">
+						<TextField
+							id="name"
+							label={t("Name")}
+							value={this.props.name}
+							onChange={this.props.onNameChange}
+							decoration={false}
+						/>
+					</div>
+					<div className="col-xs-5">
+						<ButtonSet>
+							<ButtonSetButton
+								type="submit"
+								onClick={() => {}}
+								id="profileEditSubmit"
+								className="btn-success btn-xs"
+								>
+								{t("Save")}
+							</ButtonSetButton>
+							<ButtonSetButton
+								id="profileEditCancel"
+								onClick={this.props.onCancelClick}
+								className="btn-default btn-xs"
+								>
+								{t("Cancel")}
+							</ButtonSetButton>
+						</ButtonSet>
+					</div>
+				</div>
 				<TextField
 					id="mail"
-					label={t("Mail")}
+					label={t("Email") + ":"}
 					value={this.props.mail}
 					onChange={this.props.onMailChange}
 				/>
-				<ButtonSet>
-					<ButtonSetButton
-						type="submit"
-						onClick={() => {}}
-						id="profileEditSubmit"
-						className="btn-success"
-						>
-						{t("Save")}
-					</ButtonSetButton>
-					<ButtonSetButton
-						id="profileEditReset"
-						onClick={this.props.onResetClick}
-						className="btn-default"
-						>
-						{t("Reset")}
-					</ButtonSetButton>
-				</ButtonSet>
+				<h4> {t("Authentication")} </h4>
+				<h5> {t("Password change")} </h5>
+				{this.getPasswordChangeForm()}
+				{this.getDisabledProvidersConnectLinks()}
+				{this.get2faToggleButton()}
 			</Form>
 		);
+	}
+
+	getPasswordChangeForm() {
+		const oldPwTextField = this.props.hasPassword ? (
+			<TextField label={t("Old password")} id="oldpassword" value={this.props.oldPassword} onChange={this.props.oldPasswordChange} labelgrid={4} inputgrid={8} />
+		) : null;
+
+		return (
+			<div>
+				{oldPwTextField}
+				<TextField label={t("New password")} id="newpassword" value={this.props.newPassword} onChange={this.props.newPasswordChange} type="password" labelgrid={4} inputgrid={8} />
+				<TextField label={t("Confirm password")} id="newpasswordconfirm" value={this.props.newPasswordConfirm} onChange={this.props.newPasswordConfirmChange} type="password" labelgrid={4} inputgrid={8} />
+			</div>
+		);
+	}
+
+	getDisabledProvidersConnectLinks() {
+		return this.props.disabledAuthProviders.map((provider) => {
+			const url = `/api/auth/${provider.id}/connect?token=${csrfToken}`;
+			return (
+				<div key={provider.id} className="row">
+					<div className="col-xs-6">
+						{t("%label log in", {"%label": provider.label})}
+					</div>
+					<div className="col-xs-6">
+						<a href={url} className="btn btn-default btn-sm profile-edit-button">{t("Connect")}</a>
+					</div>
+				</div>
+			);
+		});
+	}
+
+	get2faToggleButton() {
+		if (!this.props.hasPassword) {
+			return null;
+		}
+
+		if (this.props.has2fa) {
+			if (this.props.disabling2fa) {
+				return (
+					<Form onSubmit={this.props.disable2faSubmit}>
+						<TextField
+							id="password"
+							label={t("Password")}
+							value={this.props.pw2fa}
+							onChange={this.props.pw2faChange}
+							type="password"
+						/>
+						<ButtonSet>
+							<ButtonSetButton
+								type="submit"
+								className="btn-danger"
+								onClick={() => {}}
+								>
+								{t("Disable")}
+							</ButtonSetButton>
+							<ButtonSetButton
+								className="btn-default"
+								onClick={this.props.disable2faCancel}
+								>
+								{t("Cancel")}
+							</ButtonSetButton>
+						</ButtonSet>
+					</Form>
+				);
+			} else {
+				return (
+					<div className="row">
+						<div className="col-xs-6">
+							{t("2-factor authentication")}
+						</div>
+						<div className="col-xs-6">
+							<a href="#" onClick={this.props.disable2faClick} className="btn btn-danger btn-sm profile-edit-button">{t("Disable")}</a>
+						</div>
+					</div>
+				);
+			}
+		} else {
+			if (this.props.enabling2fa) {
+				return (
+					<Form onSubmit={this.props.enable2faSubmit}>
+						<p><img src={`/api/auth/password/add2fa?token=${csrfToken}&size=500`} /></p>
+						<TextField
+							label={t("Code")}
+							id="2facode"
+							value={this.props.code2fa}
+							onChange={this.props.code2faChange}
+						/>
+						<ButtonSet>
+							<ButtonSetButton
+								type="submit"
+								className="btn-success"
+								onClick={() => {}}
+								>
+								{t("Verify")}
+							</ButtonSetButton>
+							<ButtonSetButton
+								type="button"
+								className="btn-default"
+								onClick={this.props.enable2faCancel}
+								>
+								{t("Cancel")}
+							</ButtonSetButton>
+						</ButtonSet>
+					</Form>
+				);
+			} else {
+				return (
+					<div className="row">
+						<div className="col-xs-6">
+							{t("2-factor authentication")}
+						</div>
+						<div className="col-xs-6">
+							<a href="#" onClick={this.props.enable2faClick} className="btn btn-info btn-sm profile-edit-button">{t("Enable")}</a>
+						</div>
+					</div>
+				);
+			}
+		}
 	}
 
 }

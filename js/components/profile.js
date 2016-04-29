@@ -17,6 +17,8 @@
 import React from "react";
 import {csrfToken} from "util";
 import {t} from "t";
+import OnOff from "components/onoff";
+import {noop} from "form";
 
 class Profile extends React.Component {
 
@@ -25,6 +27,9 @@ class Profile extends React.Component {
 		authProviders: {},
 		has2fa: false,
 		userAuthProviders: {},
+		list: null,
+		canEdit: false,
+		onEditClick: noop,
 	};
 
 	render() {
@@ -33,49 +38,49 @@ class Profile extends React.Component {
 
 		const hasPassword = userProviders.indexOf("password") !== -1;
 
-		const enabledProviders = this.props.authProviders.providers.filter((provider) => {
-			return userProviders.indexOf(provider.id) !== -1;
-		}).map((provider) => {
-			return provider.label;
-		}).join(", ");
-
-		const disabledProviders = this.props.authProviders.providers.filter((provider) => {
-			return userProviders.indexOf(provider.id) === -1 && provider.id !== "password";
-		}).map((provider) => {
-			const url = `/api/auth/${provider.id}/connect?token=${csrfToken}`;
+		const providerStatus = this.props.authProviders.providers.map((provider) => {
+			const val = userProviders.indexOf(provider.id) !== -1;
 			return (
-				<a href={url} key={provider.id} className="btn btn-primary btn-block">{t("Log in with @label", {"@label": provider.label})}</a>
+				<p key={provider.id} className={`profile-auth-provider profile-auth-provider-${provider.id}`}>
+					{provider.label}: <OnOff value={val} />
+				</p>
 			);
 		});
 
-		const addProviderWrapper = disabledProviders ? (
-			<div className="row">
-				<div className="col-xs-4">{t("Add new authentication provider")}</div>
-				<div className="col-xs-8">{disabledProviders}</div>
-			</div>
+		const tfastatus = (
+			<p className="profile-auth-provider profile-auth-provider-2fa">
+				{t("Two-factor authentication")}: <OnOff value={this.props.has2fa} />
+			</p>
+		);
+
+		const editButton = this.props.canEdit ? (
+			<a href="#" className="btn btn-default" onClick={this.props.onEditClick}>{t("Edit")}</a>
 		) : null;
 
 		return (
-			<section className="profile">
-				<div className="row">
-					<div className="col-xs-12">
-						<div className="row">
-							<div className="col-xs-4">{t("Name")}</div>
-							<div className="col-xs-8">{this.props.user.Name}</div>
+			<div className="row">
+				<div className="col-xs-12">
+					<div className="row">
+						<div className="col-xs-10"><h3>{this.props.user.Name}</h3></div>
+						<div className="col-xs-2">
+							{editButton}
 						</div>
-						<div className="row">
-							<div className="col-xs-4">{t("Mail")}</div>
-							<div className="col-xs-8">{this.props.user.Mail}</div>
+					</div>
+					<hr />
+					<div className="row">
+						<div className="col-xs-4"><strong className="profile-mail">{t("Email")}</strong></div>
+						<div className="col-xs-8">{this.props.user.Mail}</div>
+					</div>
+					<div className="spacer">&nbsp;</div>
+					<div className="row">
+						<div className="col-xs-12">
+							<p><strong className="profile-auth">{t("Authentication")}</strong></p>
+							{providerStatus}
+							{tfastatus}
 						</div>
-						<div className="row">
-							<div className="col-xs-4">{t("Authentication providers")}</div>
-							<div className="col-xs-8">{enabledProviders}</div>
-						</div>
-						{addProviderWrapper}
 					</div>
 				</div>
-				{this.props.children}
-			</section>
+			</div>
 		);
 	}
 

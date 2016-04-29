@@ -1,5 +1,5 @@
 // Walkhub
-// Copyright (C) 2015 Pronovix
+// Copyright (C) 2016 Pronovix
 //
 // This program is free software: you can redistribute it and/or modify
 // it under the terms of the GNU Affero General Public License as
@@ -15,32 +15,24 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 import React from "react";
-import Frontpage from "components/frontpage";
-import WalkthroughStore from "stores/walkthrough";
-import WalkthroughActions from "actions/walkthrough";
-import connectToStores from "alt/utils/connectToStores";
+import {t} from "t";
 
-@connectToStores
-class FrontpageWrapper extends React.Component {
-
-	static getStores(props) {
-		return [WalkthroughStore];
-	}
-
-	static getPropsFromStores(props) {
-		return WalkthroughStore.getState();
-	}
-
-	componentDidMount() {
-		WalkthroughStore.performList();
-	}
+class OnOff extends React.Component {
+	
+	static defaultProps = {
+		value: false,
+		on: t("On"),
+		off: t("Off"),
+	};
 
 	render() {
+		const children = this.props.value ? this.props.on : this.props.off;
+		const className = this.props.value ? "text-success" : "text-danger";
+
 		return (
-			<Frontpage walkthroughs={this.props.walkthroughList} />
+			<span className={className}> {children} </span>
 		);
 	}
-
 }
 
-export default FrontpageWrapper;
+export default OnOff;

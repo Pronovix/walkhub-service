@@ -52,26 +52,32 @@ export class TextField extends ImmutableFormItem {
 		type: "text",
 		placeholder: "",
 		attributes: {},
+		labelgrid: 2,
+		inputgrid: 10,
+		decoration: true,
 	};
 
 	render() {
-		return (
+		const textField = (
+			<input
+				type={this.props.type}
+				className="form-control"
+				id={this.props.id}
+				name={this.props.name || this.props.id}
+				value={this.props.value}
+				onChange={this.props.onChange}
+				placeholder={this.props.placeholder}
+				{...this.props.attributes}
+			/>
+		);
+		return this.props.decoration ? (
 			<div className={"form-group " + this.props.id}>
-				<label className="col-sm-2 control-label" htmlFor={this.props.id}>{this.props.label}</label>
-				<div className="col-sm-10">
-					<input
-						type={this.props.type}
-						className="form-control"
-						id={this.props.id}
-						name={this.props.name || this.props.id}
-						value={this.props.value}
-						onChange={this.props.onChange}
-						placeholder={this.props.placeholder}
-						{...this.props.attributes}
-					/>
+				<label className={`col-sm-${this.props.labelgrid} control-label`} htmlFor={this.props.id}>{this.props.label}</label>
+				<div className={`col-sm-${this.props.inputgrid}`}>
+					{textField}
 				</div>
 			</div>
-		);
+		) : textField;
 	}
 
 }
