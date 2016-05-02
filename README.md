@@ -33,7 +33,7 @@ At least one of the following authentication providers are mandatory:
 
 If password authentication is enabled, then SMTP credentials are mandatory:
 
-* `smtp`: SMTP credentials (see config.json.sample.full)
+* `smtp`: SMTP credentials (see config.json.sample.full). Only PLAIN authentication ([RFC4616](https://tools.ietf.org/html/rfc4616)) is supported.
 
 ### Optional values
 
