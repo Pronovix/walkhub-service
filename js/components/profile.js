@@ -60,16 +60,14 @@ class Profile extends React.Component {
 		return (
 			<div className="row">
 				<div className="col-xs-12">
-					<div className="row">
-						<div className="col-xs-10"><h3>{this.props.user.Name}</h3></div>
-						<div className="col-xs-2">
+					<div className="row user-data-header">
+						<div className="col-xs-9"><h3 className="user-name">{this.props.user.Name}</h3></div>
+						<div className="col-xs-3">
 							{editButton}
 						</div>
 					</div>
-					<hr />
 					<div className="row">
-						<div className="col-xs-4"><strong className="profile-mail">{t("Email")}</strong></div>
-						<div className="col-xs-8">{this.props.user.Mail}</div>
+						<div className="col-xs-12"><strong className="profile-mail">{t("Email")}:</strong> {this.props.user.Mail}</div>
 					</div>
 					<div className="spacer">&nbsp;</div>
 					<div className="row">

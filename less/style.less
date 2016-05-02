@@ -14,7 +14,7 @@
 // You should have received a copy of the GNU Affero General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-// Importing custom TrueType Font from file.
+// Importing custom TrueType Fonts from file.
 @font-face {
 	font-family: 'Open Sans Light';
 	src: url('fonts/OpenSans-Light.ttf');
@@ -25,19 +25,39 @@
 	src: url('fonts/OpenSans-Regular.ttf');
 }
 
+@font-face {
+	font-family: 'Open Sans Bold';
+	src: url('fonts/OpenSans-Bold.ttf');
+}
+
+// Color variables.
+@color-black: #000;
+@color-white: #fff;
+@color-button-google-connect: #dc4e41;
+@color-record-close: #ff4d4d;
+@color-record-finish-save: #00b300;
+@color-navbar-bg: lighten(#222, 10%);
+@color-warning: #efa843;
+@color-success: #84c441;
+
 // Customized Bootstrap variables.
-@font-family-sans-serif: 'Open Sans Light',Helvetica,Arial,sans-serif;
+@font-family-sans-serif: 'Open Sans Light', Helvetica,Arial, sans-serif;
 @navbar-border-radius: 0px;
 @navbar-inverse-color: lighten(@gray-light, 10%);
-@navbar-inverse-bg: lighten(#222, 10%);
-@navbar-inverse-link-hover-color: #84c441;
+@navbar-inverse-bg: @color-navbar-bg;
+@navbar-inverse-link-hover-color: @color-success;
 @navbar-inverse-link-color: lighten(@gray-light, 30%);
 @body-bg: transparent;
 @btn-border-radius-base: 0px;
 @btn-border-radius-small: 0px;
-@btn-warning-bg: #efa843;
+@btn-warning-bg: @color-warning;
+@btn-warning-color: @btn-warning-bg;
+@btn-success-bg: @color-success;
+@btn-success-border: @btn-success-bg;
+@state-success-text: @color-success;
 
 @MAXIMUM_ZINDEX: 2147483647;
+@font-family-sans-serif-bold: 'Open Sans Bold', Helvetica, Arial, sans-serif;
 
 @keyframes blink {
 	0% { opacity: 1.0; }
@@ -117,13 +137,13 @@ fieldset.wh-edit-step {
 	top: 0;
 	left: 0;
 	z-index: @MAXIMUM_ZINDEX;
-	background: white;
+	background: @color-white;
 
 	ul.navbar-right {
 		margin-right: 10px;
 		li {
 			a {
-				color: white;
+				color: @color-white;
 			}
 		}
 	}
@@ -140,8 +160,8 @@ div div.helpbutton-container {
 }
 
 .wh-connect .provider-google a {
-	background-color: #dc4e41;
-	border-color: #dc4e41;
+	background-color: @color-button-google-connect;
+	border-color: @color-button-google-connect;
 }
 
 .embed-code-builder {
@@ -164,21 +184,6 @@ div.nocookie {
 	margin-top: 20px;
 }
 
-@media screen and (min-width: @screen-sm-min) {
-	.navbar-inverse ul.navbar-nav li {
-		transition: background .5s ease, box-shadow 0.25s ease;
-		-webkit-transition: background .5s ease, box-shadow 0.25s ease;
-		&:hover {
-			background: rgba(255,255,255,0.05);
-			box-shadow: 0 5px 1px -2px @navbar-inverse-link-hover-color;
-		}
-		a {
-			transition: all .5s ease;
-			-webkit-transition: all .5s ease;
-		}
-	}
-}
-
 .navbar-inverse .navbar-header {
 	a {
 		padding: 5px;
@@ -193,7 +198,7 @@ div.nocookie {
 }
 
 div.state-list, div.state-recorded, div.state-saved {
-	background: white;
+	background: @color-white;
 }
 
 div.state-list {
@@ -241,7 +246,7 @@ div.state-recorded .navbar-right {
 div.wh-modal {
 	.navbar-record {
 		.btn-close .glyphicon {
-			color: #ff4d4d;
+			color: @color-record-close;
 
 			&:hover {
 				color: darken(@navbar-inverse-link-color, 50%);
@@ -249,14 +254,14 @@ div.wh-modal {
 		}
 
 		.btn-finishsave {
-			color: #00b300;
+			color: @color-record-finish-save;
 		}
 	}
 }
 
 div.wh-modal.seethrough {
 	opacity: 0.75;
-	background-color: black;
+	background-color: @color-black;
 }
 
 img.loadingicon {
@@ -274,6 +279,91 @@ div.spacer {
 	height: 5rem;
 }
 
-.profile-edit-button {
-	width: 75px;
+.text-success {
+	color: @state-success-text;
+	text-transform: uppercase;
+}
+
+.text-danger {
+	color: @state-danger-text;
+	text-transform: uppercase;
+}
+
+.profile.row {
+	div.user-walkthrough {
+		margin-top: 20px;
+
+		.walkthrough-list-header {
+			h3 {
+				margin-top: 0;
+			}
+		}
+	}
+
+	div.user-data {
+		.user-data-header {
+			h3.user-name {
+				font-family: @font-family-sans-serif-bold;
+				color: @navbar-inverse-bg;
+				margin-top: 0;
+			}
+		}
+
+		input#name {
+			font-size: 18px;
+			height: 40px;
+		}
+
+		h4.auth-title {
+			margin-top: 40px;
+		}
+
+		h5.pw-change-title,
+		div.two-factor-auth-div {
+			margin-top: 20px;
+		}
+
+		div.qr-code-container {
+			text-align: center;
+
+			img.qr-code {
+				max-width: 250px;
+			}
+		}
+	}
+}
+
+@media screen and (min-width: @screen-sm-min) {
+	.navbar-inverse ul.navbar-nav li {
+		transition: background .5s ease, box-shadow 0.25s ease;
+		-webkit-transition: background .5s ease, box-shadow 0.25s ease;
+		&:hover {
+			background: rgba(255,255,255,0.05);
+			box-shadow: 0 5px 1px -2px @navbar-inverse-link-hover-color;
+		}
+		a {
+			transition: all .5s ease;
+			-webkit-transition: all .5s ease;
+		}
+	}
+}
+
+@media screen and (max-width: @screen-sm-max) {
+	.profile.row {
+		.user-data {
+			border-left: 0;
+			border-top: 1px solid @color-success;
+			margin-top: 50px;
+			padding-top: 20px;
+		}
+	}
+}
+
+@media screen and (min-width: @screen-md-min) {
+	.profile.row {
+		div.user-data {
+			border-left: 1px solid @color-success;
+			margin-top: 20px;
+		}
+	}
 }
