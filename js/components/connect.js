@@ -107,7 +107,7 @@ class Connect extends React.Component {
 						<TextField
 							id="identifier"
 							type="email"
-							label={t("email")}
+							label={t("E-mail")}
 							value={this.props.signinMail}
 							onChange={this.props.signinMailChange}
 							placeholder="mail@example.com"
@@ -117,7 +117,7 @@ class Connect extends React.Component {
 							value={this.props.signinPassword}
 							onChange={this.props.signinPasswordChange}
 							type="password"
-							label={t("password")}
+							label={t("Password")}
 							placeholder="********"
 						/>
 						<ButtonSet>
@@ -141,7 +141,7 @@ class Connect extends React.Component {
 				<TextField
 					id="email"
 					type="email"
-					label={t("email")}
+					label={t("E-mail")}
 					value={this.props.lostPasswordMail}
 					onChange={this.props.lostPasswordMailChange}
 					placeholder="mail@example.com"
@@ -172,7 +172,7 @@ class Connect extends React.Component {
 				<TextField
 					id="mail"
 					type="email"
-					label={t("email")}
+					label={t("E-mail")}
 					value={this.props.signupMail}
 					onChange={this.props.signupMailChange}
 					placeholder="mail@example.com"
@@ -180,7 +180,7 @@ class Connect extends React.Component {
 				<TextField
 					id="password"
 					type="password"
-					label={t("password")}
+					label={t("Password")}
 					value={this.props.signupPassword}
 					onChange={this.props.signupPasswordChange}
 					placeholder="********"
@@ -188,7 +188,7 @@ class Connect extends React.Component {
 				<TextField
 					id="password_confirm"
 					type="password"
-					label={t("password confirm")}
+					label={t("Password confirm")}
 					value={this.props.signupPasswordConfirm}
 					onChange={this.props.signupPasswordConfirmChange}
 					placeholder="********"

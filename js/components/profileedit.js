@@ -86,14 +86,15 @@ class ProfileEdit extends React.Component {
 						</ButtonSet>
 					</div>
 				</div>
+				<hr />
 				<TextField
 					id="mail"
 					label={t("Email") + ":"}
 					value={this.props.mail}
 					onChange={this.props.onMailChange}
 				/>
-				<h4> {t("Authentication")} </h4>
-				<h5> {t("Password change")} </h5>
+				<h4 className="auth-title"> {t("Authentication")} </h4>
+				<h5 className="pw-change-title"> {t("Password change")} </h5>
 				{this.getPasswordChangeForm()}
 				{this.getDisabledProvidersConnectLinks()}
 				{this.get2faToggleButton()}
@@ -167,11 +168,8 @@ class ProfileEdit extends React.Component {
 			} else {
 				return (
 					<div className="row">
-						<div className="col-xs-6">
-							{t("2-factor authentication")}
-						</div>
-						<div className="col-xs-6">
-							<a href="#" onClick={this.props.disable2faClick} className="btn btn-danger btn-sm profile-edit-button">{t("Disable")}</a>
+						<div className="col-xs-12 two-factor-auth-div">
+							<a href="#" onClick={this.props.disable2faClick} className="btn btn-danger btn-sm profile-edit-button">{t("Disable 2-factor authentication")}</a>
 						</div>
 					</div>
 				);
@@ -180,7 +178,7 @@ class ProfileEdit extends React.Component {
 			if (this.props.enabling2fa) {
 				return (
 					<Form onSubmit={this.props.enable2faSubmit}>
-						<p><img src={`/api/auth/password/add2fa?token=${csrfToken}&size=500`} /></p>
+						<div className="qr-code-container"><img className="qr-code" src={`/api/auth/password/add2fa?token=${csrfToken}&size=500`} /></div>
 						<TextField
 							label={t("Code")}
 							id="2facode"
@@ -207,12 +205,9 @@ class ProfileEdit extends React.Component {
 				);
 			} else {
 				return (
-					<div className="row">
-						<div className="col-xs-6">
-							{t("2-factor authentication")}
-						</div>
-						<div className="col-xs-6">
-							<a href="#" onClick={this.props.enable2faClick} className="btn btn-info btn-sm profile-edit-button">{t("Enable")}</a>
+					<div className="row two-factor-auth-div">
+						<div className="col-xs-12">
+							<a href="#" onClick={this.props.enable2faClick} className="btn btn-info btn-sm profile-edit-button">{t("Enable 2-factor authentication")}</a>
 						</div>
 					</div>
 				);

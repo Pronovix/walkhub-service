@@ -84,12 +84,12 @@ class Walkthrough extends React.Component {
 			</div>
 		) : (
 			<div className="row row-wt-no-helpcenter">
-				<div className="col-xs-9 col-md-8">
+				<div className="col-xs-7 col-sm-9">
 					<h5 className="wt-title">
 						{titleName}
 					</h5>
 				</div>
-				<div className="col-xs-3 col-md-4">
+				<div className="col-xs-5 col-sm-3">
 					{playButton}
 					{editbuttons}
 				</div>
