@@ -55,9 +55,15 @@
 @btn-success-bg: @color-success;
 @btn-success-border: @btn-success-bg;
 @state-success-text: @color-success;
+@profile-card-bg: lighten(@gray-light, 50%);
+@btn-default-border: lighten(@gray-light, 40%);
 
 @MAXIMUM_ZINDEX: 2147483647;
 @font-family-sans-serif-bold: 'Open Sans Bold', Helvetica, Arial, sans-serif;
+
+strong {
+	font-family: 'Open Sans Bold', Helvetica, Arial, sans-serif;
+}
 
 @keyframes blink {
 	0% { opacity: 1.0; }
@@ -292,15 +298,32 @@ div.spacer {
 .profile.row {
 	div.user-walkthrough {
 		margin-top: 20px;
+		padding: 20px;
+		border-radius: 2px;
+		background-color: @profile-card-bg;
 
 		.walkthrough-list-header {
 			h3 {
 				margin-top: 0;
 			}
 		}
+
+		.profile-emptywalkthroughlist {
+			text-align: center;
+
+			h4 {
+				margin-bottom: 30px;
+				font-family: @font-family-sans-serif-bold;
+			}
+		}
 	}
 
 	div.user-data {
+		margin-top: 20px;
+		border-radius: 2px;
+		background-color: @profile-card-bg;
+		padding: 20px;
+
 		.user-data-header {
 			h3.user-name {
 				font-family: @font-family-sans-serif-bold;
@@ -314,8 +337,16 @@ div.spacer {
 			height: 40px;
 		}
 
+		div.form-group.mail {
+			label {
+				font-family: @font-family-sans-serif-bold;
+			}
+		}
+
 		h4.auth-title {
 			margin-top: 40px;
+			font-family: @font-family-sans-serif-bold;
+			font-size: 14px;
 		}
 
 		h5.pw-change-title,
@@ -329,6 +360,46 @@ div.spacer {
 			img.qr-code {
 				max-width: 250px;
 			}
+		}
+
+		.form-disabling-2fa {
+			margin-top: 40px;
+		}
+	}
+}
+
+.collapsible-container {
+	a.title {
+		font-size: 24px;
+		color: @text-color;
+		cursor: pointer;
+
+		&:before {
+			font-family: 'Glyphicons Halflings';
+			font-size: 12px;
+			margin-right: 5px;
+			vertical-align: middle;
+		}
+	}
+
+	&.collapsed {
+		.title:before {
+			content: "\e250";
+		}
+	}
+
+	&.expanded {
+		.title:before {
+			content: "\e252";
+		}
+	}
+
+	.content {
+		margin: 0 25px;
+		transition: all 350ms ease-out;
+
+		ol {
+			padding-left: 12px;
 		}
 	}
 }
@@ -344,26 +415,6 @@ div.spacer {
 		a {
 			transition: all .5s ease;
 			-webkit-transition: all .5s ease;
-		}
-	}
-}
-
-@media screen and (max-width: @screen-sm-max) {
-	.profile.row {
-		.user-data {
-			border-left: 0;
-			border-top: 1px solid @color-success;
-			margin-top: 50px;
-			padding-top: 20px;
-		}
-	}
-}
-
-@media screen and (min-width: @screen-md-min) {
-	.profile.row {
-		div.user-data {
-			border-left: 1px solid @color-success;
-			margin-top: 20px;
 		}
 	}
 }

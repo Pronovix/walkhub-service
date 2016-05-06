@@ -86,7 +86,9 @@ class ProfileEdit extends React.Component {
 						</ButtonSet>
 					</div>
 				</div>
-				<hr />
+				<div className="row">
+					<div className="col-xs-8"><hr /></div>
+				</div>
 				<TextField
 					id="mail"
 					label={t("Email") + ":"}
@@ -104,14 +106,14 @@ class ProfileEdit extends React.Component {
 
 	getPasswordChangeForm() {
 		const oldPwTextField = this.props.hasPassword ? (
-			<TextField label={t("Old password")} id="oldpassword" value={this.props.oldPassword} onChange={this.props.oldPasswordChange} labelgrid={4} inputgrid={8} />
+			<TextField label={t("Old:")} id="oldpassword" value={this.props.oldPassword} onChange={this.props.oldPasswordChange} labelgrid={4} inputgrid={8} />
 		) : null;
 
 		return (
 			<div>
 				{oldPwTextField}
-				<TextField label={t("New password")} id="newpassword" value={this.props.newPassword} onChange={this.props.newPasswordChange} type="password" labelgrid={4} inputgrid={8} />
-				<TextField label={t("Confirm password")} id="newpasswordconfirm" value={this.props.newPasswordConfirm} onChange={this.props.newPasswordConfirmChange} type="password" labelgrid={4} inputgrid={8} />
+				<TextField label={t("New:")} id="newpassword" value={this.props.newPassword} onChange={this.props.newPasswordChange} type="password" labelgrid={4} inputgrid={8} />
+				<TextField label={t("New again:")} id="newpasswordconfirm" value={this.props.newPasswordConfirm} onChange={this.props.newPasswordConfirmChange} type="password" labelgrid={4} inputgrid={8} />
 			</div>
 		);
 	}
@@ -140,36 +142,39 @@ class ProfileEdit extends React.Component {
 		if (this.props.has2fa) {
 			if (this.props.disabling2fa) {
 				return (
-					<Form onSubmit={this.props.disable2faSubmit}>
-						<TextField
-							id="password"
-							label={t("Password")}
-							value={this.props.pw2fa}
-							onChange={this.props.pw2faChange}
-							type="password"
-						/>
-						<ButtonSet>
-							<ButtonSetButton
-								type="submit"
-								className="btn-danger"
-								onClick={() => {}}
-								>
-								{t("Disable")}
-							</ButtonSetButton>
-							<ButtonSetButton
-								className="btn-default"
-								onClick={this.props.disable2faCancel}
-								>
-								{t("Cancel")}
-							</ButtonSetButton>
-						</ButtonSet>
-					</Form>
+					<div className="form-disabling-2fa">
+						<Form onSubmit={this.props.disable2faSubmit}>
+							<TextField
+								id="password"
+								label={t("Password")}
+								value={this.props.pw2fa}
+								onChange={this.props.pw2faChange}
+								type="password"
+								labelgrid={4} inputgrid={8}
+							/>
+							<ButtonSet>
+								<ButtonSetButton
+									type="submit"
+									className="btn-danger btn-sm"
+									onClick={() => {}}
+									>
+									{t("Disable")}
+								</ButtonSetButton>
+								<ButtonSetButton
+									className="btn-default btn-sm"
+									onClick={this.props.disable2faCancel}
+									>
+									{t("Cancel")}
+								</ButtonSetButton>
+							</ButtonSet>
+						</Form>
+					</div>
 				);
 			} else {
 				return (
 					<div className="row">
 						<div className="col-xs-12 two-factor-auth-div">
-							<a href="#" onClick={this.props.disable2faClick} className="btn btn-danger btn-sm profile-edit-button">{t("Disable 2-factor authentication")}</a>
+							<a href="#" onClick={this.props.disable2faClick} className="btn btn-default btn-sm profile-edit-button">{t("Disable 2-factor authentication")}</a>
 						</div>
 					</div>
 				);
@@ -207,7 +212,7 @@ class ProfileEdit extends React.Component {
 				return (
 					<div className="row two-factor-auth-div">
 						<div className="col-xs-12">
-							<a href="#" onClick={this.props.enable2faClick} className="btn btn-info btn-sm profile-edit-button">{t("Enable 2-factor authentication")}</a>
+							<a href="#" onClick={this.props.enable2faClick} className="btn btn-default btn-sm profile-edit-button">{t("Enable 2-factor authentication")}</a>
 						</div>
 					</div>
 				);
