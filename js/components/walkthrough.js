@@ -61,6 +61,7 @@ class Walkthrough extends React.Component {
 			if (this.props.compact) {
 				const href = this.context.history.createHref(`/walkthrough/${walkthrough.uuid}`);
 				editbuttons.push(<a href={href} key="edit" target="_blank" className="btn btn-default btn-sm">{t("Edit")}</a>);
+				editbuttons.push(<a onClick={this.props.onDeleteClick} key="delete" className="btn btn-danger btn-sm">{t("Delete")}</a>);
 			} else {
 				editbuttons.push(<a onClick={this.props.onEditClick} key="edit" className="btn btn-default btn-sm">{t("Edit")}</a>);
 				editbuttons.push(<a onClick={this.props.onDeleteClick} key="delete" className="btn btn-danger btn-sm">{t("Delete")}</a>);

@@ -25,7 +25,7 @@ class WalkthroughList extends React.Component {
 
 	render() {
 		const walkthroughs = this.props.walkthroughs.map((walkthrough) => {
-			return <WalkthroughPlay key={walkthrough.uuid} walkthrough={walkthrough} compact={true} />;
+			return <div className="row"><WalkthroughPlay key={walkthrough.uuid} walkthrough={walkthrough} compact={true} /></div>;
 		});
 
 		return (
