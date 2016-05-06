@@ -21,9 +21,9 @@ class Collapsible extends React.Component {
   constructor(props) {
     super(props);
     this.state = {isExpanded: this.props.isExpanded};
-    this.clickTitle = this.clickTitle.bind(this);
   }
-  clickTitle() {
+
+  clickTitle = () => {
     this.setState({isExpanded: !this.state.isExpanded});
   }
 
