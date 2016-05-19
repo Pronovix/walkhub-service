@@ -157,7 +157,7 @@ class ProfileWrapper extends React.Component {
 		const empty = (
 			<div className="row profile-emptywalkthroughlist">
 				<div className="col-xs-12">
-					<h3>{t("It looks like you haven't got a Walkthrough yet. Add an embed code first to your site.")}</h3>
+					<h4>{t("It looks like you haven't got a Walkthrough yet. Add an embed code first to your site.")}</h4>
 					<Link to="/embedcode" className="btn btn-default">{t("Generate my embed code!")}</Link>
 				</div>
 			</div>
@@ -167,7 +167,7 @@ class ProfileWrapper extends React.Component {
 			<WalkthroughListWrapper groupBySite={true} uid={user.UUID} empty={empty}>
 				<div className="row walkthrough-list-header">
 					<div className="col-xs-7 col-sm-9">
-						<h3>{t("Your Walkthroughs")}</h3>
+						<h3>{t("My Walkthroughs")}</h3>
 					</div>
 					<div className="col-xs-5 col-sm-3">
 						<Link className="btn btn-default" to="/embedcode">{t("Add new site")}</Link>
@@ -244,11 +244,15 @@ class ProfileWrapper extends React.Component {
 
 		return (
 			<section className="profile row">
-				<div className="col-xs-12 col-md-8 user-walkthrough">
-					{list}
+				<div className="col-xs-12 col-md-8">
+					<div className="user-walkthrough">
+						{list}
+					</div>
 				</div>
-				<div className="col-xs-12 col-md-4 user-data">
-					{content}
+				<div className="col-xs-12 col-md-4">
+					<div className="user-data">
+						{content}
+					</div>
 				</div>
 			</section>
 		);
