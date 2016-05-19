@@ -32,6 +32,9 @@ class Record extends React.Component {
 
 		startingUrl: "",
 		onStartingUrlChange: noop,
+		onStartingUrlBlur: () => {},
+		recordDisabled: false,
+		compatibilityWarning: false,
 
 		onRecordClick: noop,
 		onSaveClick: noop,
@@ -62,13 +65,18 @@ class Record extends React.Component {
 
 		const recordButtonClass = "btn-danger btn-record-" + this.props.embedded;
 
+		const compatWarn = this.props.compatibilityWarning ? (
+			<p className="text-warning">{t("The site might not be compatible with this walkhub")}</p>
+		) : null;
+
 		return (
 			<section className={"wh-record " + (this.props.embedded ? "embedded" : "container") + (hasSteps ? " has-steps" : " no-steps")}>
 				<h1> {t("Record walkthrough")} </h1>
 				<Form>
 					<TextField id="input-title" label={t("Title")} value={this.props.title} onChange={this.props.onTitleChange} />
-					<TextField id="input-starting-url" label={t("Starting URL")} value={this.props.startingUrl} onChange={this.props.onStartingUrlChange} />
-					<Button grid={!this.props.embedded} onClick={this.props.onRecordClick} containerClassName="record" className={recordButtonClass}><strong>{t("Record")}</strong> <span><object className="record-icon" type="image/svg+xml" data={recordIcon}></object></span></Button>
+					<TextField id="input-starting-url" label={t("Starting URL")} value={this.props.startingUrl} onChange={this.props.onStartingUrlChange} onBlur={this.props.onStartingUrlBlur} />
+					{compatWarn}
+					<Button grid={!this.props.embedded} onClick={this.props.onRecordClick} disabled={this.props.recordDisabled} containerClassName="record" className={recordButtonClass}><strong>{t("Record")}</strong> <span><object className="record-icon" type="image/svg+xml" data={recordIcon}></object></span></Button>
 					<div className="form-group steps">
 						<h3 className="col-sm-offset-2 col-sm-10">{t("Recorded steps")}</h3>
 						<div className="col-sm-offset-2 col-sm-10">
@@ -76,7 +84,7 @@ class Record extends React.Component {
 						</div>
 					</div>
 					<ButtonSet className="save">
-						<ButtonSetButton onClick={this.props.onSaveClick} type="submit" className="btn-success">{t("Save")}</ButtonSetButton>
+						<ButtonSetButton onClick={this.props.onSaveClick} disabled={this.props.steps.length === 0} type="submit" className="btn-success">{t("Save")}</ButtonSetButton>
 						{reset}
 					</ButtonSet>
 				</Form>

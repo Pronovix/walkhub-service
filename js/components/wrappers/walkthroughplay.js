@@ -15,11 +15,12 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 import React from "react";
-import WalkhubBackend from "walkhub_backend";
+import WalkhubBackend from "walkthrough/walkhub_backend";
 import {noop} from "form";
 import Walkthrough from "components/walkthrough";
 import connectToStores from "alt/utils/connectToStores";
 import UserStore from "stores/user";
+import WalkthroughStore from "stores/walkthrough";
 import URI from "URIjs";
 import {isHTTPSPage} from "util";
 
@@ -28,16 +29,18 @@ class WalkthroughPlay extends React.Component {
 	static defaultProps = {
 		walkthrough: {},
 		currentUser: {},
+		siteinfos: {},
 	};
 
 	static getStores(props) {
-		return [UserStore];
+		return [UserStore, WalkthroughStore];
 	}
 
 	static getPropsFromStores(props) {
 		const state = UserStore.getState();
 		return {
 			currentUser: state.users[state.currentUser] || {},
+			siteinfos: WalkthroughStore.getState().siteinfos || {},
 		};
 	}
 
@@ -46,6 +49,7 @@ class WalkthroughPlay extends React.Component {
 	state = {
 		widget: null,
 		autoplayed: false,
+		siteinfoLoaded: false,
 	};
 
 	static contextTypes = {
@@ -62,7 +66,8 @@ class WalkthroughPlay extends React.Component {
 			return;
 		}
 
-		this.backend.startPlay(this.props.walkthrough.uuid);
+		const runner = this.createRunner();
+		this.backend.startPlay(this.props.walkthrough.uuid, runner);
 		this.setState({
 			widget: this.backend.widget,
 		});
@@ -72,8 +77,8 @@ class WalkthroughPlay extends React.Component {
 		noop(evt);
 
 		if (this.shouldGoBack()) {
-			// TODO figure out why the last entry gets duplicated in the history
-			window.history.go(-2);
+			// TODO figure out why the last entry gets duplicated in the history in compact view.
+			window.history.go(this.props.compact ? -2 : -1);
 		}
 
 		this.setState({
@@ -89,6 +94,7 @@ class WalkthroughPlay extends React.Component {
 
 	componentDidMount() {
 		this.maybeAutoplay(this.props);
+		this.maybeGetSiteinfo(this.props);
 	}
 
 	componentWillUnmount() {
@@ -97,6 +103,7 @@ class WalkthroughPlay extends React.Component {
 
 	componentWillReceiveProps(nextProps) {
 		this.maybeAutoplay(nextProps);
+		this.maybeGetSiteinfo(nextProps);
 	}
 
 	maybeAutoplay(props) {
@@ -119,22 +126,69 @@ class WalkthroughPlay extends React.Component {
 		return !!this.context.location.query.goback;
 	}
 
+	getWalkthroughURL(props) {
+		return (props.walkthrough && props.walkthrough.steps && props.walkthrough.steps[0]) ?
+			props.walkthrough.steps[0].arg0 :
+			null;
+	}
+
 	getHTTPReloadURL() {
-		if (this.props.walkthrough && this.props.walkthrough.steps && this.props.walkthrough.steps[0]) {
-			const walkthroughProtocol = URI(this.props.walkthrough.steps[0].arg0).protocol();
+		const wturl = this.getWalkthroughURL(this.props);
+		const siteinfo = this.getSiteinfo(this.props);
+		if (wturl) {
+			const walkthroughProtocol = URI(wturl).protocol();
 			if (isHTTPSPage() && walkthroughProtocol === "http") {
 				let httpOrigin = URI(WALKHUB_HTTP_URL);
-				return URI(window.location.href)
+				let url = URI(window.location.href)
 					.protocol("http")
 					.host(httpOrigin.host())
 					.path(`/walkthrough/${this.props.walkthrough.uuid}`)
 					.addSearch("autoplay", this.props.walkthrough.uuid)
-					.addSearch("goback", true)
-					.toString();
+					.addSearch("goback", true);
+
+				if (siteinfo) {
+					url.addSearch("force_runner", WalkhubBackend.runnerNameForSiteinfo(siteinfo));
+				}
+
+				return url.toString();
 			}
 		}
 
 		return "";
+	}
+
+	maybeGetSiteinfo(props) {
+		if (this.state.siteinfoLoaded) {
+			return;
+		}
+
+		const wturl = this.getWalkthroughURL(props);
+		if (wturl && !props.siteinfos[wturl]) {
+			this.setState({
+				siteinfoLoaded: true,
+			});
+			setTimeout(() => {
+				WalkthroughStore.performSiteinfo(wturl);
+			}, 0);
+		}
+	}
+
+	createRunner() {
+		const force = this.context.location.query.force_runner;
+		if (force) {
+			return WalkhubBackend.createRunnerFromName(force);
+		}
+
+		return WalkhubBackend.createRunnerFromSiteinfo(this.getSiteinfo());
+	}
+
+	getSiteinfo() {
+		const wturl = this.getWalkthroughURL(this.props);
+		return this.props.siteinfos[wturl] || {};
+	}
+
+	iframeBlocked() {
+		return this.getSiteinfo().blocks_iframe;
 	}
 
 	render() {
@@ -148,6 +202,7 @@ class WalkthroughPlay extends React.Component {
 					onPlayClick={this.playWalkthrough}
 					editable={this.props.currentUser.UUID === this.props.walkthrough.uid}
 					httpReload={!!httpReloadURL}
+					iframeBlocked={this.iframeBlocked()}
 					{...this.props}
 				/>
 				{this.state.widget}

@@ -20,7 +20,7 @@ import RemoteStore from "stores/remote";
 import WalkthroughStore from "stores/walkthrough";
 import connectToStores from "alt/utils/connectToStores";
 import HelpCenterList from "components/helpcenterlist";
-import WalkhubBackend from "walkhub_backend";
+import WalkhubBackend from "walkthrough/walkhub_backend";
 import HelpButton from "components/helpbutton";
 import Bar from "components/bar";
 import {noop} from "form";

@@ -24,6 +24,8 @@ import WalkhubBackendActions from "actions/walkhub_backend";
 import WalkthroughStore from "stores/walkthrough";
 import LogStore from "stores/log";
 import OuterClassActions from "actions/outerclass";
+import IframeRunner from "walkthrough/runner/iframe";
+import PopupRunner from "walkthrough/runner/popup";
 
 class WalkhubBackend {
 
@@ -67,35 +69,58 @@ class WalkhubBackend {
 		this.state = this.defaultState();
 	}
 
-	startRecord(start = "") {
+	static createRunnerFromSiteinfo(info) {
+		const name = WalkhubBackend.runnerNameForSiteinfo(info);
+		return WalkhubBackend.createRunnerFromName(name);
+	}
+
+	static runnerNameForSiteinfo(info) {
+		return info.blocks_iframe ?
+			"popup" :
+			"iframe";
+	}
+
+	static runnerNameMap = {
+		"iframe": IframeRunner,
+		"popup": PopupRunner,
+	};
+
+	static createRunnerFromName(name) {
+		const runnerClass = WalkhubBackend.runnerNameMap[name];
+		if (runnerClass) {
+			return new runnerClass();
+		}
+
+		return null;
+	}
+
+	startRecord(start = "", runner) {
 		this.state = this.defaultState();
 		this.recording = true;
 		this.state.recording = true;
 		this.state.recordStartUrl = start;
 		this.addStep("open", start, null);
-		this.startServer();
+		this.startServer(runner);
 	}
 
-	startPlay(uuid) {
+	startPlay(uuid, runner) {
 		this.state = this.defaultState();
 		this.recording = false;
 		this.state.walkthrough = uuid;
 		this.state.editLink = WALKHUB_URL + `walkthrough/${uuid}`;
-		this.startServer();
+		this.startServer(runner);
 	}
 
-	startServer() {
-		const onclose = (evt) => {
-			noop(evt);
-			if (this.onclose) {
-				this.onclose();
-			}
+	startServer(runner) {
+		const wt = WalkthroughStore.getState().walkthroughs[this.state.walkthrough];
 
-			WalkhubBackendActions.close();
-			WalkhubBackend.embeddedPost({type: "end"});
-		};
+		WalkhubBackend.embeddedPost({type: "start"});
+		window.addEventListener("message", this.onMessageEventHandler);
 
-		const onsave = (evt) => {
+		this.runner = runner;
+
+		this.runner.recording = this.recording;
+		this.runner.onSave = (evt) => {
 			noop(evt);
 			if (this.onsave) {
 				this.onsave();
@@ -105,27 +130,31 @@ class WalkhubBackend {
 			WalkhubBackend.embeddedPost({type: "end"});
 			WalkhubBackend.embeddedPost({type: "embedState", state: "saved"});
 		};
+		this.runner.onClose = (evt) => {
+			noop(evt);
+			if (this.onclose) {
+				this.onclose();
+			}
 
-		const wt = WalkthroughStore.getState().walkthroughs[this.state.walkthrough];
+			this.runner.end();
 
-		WalkhubBackend.embeddedPost({type: "start"});
-		window.addEventListener("message", this.onMessageEventHandler);
-		this.widget = (
-			<WalkhubIframe
-				src="/assets/start.html"
-				recdot={this.recording}
-				onClose={onclose}
-				actionButton={this.recording ? t("Finish & Save") : null}
-				actionButtonClassName="btn-finishsave"
-				onActionButtonClick={onsave}
-				title={wt && wt.name}
-			/>
-		);
+			WalkhubBackendActions.close();
+			WalkhubBackend.embeddedPost({type: "end"});
+		};
+		this.runner.actionClick = this.runner.onSave;
+
+		this.widget = this.runner.getWidget(wt && wt.name);
+
+		this.runner.start();
+
 		console.log("Starting walkhub backend...");
 	}
 
 	stop() {
 		window.removeEventListener("message", this.onMessageEventHandler);
+
+		this.runner && this.runner.stop();
+
 		console.log("Stopping walkhub backend...");
 	}
 
@@ -319,6 +348,7 @@ class WalkhubBackend {
 		WalkhubBackendActions.close();
 		if (this.onclose) {
 			this.onclose();
+			this.runner.end();
 		}
 	}
 }

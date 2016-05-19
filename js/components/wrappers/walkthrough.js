@@ -24,7 +24,7 @@ import UserActions from "actions/user";
 import connectToStores from "alt/utils/connectToStores";
 import {noop} from "form";
 import flux from "control";
-import WalkhubBackend from "walkhub_backend";
+import WalkhubBackend from "walkthrough/walkhub_backend";
 import LogStore from "stores/log";
 
 @connectToStores

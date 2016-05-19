@@ -45,7 +45,15 @@ class WalkthroughActions {
 			"loadWalkthrough",
 			"createWalkthrough",
 			"updateWalkthrough",
-			"deleteWalkthrough"
+			"deleteWalkthrough",
+
+			"loadingSiteinfo",
+			"receivedSiteinfo",
+			"receivingSiteinfoFailed",
+
+			"loadingMySites",
+			"receivedMySites",
+			"receivingMySitesFailed"
 		);
 	}
 }

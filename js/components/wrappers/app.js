@@ -26,7 +26,7 @@ import {capitalizeFirstLetter} from "util";
 import RouterActions from "actions/router";
 import OuterClassActions from "actions/outerclass";
 import MessageActions from "actions/message";
-import WalkhubBackend from "walkhub_backend";
+import WalkhubBackend from "walkthrough/walkhub_backend";
 import $ from "jquery";
 import NetworkActivityWrapper from "components/wrappers/networkactivity";
 

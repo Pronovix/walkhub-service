@@ -49,6 +49,8 @@ export class TextField extends ImmutableFormItem {
 		label: "",
 		value: "",
 		onChange: noop,
+		onBlur: () => {},
+		onFocus: () => {},
 		type: "text",
 		placeholder: "",
 		attributes: {},
@@ -66,6 +68,8 @@ export class TextField extends ImmutableFormItem {
 				name={this.props.name || this.props.id}
 				value={this.props.value}
 				onChange={this.props.onChange}
+				onBlur={this.props.onBlur}
+				onFocus={this.props.onFocus}
 				placeholder={this.props.placeholder}
 				{...this.props.attributes}
 			/>
@@ -196,11 +200,12 @@ export class ButtonSetButton extends React.Component {
 		className: "",
 		id: "",
 		name: "",
+		disabled: false,
 	};
 
 	render() {
 		return (
-			<button onClick={this.props.onClick} type={this.props.type} className={"btn " + this.props.className} id={this.props.id} name={this.props.name || this.props.id}>{this.props.children}</button>
+			<button onClick={this.props.onClick} type={this.props.type} className={"btn " + this.props.className} id={this.props.id} name={this.props.name || this.props.id} disabled={this.props.disabled}>{this.props.children}</button>
 		);
 	}
 
@@ -216,12 +221,13 @@ export class Button extends React.Component {
 		id: "",
 		name: "",
 		grid: true,
+		disabled: false,
 	};
 
 	render() {
 		return (
 			<ButtonSet grid={this.props.grid} className={this.props.containerClassName}>
-				<ButtonSetButton onClick={this.props.onClick} type={this.props.type} className={this.props.className} id={this.props.id} name={this.props.name || this.props.id}>{this.props.children}</ButtonSetButton>
+				<ButtonSetButton onClick={this.props.onClick} type={this.props.type} className={this.props.className} id={this.props.id} name={this.props.name || this.props.id} disabled={this.props.disabled}>{this.props.children}</ButtonSetButton>
 			</ButtonSet>
 		);
 	}

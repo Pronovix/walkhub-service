@@ -317,6 +317,13 @@ func (s *WalkhubServer) Start(addr string, certfile string, keyfile string) erro
 
 	s.Get("/metrics", stdprometheus.Handler(), ab.RestrictPrivateAddressMiddleware())
 
+	siteinfoBaseURLs := []string{s.BaseURL}
+	if s.HTTPOrigin != "" {
+		siteinfoBaseURLs = append(siteinfoBaseURLs, s.HTTPOrigin)
+	}
+
+	s.RegisterService(NewSiteinfoService(siteinfoBaseURLs...))
+
 	if certfile != "" && keyfile != "" {
 		s.setupHTTPS()
 		if s.TLSConfig == nil {

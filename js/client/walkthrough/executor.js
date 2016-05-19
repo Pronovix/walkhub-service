@@ -73,14 +73,21 @@ class Executor {
 		}
 		window.addEventListener("message", pingPongServer);
 
-		if (window.parent && window.parent !== window) {
-			Executor.ping(window.parent, window.location.origin);
-			this.origin.forEach(function(origin) {
-				if (window.location.origin !== origin) {
-					Executor.ping(window.parent, origin);
-				}
-			});
+		this.pingOrigins(window.parent);
+		this.pingOrigins(window.opener);
+	}
+
+	pingOrigins(parent) {
+		if (!parent || parent === window) {
+			return;
 		}
+
+		Executor.ping(parent, location.origin);
+		this.origin.forEach(function(origin) {
+			if (location.origin !== origin) {
+				Executor.ping(parent, origin);
+			}
+		});
 	}
 
 	showExitDialog(message, buttons) {

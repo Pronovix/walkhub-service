@@ -174,7 +174,7 @@ div.embeddedapp {
 	overflow: hidden;
 }
 
-p.walkthrough-http-reload-message {
+p.walkthrough-http-reload-message, p.walkthrough-iframe-blocked-message {
 	padding: 15px;
 }
 
@@ -365,5 +365,18 @@ div.spacer {
 			border-left: 1px solid @color-success;
 			margin-top: 20px;
 		}
+	}
+}
+
+.popup-runner-modal {
+	background: rgba(0, 0, 0, 0.5);
+
+	.inner-wrapper {
+		background: white;
+		padding: 2rem;
+		position: absolute;
+		top: 30%;
+		left: 50%;
+		transform: translate(-50%, -50%);
 	}
 }

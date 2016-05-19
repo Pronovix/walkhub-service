@@ -33,6 +33,7 @@ class Walkthrough extends React.Component {
 		compact: false,
 		linkTo: true,
 		httpReload: false,
+		iframeBlocked: false,
 		helpcenter: false,
 	};
 
@@ -128,10 +129,15 @@ class Walkthrough extends React.Component {
 			<p className="bg-danger walkthrough-http-reload-message">{t("The walkthrough is recorded on an HTTP website. Playing the walkthrough will temporarly reload the page in HTTP.")}</p>
 		) : null;
 
+		const iframeBlocked = this.props.iframeBlocked ? (
+			<p className="bg-danger walkthrough-iframe-blocked-message">{t("This walkthrough is only enabled in popup mode")}</p>
+		) : null;
+
 		return (
 			<section key={walkthrough.revision} className={`walkthrough-uuid-${walkthrough.uuid} walkthrough-revision-${walkthrough.revision}`}>
 				{title}
 				{this.props.compact ? null : reloadHTTP}
+				{this.props.compact ? null : iframeBlocked}
 				{this.props.compact ? null : description}
 				{this.props.compact ? null : stepsWidget}
 				{this.props.compact ? null : embed}

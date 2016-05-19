@@ -1,5 +1,5 @@
 // Walkhub
-// Copyright (C) 2015 Pronovix
+// Copyright (C) 2016 Pronovix
 //
 // This program is free software: you can redistribute it and/or modify
 // it under the terms of the GNU Affero General Public License as
@@ -14,38 +14,26 @@
 // You should have received a copy of the GNU Affero General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-import Walkhub from "client/walkhub";
+import React from "react";
+import Runner from "walkthrough/runner";
+import WalkhubIframe from "components/walkhub_iframe";
 
-function Enforcer(wh) {
-	window.Walkhub = window.Walkhub || {};
+class IframeRunner extends Runner {
 
-	if (!wh) {
-		wh = Walkhub.getInstance();
+	getWidget(title) {
+		return (
+			<WalkhubIframe
+				src="/assets/start.html"
+				recdot={this.recording}
+				onClose={this.onClose}
+				actionButton={this.recording ? t("Finish & Save") : null}
+				actionButtonClassName="btn-finishsave"
+				onActionButtonClick={this.actionClick}
+				title={title}
+			/>
+		);
 	}
 
-	if ((window.parent !== window || window.opener) && !window.Walkhub[WALKHUB_URL]) {
-		window.Walkhub[WALKHUB_URL] = true;
-		enforce(wh);
-	}
 }
 
-function enforce(wh) {
-	if (!enforce.tries) {
-		enforce.tries = 0;
-	}
-
-	if (wh.initialized) {
-		return;
-	}
-
-	if (window.document.readyState === "complete") {
-		if (enforce.tries > 4 || enforce.tries == 0) {
-			wh.currentExecutor.start();
-		}
-		enforce.tries++;
-	}
-
-	setTimeout(() => enforce(wh), 500);
-};
-
-export default Enforcer;
+export default IframeRunner;

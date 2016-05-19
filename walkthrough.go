@@ -17,6 +17,7 @@
 package walkhub
 
 import (
+	"database/sql"
 	"errors"
 	"fmt"
 	"html"
@@ -82,6 +83,11 @@ func afterWalkthroughSchemaSQL(sql string) (_sql string) {
 		ALTER TABLE walkthrough ADD CONSTRAINT walkthrough_uuid_fkey FOREIGN KEY (uid)
 			REFERENCES "user" (uuid) MATCH SIMPLE
 			ON UPDATE CASCADE ON DELETE CASCADE;
+
+		CREATE INDEX walkthrough_site_idx
+			ON public.walkthrough
+			USING btree
+			(((steps -> 0) ->> 'arg0'::text) COLLATE pg_catalog."default");
 	`
 }
 
@@ -199,6 +205,33 @@ func afterWalkthroughServiceRegister(s *WalkthroughService, h *hitch.Hitch) {
 		ab.Render(r).SetCode(http.StatusAccepted)
 	}), ab.RestrictPrivateAddressMiddleware())
 
+	h.Get("/api/mysites", http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		db := ab.GetDB(r)
+		uid := ab.GetSession(r)["uid"]
+
+		rows, err := db.Query("SELECT DISTINCT steps->0->'arg0' AS site FROM walkthrough WHERE uid = $1 ORDER BY site", uid)
+		ab.MaybeFail(r, http.StatusInternalServerError, err)
+		defer rows.Close()
+
+		sites := []string{}
+
+		for rows.Next() {
+			var site sql.NullString
+			err = rows.Scan(&site)
+			ab.MaybeFail(r, http.StatusInternalServerError, err)
+			if site.Valid {
+				siteName := site.String
+
+				// strip surrounding "
+				siteName = siteName[1:]
+				siteName = siteName[:len(siteName)-1]
+
+				sites = append(sites, siteName)
+			}
+		}
+
+		ab.Render(r).JSON(sites)
+	}), userLoggedInMiddleware)
 }
 
 func beforeWalkthroughListHandler(r *http.Request) (_loadFunc func(ab.DB, int, int) ([]*Walkthrough, error)) {

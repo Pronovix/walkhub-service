@@ -18,7 +18,7 @@ import React from "react";
 import Record from "components/record";
 import RecordSaved from "components/recordsaved";
 import {noop} from "form";
-import WalkhubBackend from "walkhub_backend";
+import WalkhubBackend from "walkthrough/walkhub_backend";
 import flux from "control";
 import {t} from "t";
 import LoggedIn from "components/wrappers/loggedin";
@@ -27,7 +27,24 @@ import WalkthroughActions from "actions/walkthrough";
 import connectToStores from "alt/utils/connectToStores";
 import URI from "URIjs";
 
+@connectToStores
 class RecordWrapper extends React.Component {
+
+	static defaultProps = {
+		siteinfos: {},
+	};
+
+	static getStores(props) {
+		return [WalkthroughStore];
+	}
+
+	static getPropsFromStores(props) {
+		const walkthroughStoreState = WalkthroughStore.getState();
+
+		return {
+			siteinfos: walkthroughStoreState.siteinfos,
+		};
+	}
 
 	state = this.defaultState();
 
@@ -54,6 +71,7 @@ class RecordWrapper extends React.Component {
 	}
 
 	render() {
+		const siteinfo = this.props.siteinfos[this.state.startingUrl];
 		const page = this.isEmbedded() && this.state.uuid ?
 			(
 				<RecordSaved
@@ -71,10 +89,13 @@ class RecordWrapper extends React.Component {
 
 					onTitleChange={this.titleChange}
 					onStartingUrlChange={this.startingUrlChange}
+					onStartingUrlBlur={this.startingUrlBlur}
 
 					onRecordClick={this.recordClick}
 					onSaveClick={this.saveClick}
 					onResetClick={this.resetClick}
+					recordDisabled={!siteinfo}
+					compatibilityWarning={siteinfo && !siteinfo.has_embed_code}
 				/>
 			);
 		return (
@@ -93,6 +114,23 @@ class RecordWrapper extends React.Component {
 
 	startingUrlChange = (evt) => {
 		this.setState({startingUrl: evt.target.value});
+	};
+
+	startingUrlBlur = (evt) => {
+		let url = evt.target.value;
+		if (url && !/^https?:/.test(url)) {
+			url = "https://" + url;
+		}
+
+		this.setState({
+			startingUrl: url,
+		});
+
+		if (url) {
+			setTimeout(() => {
+				WalkthroughStore.performSiteinfo(url);
+			}, 0);
+		}
 	};
 
 	recordClose = (evt) => {
@@ -120,6 +158,16 @@ class RecordWrapper extends React.Component {
 		this.setState({steps: steps});
 	}
 
+	getRunner() {
+		const wturl = URI(window.location.href);
+		const siteurl = URI(this.state.startingUrl);
+		if (wturl.protocol() !== siteurl.protocol()) {
+			return WalkhubBackend.createRunnerFromName("popup");
+		}
+		const siteinfo = this.props.siteinfos[this.state.startingUrl];
+		return WalkhubBackend.createRunnerFromSiteinfo(siteinfo);
+	}
+
 	recordClick = (evt) => {
 		noop(evt);
 		const title = this.state.title ?
@@ -127,7 +175,7 @@ class RecordWrapper extends React.Component {
 			t("Walkthrough on @domain", {
 				"@domain": URI(this.state.startingUrl).hostname(),
 			});
-		this.backend.startRecord(this.state.startingUrl);
+		this.backend.startRecord(this.state.startingUrl, this.getRunner());
 		this.setState({
 			widget: this.backend.widget,
 			title: title,

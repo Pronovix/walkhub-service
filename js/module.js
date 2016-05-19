@@ -22,7 +22,7 @@ import createBrowserHistory from "history/lib/createBrowserHistory";
 import $ from "jquery";
 import axios from "axios";
 import RouterActions from "actions/router";
-import WalkhubBackend from "walkhub_backend";
+import WalkhubBackend from "walkthrough/walkhub_backend";
 import Enforcer from "client/walkthrough/enforcer";
 import cookies from "axios/lib/helpers/cookies";
 import {isStandardBrowserEnv} from "axios/lib/utils";

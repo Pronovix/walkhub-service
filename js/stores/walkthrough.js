@@ -28,6 +28,9 @@ class WalkthroughStore {
 			walkthroughs: {},
 			walkthroughList: [],
 			walkthroughuidlist: {},
+			siteinfos: {},
+			loadingSiteinfos: {},
+			mysites: null,
 		};
 
 		this.registerAsync(WalkthroughSource);
@@ -106,6 +109,17 @@ class WalkthroughStore {
 	@bind(WalkthroughActions.deleteWalkthrough)
 	deleteWalkthrough(uuid) {
 		this.getInstance().performDelete(uuid);
+	}
+
+	@bind(WalkthroughActions.receivedSiteinfo)
+	receivedSiteinfo(result) {
+		this.state.loadingSiteinfos[result.data.url] = false;
+		this.state.siteinfos[result.data.url] = result.data;
+	}
+
+	@bind(WalkthroughActions.receivedMySites)
+	receivedMySites(result) {
+		this.state.mysites = result.data;
 	}
 }
 

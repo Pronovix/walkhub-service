@@ -85,6 +85,34 @@ const WalkthroughSource = {
 		success: WalkthroughActions.deletedWalkthrough,
 		error: WalkthroughActions.deletingWalkthroughFailed,
 	},
+	performSiteinfo: {
+		remote(state, url) {
+			state.loadingSiteinfos[url] = true;
+			return axios.post("/api/siteinfo", {
+				url: url,
+			});
+		},
+		local(state, url) {
+			return state.siteinfos[url];
+		},
+		shouldFetch(state, url) {
+			return !state.loadingSiteinfos[url];
+		},
+		loading: WalkthroughActions.loadingSiteinfo,
+		success: WalkthroughActions.receivedSiteinfo,
+		error: WalkthroughActions.receivingSiteinfoFailed,
+	},
+	performMySites: {
+		remote(state, url) {
+			return axios.get("/api/mysites");
+		},
+		local(state, url) {
+			return state.mysites;
+		},
+		loading: WalkthroughActions.loadingMySites,
+		success: WalkthroughActions.receivedMySites,
+		error: WalkthroughActions.receivingMySitesFailed,
+	},
 };
 
 export default WalkthroughSource;

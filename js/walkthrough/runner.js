@@ -1,5 +1,5 @@
 // Walkhub
-// Copyright (C) 2015 Pronovix
+// Copyright (C) 2016 Pronovix
 //
 // This program is free software: you can redistribute it and/or modify
 // it under the terms of the GNU Affero General Public License as
@@ -14,38 +14,27 @@
 // You should have received a copy of the GNU Affero General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-import Walkhub from "client/walkhub";
+import {noop} from "form";
 
-function Enforcer(wh) {
-	window.Walkhub = window.Walkhub || {};
+class Runner {
+	recording = false;
+	onSave = noop;
+	onClose = noop;
+	actionClick = noop;
 
-	if (!wh) {
-		wh = Walkhub.getInstance();
+	start() {
 	}
 
-	if ((window.parent !== window || window.opener) && !window.Walkhub[WALKHUB_URL]) {
-		window.Walkhub[WALKHUB_URL] = true;
-		enforce(wh);
+	end() {
 	}
+
+	stop() {
+	}
+
+	getWidget(title) {
+		return null;
+	}
+
 }
 
-function enforce(wh) {
-	if (!enforce.tries) {
-		enforce.tries = 0;
-	}
-
-	if (wh.initialized) {
-		return;
-	}
-
-	if (window.document.readyState === "complete") {
-		if (enforce.tries > 4 || enforce.tries == 0) {
-			wh.currentExecutor.start();
-		}
-		enforce.tries++;
-	}
-
-	setTimeout(() => enforce(wh), 500);
-};
-
-export default Enforcer;
+export default Runner;

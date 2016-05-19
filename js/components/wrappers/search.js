@@ -20,7 +20,7 @@ import Search from "components/search";
 import SearchStore from "stores/search";
 import SearchActions from "actions/search";
 import connectToStores from "alt/utils/connectToStores";
-import WalkhubBackend from "walkhub_backend";
+import WalkhubBackend from "walkthrough/walkhub_backend";
 import Bar from "components/bar";
 import {noop} from "form";
 import {t} from "t";
