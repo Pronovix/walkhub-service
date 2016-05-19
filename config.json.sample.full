@@ -24,5 +24,6 @@
 		"username": "",
 		"password": "",
 		"host": ""
-	}
+	},
+	"googleanalyticsaccount": ""
 }

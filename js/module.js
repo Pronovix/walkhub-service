@@ -29,6 +29,7 @@ import {isStandardBrowserEnv} from "axios/lib/utils";
 import urlIsSameOrigin from "axios/lib/helpers/urlIsSameOrigin";
 import {t} from "t";
 import NetworkActivityActions from "actions/networkactivity";
+import {startGoogleAnalytics} from "util";
 
 let history = createBrowserHistory();
 
@@ -93,4 +94,8 @@ if (xsrfValue) {
 			{t("Allow cookies in your browser to be able to use WalkHub.")}
 		</div>
 	), el);
+}
+
+if (GA_ACCOUNT) {
+	startGoogleAnalytics(GA_ACCOUNT);
 }

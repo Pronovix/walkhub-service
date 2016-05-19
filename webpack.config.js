@@ -15,6 +15,7 @@ var frontpagecomponent = process.env.FRONTPAGECOMPONENT || serverConfig.frontpag
 var baseurl = process.env.BASEURL || serverConfig.baseurl;
 var embedurl = process.env.EMBEDURL || serverConfig.embedurl;
 var httporigin = process.env.HTTPORIGIN || serverConfig.httporigin;
+var gaAccount = process.env.GOOGLEANALYTICSACCOUNT || serverConfig.googleanalyticsaccount;
 
 var path = require("path");
 var srcPath = path.join(__dirname, "js");
@@ -123,7 +124,8 @@ module.exports = {
 			WALKHUB_EMBED_URL: JSON.stringify(embedurl ? embedurl : baseurl),
 			WALKHUB_HTTP_URL: JSON.stringify(httporigin ? httporigin : baseurl),
 			WALKHUB_MENU_ITEMS: !!menuitems,
-			WALKHUB_CONTENT_PAGES: !!contentpages
+			WALKHUB_CONTENT_PAGES: !!contentpages,
+			GA_ACCOUNT: gaAccount
 		}),
 		new webpack.NoErrorsPlugin(),
 		new webpack.optimize.OccurenceOrderPlugin(),
