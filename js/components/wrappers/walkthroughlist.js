@@ -28,6 +28,12 @@ class WalkthroughListWrapper extends React.Component {
 		walkthroughList: [],
 		walkthroughuidlist: {},
 		empty: null,
+		groupBySite: false,
+		mysites: [],
+	};
+
+	state = {
+		groups: {},
 	};
 
 	static getStores(props) {
@@ -43,6 +49,11 @@ class WalkthroughListWrapper extends React.Component {
 			setTimeout(() => {
 				WalkthroughStore.performList(nextProps.uid);
 			}, 0);
+			if (this.props.groupBySite) {
+				setTimeout(() => {
+					WalkthroughStore.performMySites();
+				}, 0);
+			}
 		}
 	}
 
@@ -50,6 +61,11 @@ class WalkthroughListWrapper extends React.Component {
 		setTimeout(() => {
 			WalkthroughStore.performList(this.props.uid);
 		}, 0);
+		if (this.props.groupBySite) {
+			setTimeout(() => {
+				WalkthroughStore.performMySites();
+			});
+		}
 	}
 
 	render() {
@@ -57,11 +73,26 @@ class WalkthroughListWrapper extends React.Component {
 			this.props.walkthroughuidlist[this.props.uid] :
 			this.props.walkthroughList;
 		return (list && list.length) ? (
-			<WalkthroughList walkthroughs={list}>
+			<WalkthroughList
+				walkthroughs={list}
+				mysites={this.props.mysites}
+				groupBySite={this.props.groupBySite}
+				groups={this.state.groups}
+				siteClick={this.siteClick}
+				>
 				{this.props.children}
 			</WalkthroughList>
 		) : this.props.empty;
 	}
+
+	siteClick = (evt) => {
+		const site = evt.target.dataset.site;
+		let groups = this.state.groups;
+		groups[site] = !groups[site];
+		this.setState({
+			groups: groups,
+		});
+	};
 
 }
 

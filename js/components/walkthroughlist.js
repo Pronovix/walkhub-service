@@ -16,23 +16,63 @@
 
 import React from "react";
 import WalkthroughPlay from "components/wrappers/walkthroughplay";
+import {noop} from "form";
 
 class WalkthroughList extends React.Component {
 
 	static defaultProps = {
 		walkthroughs: [],
+		mysites: [],
+		groupBySite: false,
+		groups: {},
+		siteClick: noop,
 	};
 
-	render() {
-		const walkthroughs = this.props.walkthroughs.map((walkthrough) => {
-			return <WalkthroughPlay key={walkthrough.uuid} walkthrough={walkthrough} compact={true} />;
+	renderWalkthrough(walkthrough) {
+		return <WalkthroughPlay key={walkthrough.uuid} walkthrough={walkthrough} compact={true} />;
+	}
+
+	renderList() {
+		return this.props.walkthroughs.map(this.renderWalkthrough);
+	}
+
+	renderGroups() {
+		if (this.props.mysites === null) {
+			return null;
+		}
+
+		return this.props.mysites.map((site) => {
+			const list = this.props.groups[site] ?
+				this.props.walkthroughs.filter((walkthrough) => {
+					try {
+						return walkthrough.steps[0].arg0 === site;
+					} catch (ex) {
+						return false;
+					}
+				}).map(this.renderWalkthrough) :
+				null;
+
+			return (
+				<div key={site}>
+					<h4 data-site={site} onClick={this.props.siteClick}>
+						{site}
+					</h4>
+					{list}
+				</div>
+			);
 		});
+	}
+
+	render() {
+		const content = this.props.groups ?
+			this.renderGroups() :
+			this.renderList();
 
 		return (
 			<section className="row">
 				<div className="col-xs-12">
 					{this.props.children}
-					{walkthroughs}
+					{content}
 				</div>
 			</section>
 		);
