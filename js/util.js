@@ -141,3 +141,20 @@ export const getdata = window.location.search.substr(1).split("&").reduce(functi
 	obj[arrstr.shift()] = arrstr.join("=");
 	return obj;
 }, {});
+
+export function parseGoDate(datestr) {
+	const matches = datestr.match(/^(\d{4})-(\d{2})-(\d{2})T(\d{2}):(\d{2}):(\d{2})/);
+
+	if (matches.length !== 7) {
+		return null;
+	}
+
+	return {
+		year: matches[1],
+		month: matches[2],
+		day: matches[3],
+		hour: matches[4],
+		minute: matches[5],
+		second: matches[6],
+	};
+};

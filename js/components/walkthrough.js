@@ -20,6 +20,7 @@ import EmbedCode from "components/embedcode";
 import {noop} from "form";
 import {t} from "t";
 import {Link} from "react-router";
+import {parseGoDate} from "util";
 
 class Walkthrough extends React.Component {
 
@@ -72,6 +73,8 @@ class Walkthrough extends React.Component {
 			<Link to={`/walkthrough/${walkthrough.uuid}`}>{walkthrough.name}</Link> :
 			walkthrough.name;
 
+		const date = walkthrough.updated ? parseGoDate(walkthrough.updated) : {};
+
 		const title = this.props.helpcenter ? (
 			<div className="row row-wt-helpcenter">
 				<div className="col-xs-1">
@@ -87,7 +90,7 @@ class Walkthrough extends React.Component {
 			<div className="row row-wt-no-helpcenter">
 				<div className="col-xs-7 col-sm-9">
 					<h5 className="wt-title">
-						{titleName}
+						{`${date.year}-${date.month}-${date.day}`} - {titleName}
 					</h5>
 				</div>
 				<div className="col-xs-5 col-sm-3">
