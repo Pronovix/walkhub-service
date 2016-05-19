@@ -32,7 +32,7 @@
     "less": "^2.5",
     "less-loader": "^2.2",
     "markdown-loader": "^0.1.7",
-    "node-sass": "^3.4",
+    "node-sass": "3.4",
     "npm-check": "^4.1.2",
     "react": "^0.14",
     "react-dom": "^0.14",
