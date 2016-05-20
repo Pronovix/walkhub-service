@@ -30,6 +30,11 @@
 	src: url('fonts/OpenSans-Bold.ttf');
 }
 
+@font-face {
+	font-family: 'Open Sans Semi-Bold';
+	src: url('fonts/OpenSans-Semibold.ttf');
+}
+
 // Color variables.
 @color-black: #000;
 @color-white: #fff;
@@ -51,7 +56,6 @@
 @btn-border-radius-base: 0px;
 @btn-border-radius-small: 0px;
 @btn-warning-bg: @color-warning;
-@btn-warning-color: @btn-warning-bg;
 @btn-success-bg: @color-success;
 @btn-success-border: @btn-success-bg;
 @state-success-text: @color-success;
@@ -60,9 +64,14 @@
 
 @MAXIMUM_ZINDEX: 2147483647;
 @font-family-sans-serif-bold: 'Open Sans Bold', Helvetica, Arial, sans-serif;
+@font-family-sans-serif-semi-bold: 'Open Sans Semi-Bold', Helvetica, Arial, sans-serif;
 
 strong {
 	font-family: 'Open Sans Bold', Helvetica, Arial, sans-serif;
+}
+
+strong.semi-bold {
+	font-family: @font-family-sans-serif-semi-bold;
 }
 
 @keyframes blink {
@@ -303,8 +312,16 @@ div.spacer {
 		background-color: @profile-card-bg;
 
 		.walkthrough-list-header {
-			h3 {
-				margin-top: 0;
+			margin-bottom: 20px;
+			
+			.walkthrough-list-header-left {
+				h3 {
+					margin-top: 0;
+				}
+			}
+
+			.walkthrough-list-header-right {
+				text-align: right;
 			}
 		}
 
@@ -314,6 +331,16 @@ div.spacer {
 			h4 {
 				margin-bottom: 30px;
 				font-family: @font-family-sans-serif-bold;
+			}
+		}
+
+		.content {
+			margin: 0px;
+
+			.list-wt {
+				.wt-buttons {
+					text-align: right;
+				}
 			}
 		}
 	}
@@ -370,9 +397,10 @@ div.spacer {
 
 .collapsible-container {
 	a.title {
-		font-size: 24px;
+		font-size: 18px;
 		color: @text-color;
 		cursor: pointer;
+		text-decoration: none;
 
 		&:before {
 			font-family: 'Glyphicons Halflings';
@@ -395,7 +423,7 @@ div.spacer {
 	}
 
 	.content {
-		margin: 0 25px;
+		margin: 0 15px;
 		transition: all 350ms ease-out;
 
 		ol {
@@ -423,7 +451,6 @@ div.spacer {
 	.profile.row {
 		.user-data {
 			border-left: 0;
-			border-top: 1px solid @color-success;
 			margin-top: 50px;
 			padding-top: 20px;
 		}
@@ -433,7 +460,6 @@ div.spacer {
 @media screen and (min-width: @screen-md-min) {
 	.profile.row {
 		div.user-data {
-			border-left: 1px solid @color-success;
 			margin-top: 20px;
 		}
 	}

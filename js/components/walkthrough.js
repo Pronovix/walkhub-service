@@ -89,12 +89,12 @@ class Walkthrough extends React.Component {
 			</div>
 		) : (
 			<div className="row row-wt-no-helpcenter">
-				<div className="col-xs-7 col-sm-9">
+				<div className="col-xs-7 col-sm-8">
 					<h5 className="wt-title">
 						{`${date.year}-${date.month}-${date.day}`} - {titleName}
 					</h5>
 				</div>
-				<div className="col-xs-5 col-sm-3">
+				<div className="col-xs-5 col-sm-4 wt-buttons">
 					{playButton}
 					{editbuttons}
 				</div>
