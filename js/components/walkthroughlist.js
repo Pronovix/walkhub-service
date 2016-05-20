@@ -17,6 +17,7 @@
 import React from "react";
 import WalkthroughPlay from "components/wrappers/walkthroughplay";
 import {noop} from "form";
+import Collapsible from "components/collapsible";
 
 class WalkthroughList extends React.Component {
 
@@ -24,8 +25,6 @@ class WalkthroughList extends React.Component {
 		walkthroughs: [],
 		mysites: [],
 		groupBySite: false,
-		groups: {},
-		siteClick: noop,
 	};
 
 	renderWalkthrough(walkthrough) {
@@ -42,29 +41,27 @@ class WalkthroughList extends React.Component {
 		}
 
 		return this.props.mysites.map((site) => {
-			const list = this.props.groups[site] ?
+			const list =
 				this.props.walkthroughs.filter((walkthrough) => {
 					try {
 						return walkthrough.steps[0].arg0 === site;
 					} catch (ex) {
 						return false;
 					}
-				}).map(this.renderWalkthrough) :
-				null;
+				}).map(this.renderWalkthrough);
 
 			return (
-				<div key={site}>
-					<h4 data-site={site} onClick={this.props.siteClick}>
-						{site}
-					</h4>
-					{list}
+				<div className="row">
+					<Collapsible title={site} isExpanded={false}>
+						{list}
+					</Collapsible>
 				</div>
 			);
 		});
 	}
 
 	render() {
-		const content = this.props.groups ?
+		const content = this.props.groupBySite ?
 			this.renderGroups() :
 			this.renderList();
 

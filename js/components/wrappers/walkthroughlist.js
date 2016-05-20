@@ -77,23 +77,11 @@ class WalkthroughListWrapper extends React.Component {
 				walkthroughs={list}
 				mysites={this.props.mysites}
 				groupBySite={this.props.groupBySite}
-				groups={this.state.groups}
-				siteClick={this.siteClick}
 				>
 				{this.props.children}
 			</WalkthroughList>
 		) : this.props.empty;
 	}
-
-	siteClick = (evt) => {
-		const site = evt.target.dataset.site;
-		let groups = this.state.groups;
-		groups[site] = !groups[site];
-		this.setState({
-			groups: groups,
-		});
-	};
-
 }
 
 export default WalkthroughListWrapper;

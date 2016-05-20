@@ -166,10 +166,10 @@ class ProfileWrapper extends React.Component {
 		const list = (
 			<WalkthroughListWrapper groupBySite={true} uid={user.UUID} empty={empty}>
 				<div className="row walkthrough-list-header">
-					<div className="col-xs-7 col-sm-9">
+					<div className="col-xs-7 col-sm-9 walkthrough-list-header-left">
 						<h3>{t("My Walkthroughs")}</h3>
 					</div>
-					<div className="col-xs-5 col-sm-3">
+					<div className="col-xs-5 col-sm-3 walkthrough-list-header-right">
 						<Link className="btn btn-default" to="/embedcode">{t("Add new site")}</Link>
 					</div>
 				</div>

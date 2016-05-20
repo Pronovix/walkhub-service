@@ -30,7 +30,7 @@ class HelpButton extends React.Component {
 		return (
 			<div className="info helpbutton-container text-center">
 				<button type="button" className="btn btn-default btn-warning btn-md help-button" onClick={this.props.helpClick}>
-					<strong>{t("Get help")}</strong> <span><object className="help-icon" type="image/svg+xml" data={helpIcon}></object></span>
+					<strong className="semi-bold">{t("Get help")}</strong> <span><object className="help-icon" type="image/svg+xml" data={helpIcon}></object></span>
 				</button>
 			</div>
 		);
