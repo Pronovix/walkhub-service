@@ -54,6 +54,7 @@ func main() {
 	cfg.Set("gzip", false)
 	cfg.Set("CookiePrefix", "WALKHUB")
 	cfg.RegisterAlias("db", "PGConnectString")
+	cfg.BindEnv("PGConnectString", "DB")
 	cfg.SetDefault("pwauth", true)
 
 	level := log.LOG_USER
