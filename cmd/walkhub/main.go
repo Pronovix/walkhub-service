@@ -22,6 +22,7 @@ import (
 	"net/url"
 	"os"
 	"runtime"
+	"strings"
 
 	"github.com/Pronovix/walkhub-service"
 	"github.com/spf13/viper"
@@ -50,6 +51,8 @@ func main() {
 		tmplog := log.DefaultOSLogger()
 		tmplog.User().Println(err)
 	}
+
+	cfg.SetEnvKeyReplacer(strings.NewReplacer(".", "_"))
 
 	cfg.Set("gzip", false)
 	cfg.Set("CookiePrefix", "WALKHUB")
