@@ -11,7 +11,7 @@ RUN echo '{}' > config.json
 RUN npm install
 RUN go install github.com/Pronovix/walkhub-service/cmd/walkhub
 
-ENTRYPOINT npm run build && /go/bin/walkhub
+ENTRYPOINT npm run webpack && /go/bin/walkhub
 
 EXPOSE 80
 EXPOSE 443

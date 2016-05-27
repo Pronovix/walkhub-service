@@ -3,6 +3,7 @@
   "scripts": {
     "build": "webpack --progress --profile --colors",
     "watch": "webpack --progress --profile --colors --watch",
+    "webpack": "webpack",
     "test": "exit 1",
     "debug": "webpack --progress --profile --colors --watch --display-chunks --display-reasons --display-error-details --display-modules",
     "check": "npm-check -s",
