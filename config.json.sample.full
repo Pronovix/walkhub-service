@@ -23,7 +23,8 @@
 		"identity": "",
 		"username": "",
 		"password": "",
-		"host": ""
+		"host": "",
+		"from": ""
 	},
 	"googleanalyticsaccount": ""
 }

@@ -49,6 +49,7 @@ type WalkhubServer struct {
 		SMTP struct {
 			Addr                               string
 			Identity, Username, Password, Host string
+			From                               string
 		}
 		Google auth.OAuthCredentials
 	}
@@ -281,6 +282,7 @@ func (s *WalkhubServer) Start(addr string, certfile string, keyfile string) erro
 	if s.PWAuth {
 		smtpAuth := smtp.PlainAuth(s.AuthCreds.SMTP.Identity, s.AuthCreds.SMTP.Username, s.AuthCreds.SMTP.Password, s.AuthCreds.SMTP.Host)
 		delegate := auth.NewPasswordAuthSMTPEmailSenderDelegate(s.AuthCreds.SMTP.Addr, smtpAuth, s.BaseURL)
+		delegate.From = s.AuthCreds.SMTP.From
 		delegate.RegistrationEmailTemplate = regMailTemplate
 		delegate.LostPasswordEmailTemplate = lostpwMailTemplate
 		pwauth := auth.NewPasswordAuthProvider(NewPasswordDelegate(s.GetDBConnection()), delegate)
@@ -340,7 +342,8 @@ func (s *WalkhubServer) Start(addr string, certfile string, keyfile string) erro
 
 var (
 	regMailTemplate = template.Must(template.New("regMailTemplate").Parse(
-		"To: {{.Mail}}\r\n" +
+		"{{if .From}}From: {{.From}}\r\n{{end}}" +
+			"To: {{.Mail}}\r\n" +
 			"Subject: Activate your WalkHub account\r\n" +
 			"\r\n" +
 			"Hi {{.Mail}},\r\n" +
@@ -356,7 +359,8 @@ var (
 			"The WalkHub Team\r\n" +
 			"\r\n"))
 	lostpwMailTemplate = template.Must(template.New("lostpwMailTemplate").Parse(
-		"To: {{.Mail}}\r\n" +
+		"{{if .From}}From: {{.From}}\r\n{{end}}" +
+			"To: {{.Mail}}\r\n" +
 			"Subject: Reset your WalkHub password\r\n" +
 			"\r\n" +
 			"Hi {{.Mail}},\r\n" +

@@ -104,6 +104,7 @@ func main() {
 	s.AuthCreds.SMTP.Username = cfg.GetString("smtp.username")
 	s.AuthCreds.SMTP.Password = cfg.GetString("smtp.password")
 	s.AuthCreds.SMTP.Host = cfg.GetString("smtp.host")
+	s.AuthCreds.SMTP.From = cfg.GetString("smtp.from")
 	s.AuthCreds.Google = auth.OAuthCredentials{
 		ID:     cfg.GetString("google.id"),
 		Secret: cfg.GetString("google.secret"),
