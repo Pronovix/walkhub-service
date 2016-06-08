@@ -31,6 +31,9 @@ class WalkthroughStore {
 			siteinfos: {},
 			loadingSiteinfos: {},
 			mysites: null,
+			screenings: {},
+			recordSaved: false,
+			screeningSaved: false,
 		};
 
 		this.registerAsync(WalkthroughSource);
@@ -75,10 +78,16 @@ class WalkthroughStore {
 		this.getInstance().performLoad(uuid);
 	}
 
+	@bind(WalkthroughActions.creatingWalkthrough)
+	creatingWalkthrough() {
+		this.state.recordSaved = false;
+	}
+
 	@bind(WalkthroughActions.createdWalkthrough)
 	createdWalkthrough(result) {
 		let walkthrough = result.data;
 		this.state.walkthroughs[walkthrough.uuid] = walkthrough;
+		this.state.recordSaved = true;
 		this.maybeUpdateList();
 	}
 
@@ -120,6 +129,23 @@ class WalkthroughStore {
 	@bind(WalkthroughActions.receivedMySites)
 	receivedMySites(result) {
 		this.state.mysites = result.data;
+	}
+
+	@bind(WalkthroughActions.creatingScreening)
+	creatingScreening() {
+		this.state.screeningSaved = false;
+	}
+
+	@bind(WalkthroughActions.createdScreening)
+	createdScreening(result) {
+		this.state.screeningSaved = true;
+	}
+
+	@bind(WalkthroughActions.receivedScreening)
+	receivedScreening(result) {
+		console.log(result);
+		//this.state.screenings[wid] = this.state.screenings[wid] || {};
+		//this.state.screenings[wid][ct] = result.data;
 	}
 }
 

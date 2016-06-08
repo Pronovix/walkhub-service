@@ -21,12 +21,14 @@ import {noop} from "form";
 import {t} from "t";
 import {Link} from "react-router";
 import {parseGoDate} from "util";
+import ScreeningGif from "components/wrappers/screeninggif";
 
 class Walkthrough extends React.Component {
 
 	static defaultProps = {
 		walkthrough: {},
 		onPlayClick: noop,
+		onScreeningClick: noop,
 		onEditClick: noop,
 		onDeleteClick: noop,
 		editable: false,
@@ -65,6 +67,7 @@ class Walkthrough extends React.Component {
 				editbuttons.push(<a href={href} key="edit" target="_blank" className="btn btn-default btn-sm">{t("Edit")}</a>);
 				editbuttons.push(<a href={href} key="delete" className="btn btn-danger btn-sm">{t("Delete")}</a>);
 			} else {
+				editbuttons.push(<a onClick={this.props.onScreeningClick} key="screen" className="btn btn-default btn-sm">{t("New screening")}</a>);
 				editbuttons.push(<a onClick={this.props.onEditClick} key="edit" className="btn btn-default btn-sm">{t("Edit")}</a>);
 				editbuttons.push(<a onClick={this.props.onDeleteClick} key="delete" className="btn btn-danger btn-sm">{t("Delete")}</a>);
 			}
@@ -137,11 +140,16 @@ class Walkthrough extends React.Component {
 			<p className="bg-danger walkthrough-iframe-blocked-message">{t("This walkthrough is only enabled in popup mode")}</p>
 		) : null;
 
+		const screening = (
+			<ScreeningGif uuid={walkthrough.uuid} />
+		);
+
 		return (
 			<section key={walkthrough.revision} className={`walkthrough-uuid-${walkthrough.uuid} walkthrough-revision-${walkthrough.revision}`}>
 				{title}
 				{this.props.compact ? null : reloadHTTP}
 				{this.props.compact ? null : iframeBlocked}
+				{this.props.compact ? null : screening}
 				{this.props.compact ? null : description}
 				{this.props.compact ? null : stepsWidget}
 				{this.props.compact ? null : embed}

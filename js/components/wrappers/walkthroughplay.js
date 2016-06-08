@@ -30,6 +30,7 @@ class WalkthroughPlay extends React.Component {
 		walkthrough: {},
 		currentUser: {},
 		siteinfos: {},
+		screeningSaved: false,
 	};
 
 	static getStores(props) {
@@ -38,9 +39,11 @@ class WalkthroughPlay extends React.Component {
 
 	static getPropsFromStores(props) {
 		const state = UserStore.getState();
+		const wtstate = WalkthroughStore.getState();
 		return {
 			currentUser: state.users[state.currentUser] || {},
-			siteinfos: WalkthroughStore.getState().siteinfos || {},
+			siteinfos: wtstate.siteinfos || {},
+			screeningSaved: wtstate.screeningSaved,
 		};
 	}
 
@@ -50,6 +53,7 @@ class WalkthroughPlay extends React.Component {
 		widget: null,
 		autoplayed: false,
 		siteinfoLoaded: false,
+		goingBack: false,
 	};
 
 	static contextTypes = {
@@ -57,29 +61,36 @@ class WalkthroughPlay extends React.Component {
 		history: React.PropTypes.shape,
 	};
 
-	playWalkthrough = (evt) => {
+	startWalkthrough = (evt, screening) => {
 		noop(evt);
 
-		const reloadURL = this.getHTTPReloadURL();
+		const reloadURL = this.getHTTPReloadURL(screening);
 		if (reloadURL) {
 			window.location = reloadURL;
 			return;
 		}
 
 		const runner = this.createRunner();
-		this.backend.startPlay(this.props.walkthrough.uuid, runner);
+		this.backend.startPlay(this.props.walkthrough.uuid, runner, screening);
 		this.setState({
 			widget: this.backend.widget,
 		});
 	};
 
+	playWalkthrough = (evt) => {
+		this.startWalkthrough(evt, false);
+	};
+
+	screenWalktrough = (evt) => {
+		this.startWalkthrough(evt, true);
+	};
+
 	playClose = (evt) => {
 		noop(evt);
 
-		if (this.shouldGoBack()) {
-			// TODO figure out why the last entry gets duplicated in the history in compact view.
-			window.history.go(this.props.compact ? -2 : -1);
-		}
+		this.setState({
+			goingBack: true,
+		});
 
 		this.setState({
 			widget: null,
@@ -106,13 +117,22 @@ class WalkthroughPlay extends React.Component {
 		this.maybeGetSiteinfo(nextProps);
 	}
 
+	componentWillUpdate(nextProps, nextState) {
+		this.maybeGoBack(nextProps, nextState);
+	}
+
 	maybeAutoplay(props) {
 		if (this.shouldAutoplay(props)) {
 			this.setState({
 				autoplayed: true,
 			});
 			setTimeout(() => {
-				this.playWalkthrough();
+				const screening = this.context.location.query.screening;
+				if (screening) {
+					this.screenWalktrough();
+				} else {
+					this.playWalkthrough();
+				}
 			}, 100);
 		}
 	}
@@ -122,8 +142,15 @@ class WalkthroughPlay extends React.Component {
 		return !this.state.autoplayed && autoplay && props.walkthrough && autoplay === props.walkthrough.uuid;
 	}
 
-	shouldGoBack() {
-		return !!this.context.location.query.goback;
+	maybeGoBack(props, state) {
+		const goback = this.context.location.query.goback;
+		if (!goback) {
+			return;
+		}
+
+		if (state.goingBack && (this.context.location.query.screening ? props.screeningSaved : true)) {
+			window.location = goback;
+		}
 	}
 
 	getWalkthroughURL(props) {
@@ -132,7 +159,7 @@ class WalkthroughPlay extends React.Component {
 			null;
 	}
 
-	getHTTPReloadURL() {
+	getHTTPReloadURL(screening) {
 		const wturl = this.getWalkthroughURL(this.props);
 		const siteinfo = this.getSiteinfo(this.props);
 		if (wturl) {
@@ -144,7 +171,8 @@ class WalkthroughPlay extends React.Component {
 					.host(httpOrigin.host())
 					.path(`/walkthrough/${this.props.walkthrough.uuid}`)
 					.addSearch("autoplay", this.props.walkthrough.uuid)
-					.addSearch("goback", true);
+					.addSearch("screening", screening)
+					.addSearch("goback", window.location.href);
 
 				if (siteinfo) {
 					url.addSearch("force_runner", WalkhubBackend.runnerNameForSiteinfo(siteinfo));
@@ -194,12 +222,13 @@ class WalkthroughPlay extends React.Component {
 	render() {
 		this.backend.canEdit = this.props.walkthrough.uid !== "" && this.props.walkthrough.uid === this.props.currentUser.UUID;
 
-		const httpReloadURL = this.getHTTPReloadURL();
+		const httpReloadURL = this.getHTTPReloadURL(false);
 
 		return (
 			<div className="list-wt">
 				<Walkthrough
 					onPlayClick={this.playWalkthrough}
+					onScreeningClick={this.screenWalktrough}
 					editable={this.props.currentUser.UUID === this.props.walkthrough.uid}
 					httpReload={!!httpReloadURL}
 					iframeBlocked={this.iframeBlocked()}

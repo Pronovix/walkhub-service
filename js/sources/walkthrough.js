@@ -113,6 +113,32 @@ const WalkthroughSource = {
 		success: WalkthroughActions.receivedMySites,
 		error: WalkthroughActions.receivingMySitesFailed,
 	},
+	performCreateScreening: {
+		remote(state, wid, images) {
+			return axios.post(`/api/walkthrough/${wid}/screening`, images);
+		},
+		local(state, wid, images) {
+			return null;
+		},
+		loading: WalkthroughActions.creatingScreening,
+		success: WalkthroughActions.createdScreening,
+		error: WalkthroughActions.creatingScreeningFailed,
+	},
+	performLoadScreening: {
+		remote(state, wid, contentType) {
+			return axios.get(`/api/walkthrough/${wid}/screening`, {
+				headers: {
+					"Accept": contentType,
+				},
+			});
+		},
+		local(state, wid, contentType) {
+			return state.screenings[wid] && state.screenings[wid][contentType];
+		},
+		loading: WalkthroughActions.loadingScreening,
+		success: WalkthroughActions.receivedScreening,
+		error: WalkthroughActions.loadingScreeningFailed,
+	},
 };
 
 export default WalkthroughSource;

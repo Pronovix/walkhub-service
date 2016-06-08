@@ -47,6 +47,8 @@ class WalkhubBackend {
 			recordStarted: false,
 			allowEditing: WalkhubBackend.allowEditing && this.canEdit,
 			errors: {},
+			screening: false,
+			screensize: null,
 		};
 	}
 
@@ -67,6 +69,7 @@ class WalkhubBackend {
 		this.onsave = null;
 		this.canEdit = false;
 		this.state = this.defaultState();
+		this.screenshots = [];
 	}
 
 	static createRunnerFromSiteinfo(info) {
@@ -103,16 +106,20 @@ class WalkhubBackend {
 		this.startServer(runner);
 	}
 
-	startPlay(uuid, runner) {
+	startPlay(uuid, runner, screening) {
 		this.state = this.defaultState();
 		this.recording = false;
 		this.state.walkthrough = uuid;
 		this.state.editLink = WALKHUB_URL + `walkthrough/${uuid}`;
+		this.state.screening = !!screening;
 		this.startServer(runner);
 	}
 
 	startServer(runner) {
 		const wt = WalkthroughStore.getState().walkthroughs[this.state.walkthrough];
+
+		this.screenshots = [];
+		this.screenshots.length = wt.steps.length - 1;
 
 		WalkhubBackend.embeddedPost({type: "start"});
 		window.addEventListener("message", this.onMessageEventHandler);
@@ -339,7 +346,15 @@ class WalkhubBackend {
 		this.success(source, data.ticket, data.step);
 	}
 
+	handleScreenshot(data) {
+		this.screenshots[this.state.stepIndex - 1] = data.data;
+		//this.screenshots.push(data.data);
+	}
+
 	handleFinished(data, source) {
+		if (this.state.screening) {
+			WalkthroughStore.performCreateScreening(this.state.walkthrough, this.screenshots);
+		}
 		WalkhubBackend.embeddedPost({type: "end"});
 		LogStore.performWalkthroughPlayed(this.state.walkthrough, Object.keys(this.state.errors).map((k) => {
 			return this.state.errors[k];

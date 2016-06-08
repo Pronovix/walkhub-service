@@ -106,14 +106,12 @@ class Executor {
 	}
 
 	execute(step, force, onStepComplete) {
-		var that = this;
-
 		function noElement() {
-			var bubble = new Bubble(that.controller, null, step);
+			const bubble = new Bubble(that.controller, null, step);
 			bubble.show();
 		}
 
-		setTimeout(function () {
+		setTimeout(() => {
 			const command = step.pureCommand;
 			if (CommandDispatcher.instance().resolve(command)) {
 				CommandDispatcher.instance().initCommand(command, step, onStepComplete);
@@ -121,28 +119,31 @@ class Executor {
 				if (force || CommandDispatcher.instance().isAutomaticCommand(command)) {
 					CommandDispatcher.instance().executeCommand(command, step);
 				} else if (step.highlight) {
-					var error = false;
+					let error = false;
 					Translator.instance().translateOrWait(step.highlight, {
-						success: function (jqobj) {
+						success: (jqobj) => {
 							if (error) {
-								that.client.suppressError("locator-fail");
+								this.client.suppressError("locator-fail");
 							}
-							var bubble = new Bubble(that.controller, jqobj, step);
+							const bubble = new Bubble(this.controller, jqobj, step);
 							bubble.show();
+							setTimeout(() => {
+								this.controller.maybeScreenshot();
+							}, 500);
 						},
-						waiting: function (tries, remainingtries) {
+						waiting: (tries, remainingtries) => {
 							const message = step.canEdit ?
 								"The @number. bubble is not found. Go to the !editlink form to repair it. Technical info: @locator" :
 								"The @number. bubble is not found. Report it to the owner.";
 							if ((tries-remainingtries) > 10) {
-								that.client.showError("locator-fail", t(message, {
-									"@number": that.controller.state.stepIndex + 1,
+								this.client.showError("locator-fail", t(message, {
+									"@number": this.controller.state.stepIndex + 1,
 									"@locator": step.highlight,
-									"!editlink": `<a href="/walkthrough/${that.controller.state.walkthrough}" target="_top">edit walkthrough</a>`, // TODO replace this with a proper router generated link
+									"!editlink": `<a href="/walkthrough/${this.controller.state.walkthrough}" target="_top">edit walkthrough</a>`, // TODO replace this with a proper router generated link
 								}));
 							}
 							error = true;
-							that.logger.logResult(that.controller.state, false, "locator-fail: [locator]".replace("[locator]", step.highlight));
+							this.logger.logResult(this.controller.state, false, "locator-fail: [locator]".replace("[locator]", step.highlight));
 						},
 						giveUp: noElement
 					});
@@ -150,9 +151,9 @@ class Executor {
 					noElement();
 				}
 			} else {
-				that.client.showError("command-not-supported",
+				this.client.showError("command-not-supported",
 					"The command '[command]' is not supported.".replace("[command]", command));
-					that.logger.logResult(that.controller.state, false, "command-not-supported: [command]".replace("[command]", command));
+					this.logger.logResult(this.controller.state, false, "command-not-supported: [command]".replace("[command]", command));
 			}
 		}, 0);
 	}

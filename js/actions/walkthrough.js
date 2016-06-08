@@ -53,7 +53,15 @@ class WalkthroughActions {
 
 			"loadingMySites",
 			"receivedMySites",
-			"receivingMySitesFailed"
+			"receivingMySitesFailed",
+
+			"creatingScreening",
+			"createdScreening",
+			"creatingScreeningFailed",
+
+			"loadingScreening",
+			"receivedScreening",
+			"loadingScreeningFailed"
 		);
 	}
 }

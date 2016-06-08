@@ -23,6 +23,7 @@ import editDialog from "client/walkthrough/editdialog";
 import Translator from "client/walkthrough/translator";
 import SocialSharing from "client/walkthrough/social_sharing";
 import Walkhub from "client/walkhub";
+import html2canvas from "html2canvas";
 
 class Controller {
 
@@ -39,7 +40,9 @@ class Controller {
 			parameters: {},
 			HTTPProxyURL: "",
 			recording: false,
-			next: []
+			next: [],
+			screening: false,
+			screensize: null,
 		};
 
 		this.playerMouseEventHandlerAdded = false;
@@ -290,6 +293,53 @@ class Controller {
 		return step;
 	}
 
+	resizeCanvas(canvas) {
+		const tmpcanvas = document.createElement("canvas");
+		tmpcanvas.width = this.state.screensize.width;
+		tmpcanvas.height = this.state.screensize.height;
+
+		let sx = 0, sy = 0, swidth = tmpcanvas.width, sheight = tmpcanvas.height;
+
+		if (canvas.width > tmpcanvas.width) {
+			sx = Math.min(window.scrollX, canvas.width - tmpcanvas.width);
+		} else if (canvas.width < tmpcanvas.width) {
+			swidth = canvas.width;
+		}
+		if (canvas.height > tmpcanvas.height) {
+			sy = Math.min(window.scrollY, canvas.height - tmpcanvas.height);
+		} else if (canvas.height < tmpcanvas.height) {
+			sheight = canvas.height;
+		}
+
+		tmpcanvas.getContext("2d").drawImage(canvas, sx, sy, swidth, sheight, 0, 0, tmpcanvas.width, tmpcanvas.height);
+
+		return tmpcanvas;
+	}
+
+	maybeScreenshot() {
+		if (this.state.screening) {
+			html2canvas(document.body, {
+				onrendered: (canvas) => {
+					if (!this.state.screensize) {
+						this.state.screensize = {
+							width: window.innerWidth,
+							height: window.innerHeight,
+						};
+						this.client.updateState(this.state);
+					}
+
+					if (canvas.height != this.state.screensize.height || canvas.width != this.state.screensize.width) {
+						canvas = this.resizeCanvas(canvas);
+					}
+
+					const data = canvas.toDataURL("image/png");
+					this.client.sendScreenshot(data);
+				},
+				background: undefined,
+				letterRendering: true,
+			})
+		}
+	}
 
 }
 

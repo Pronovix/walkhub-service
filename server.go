@@ -204,6 +204,8 @@ func corsPreflightHandler(baseURL, httpOrigin string) http.Handler {
 		method := r.Header.Get("Access-Control-Request-Method")
 		headers := r.Header.Get("Access-Control-Request-Headers")
 
+		ab.LogTrace(r).Printf("CORS %s %s %s", method, origin, headers)
+
 		w.Header().Add("Vary", "Origin")
 		w.Header().Add("Vary", "Access-Control-Request-Method")
 		w.Header().Add("Vary", "Access-Control-Request-Headers")
@@ -325,6 +327,8 @@ func (s *WalkhubServer) Start(addr string, certfile string, keyfile string) erro
 	}
 
 	s.RegisterService(NewSiteinfoService(siteinfoBaseURLs...))
+
+	s.RegisterService(&ScreeningService{})
 
 	if certfile != "" && keyfile != "" {
 		s.setupHTTPS()

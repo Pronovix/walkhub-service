@@ -177,6 +177,13 @@ class Client {
 		}, success, error);
 	}
 
+	sendScreenshot(data) {
+		this.postAsync({
+			type: "screenshot",
+			data: data,
+		});
+	}
+
 	finish() {
 		this.post({type: "finished"});
 	}
