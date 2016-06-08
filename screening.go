@@ -31,7 +31,6 @@ import (
 	"sync"
 	"time"
 
-	"github.com/nbio/hitch"
 	"github.com/nfnt/resize"
 	"github.com/tamasd/ab"
 	"github.com/vincent-petithory/dataurl"
@@ -114,9 +113,9 @@ func LoadActualScreeningForWalkthrough(db ab.DB, wid string) (*Screening, error)
 	return selectSingleScreeningFromQuery(db, "SELECT "+screeningFields+" FROM screening s WHERE wid = $1 AND published = true ORDER BY created LIMIT 1", wid)
 }
 
-func afterScreeningServiceRegister(h *hitch.Hitch) {
-	h.Post("/api/walkthrough/:id/screening", http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		wid := hitch.Params(r).ByName("id")
+func afterScreeningServiceRegister(srv *ab.Server) {
+	srv.Post("/api/walkthrough/:id/screening", http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		wid := ab.GetParams(r).ByName("id")
 		data := []string{}
 		ab.MustDecode(r, &data)
 
@@ -173,8 +172,8 @@ func afterScreeningServiceRegister(h *hitch.Hitch) {
 	lock := map[string]chan struct{}{}
 	var mtx sync.Mutex
 
-	h.Get("/api/walkthrough/:id/screening", http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		wid := hitch.Params(r).ByName("id")
+	srv.Get("/api/walkthrough/:id/screening", http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		wid := ab.GetParams(r).ByName("id")
 		db := ab.GetDB(r)
 
 		screening, err := LoadActualScreeningForWalkthrough(db, wid)

@@ -7,7 +7,6 @@ import (
 	"strconv"
 
 	"github.com/lib/pq"
-	"github.com/nbio/hitch"
 	"github.com/tamasd/ab"
 )
 
@@ -121,7 +120,7 @@ func LoadAllWalkthrough(db ab.DB, start, limit int) ([]*Walkthrough, error) {
 	return entities, err
 }
 
-func (s *WalkthroughService) Register(h *hitch.Hitch) error {
+func (s *WalkthroughService) Register(srv *ab.Server) error {
 	var err error
 
 	listMiddlewares := []func(http.Handler) http.Handler{}
@@ -140,17 +139,17 @@ func (s *WalkthroughService) Register(h *hitch.Hitch) error {
 		return err
 	}
 
-	h.Get("/api/walkthrough", s.walkthroughListHandler(), listMiddlewares...)
+	srv.Get("/api/walkthrough", s.walkthroughListHandler(), listMiddlewares...)
 
-	h.Post("/api/walkthrough", s.walkthroughPostHandler(), postMiddlewares...)
+	srv.Post("/api/walkthrough", s.walkthroughPostHandler(), postMiddlewares...)
 
-	h.Get("/api/walkthrough/:id", s.walkthroughGetHandler(), getMiddlewares...)
+	srv.Get("/api/walkthrough/:id", s.walkthroughGetHandler(), getMiddlewares...)
 
-	h.Put("/api/walkthrough/:id", s.walkthroughPutHandler(), putMiddlewares...)
+	srv.Put("/api/walkthrough/:id", s.walkthroughPutHandler(), putMiddlewares...)
 
-	h.Delete("/api/walkthrough/:id", s.walkthroughDeleteHandler(), deleteMiddlewares...)
+	srv.Delete("/api/walkthrough/:id", s.walkthroughDeleteHandler(), deleteMiddlewares...)
 
-	afterWalkthroughServiceRegister(s, h)
+	afterWalkthroughServiceRegister(s, srv)
 
 	return err
 }
@@ -229,7 +228,7 @@ func (s *WalkthroughService) walkthroughPostHandler() http.Handler {
 
 func (s *WalkthroughService) walkthroughGetHandler() http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		id := hitch.Params(r).ByName("id")
+		id := ab.GetParams(r).ByName("id")
 		db := ab.GetDB(r)
 		abort := false
 		loadFunc := LoadWalkthrough
@@ -258,7 +257,7 @@ func (s *WalkthroughService) walkthroughGetHandler() http.Handler {
 
 func (s *WalkthroughService) walkthroughPutHandler() http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		id := hitch.Params(r).ByName("id")
+		id := ab.GetParams(r).ByName("id")
 
 		entity := &Walkthrough{}
 		ab.MustDecode(r, entity)
@@ -291,7 +290,7 @@ func (s *WalkthroughService) walkthroughPutHandler() http.Handler {
 
 func (s *WalkthroughService) walkthroughDeleteHandler() http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		id := hitch.Params(r).ByName("id")
+		id := ab.GetParams(r).ByName("id")
 		db := ab.GetDB(r)
 		abort := false
 		loadFunc := LoadWalkthrough

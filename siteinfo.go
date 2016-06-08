@@ -26,7 +26,6 @@ import (
 	"sync"
 	"time"
 
-	"github.com/nbio/hitch"
 	"github.com/tamasd/ab"
 )
 
@@ -47,12 +46,12 @@ func NewSiteinfoService(baseurls ...string) *SiteinfoService {
 	}
 }
 
-func (sis *SiteinfoService) Register(h *hitch.Hitch) error {
+func (sis *SiteinfoService) Register(srv *ab.Server) error {
 	clientjs := make([]string, len(sis.BaseURLs))
 	for i, baseurl := range sis.BaseURLs {
 		clientjs[i] = getClientJS(baseurl)
 	}
-	h.Post("/api/siteinfo", http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+	srv.Post("/api/siteinfo", http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		d := siteInfoRequest{}
 		ab.MustDecode(r, &d)
 		db := ab.GetDB(r)

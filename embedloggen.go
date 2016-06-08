@@ -5,7 +5,6 @@ import (
 	"net/http"
 
 	"github.com/lib/pq"
-	"github.com/nbio/hitch"
 	"github.com/tamasd/ab"
 )
 
@@ -113,7 +112,7 @@ func LoadAllEmbedLog(db ab.DB, start, limit int) ([]*EmbedLog, error) {
 type EmbedLogService struct {
 }
 
-func (s *EmbedLogService) Register(h *hitch.Hitch) error {
+func (s *EmbedLogService) Register(srv *ab.Server) error {
 	var err error
 
 	postMiddlewares := []func(http.Handler) http.Handler{}
@@ -124,7 +123,7 @@ func (s *EmbedLogService) Register(h *hitch.Hitch) error {
 		return err
 	}
 
-	h.Post("/api/embedlog", s.embedlogPostHandler(), postMiddlewares...)
+	srv.Post("/api/embedlog", s.embedlogPostHandler(), postMiddlewares...)
 
 	// HOOK: afterEmbedLogServiceRegister()
 

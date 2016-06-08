@@ -24,7 +24,6 @@ import (
 
 	"github.com/go-kit/kit/metrics"
 	"github.com/go-kit/kit/metrics/prometheus"
-	"github.com/nbio/hitch"
 	stdprometheus "github.com/prometheus/client_golang/prometheus"
 	"github.com/tamasd/ab"
 )
@@ -83,7 +82,7 @@ type LogService struct {
 	BaseURL string
 }
 
-func (s *LogService) Register(h *hitch.Hitch) error {
+func (s *LogService) Register(srv *ab.Server) error {
 	walkthroughPlayed := prometheus.NewCounter(stdprometheus.CounterOpts{
 		Namespace: "walkhub",
 		Subsystem: "metrics",
@@ -98,7 +97,7 @@ func (s *LogService) Register(h *hitch.Hitch) error {
 		Help:      "Number of walkthrough visits",
 	}, []string{"uuid", "embedorigin"})
 
-	h.Post("/api/log/helpcenteropened", http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+	srv.Post("/api/log/helpcenteropened", http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		l := helpCenterOpenedLog{}
 		ab.MustDecode(r, &l)
 
@@ -109,7 +108,7 @@ func (s *LogService) Register(h *hitch.Hitch) error {
 		ab.MaybeFail(r, http.StatusInternalServerError, DBLog(db, "helpcenteropened", message))
 	}))
 
-	h.Post("/api/log/walkthroughplayed", http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+	srv.Post("/api/log/walkthroughplayed", http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		l := walkthroughPlayedLog{}
 		ab.MustDecode(r, &l)
 
@@ -144,7 +143,7 @@ func (s *LogService) Register(h *hitch.Hitch) error {
 			Add(1)
 	}))
 
-	h.Post("/api/log/walkthroughpagevisited", http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+	srv.Post("/api/log/walkthroughpagevisited", http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		l := walkthroughPageVisitedLog{}
 		ab.MustDecode(r, &l)
 

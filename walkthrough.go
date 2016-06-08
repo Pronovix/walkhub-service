@@ -28,7 +28,6 @@ import (
 	"sync"
 	"time"
 
-	"github.com/nbio/hitch"
 	"github.com/pborman/uuid"
 	"github.com/tamasd/ab"
 	"github.com/tamasd/ab/services/search"
@@ -157,10 +156,10 @@ func beforeWalkthroughServiceRegister() (listMiddlewares, postMiddlewares, getMi
 	return listMiddlewares, postMiddlewares, getMiddlewares, putMiddlewares, deleteMiddlewares
 }
 
-func afterWalkthroughServiceRegister(s *WalkthroughService, h *hitch.Hitch) {
+func afterWalkthroughServiceRegister(s *WalkthroughService, srv *ab.Server) {
 	reindexing := false
 	var reindexingMutex sync.RWMutex
-	h.Post("/api/reindexwalkthroughs", http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+	srv.Post("/api/reindexwalkthroughs", http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		reindexingMutex.RLock()
 		idxing := reindexing
 		reindexingMutex.RUnlock()
@@ -205,7 +204,7 @@ func afterWalkthroughServiceRegister(s *WalkthroughService, h *hitch.Hitch) {
 		ab.Render(r).SetCode(http.StatusAccepted)
 	}), ab.RestrictPrivateAddressMiddleware())
 
-	h.Get("/api/mysites", http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+	srv.Get("/api/mysites", http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		db := ab.GetDB(r)
 		uid := ab.GetSession(r)["uid"]
 

@@ -22,7 +22,6 @@ import (
 	"time"
 
 	"github.com/lib/pq"
-	"github.com/nbio/hitch"
 	"github.com/tamasd/ab"
 	"github.com/tamasd/ab/providers/auth/google"
 	"github.com/tamasd/ab/services/auth"
@@ -46,8 +45,8 @@ func afterUserSchemaSQL(sql string) (_sql string) {
 	return sql + "\nALTER TABLE auth ADD CONSTRAINT auth_uuid_fkey FOREIGN KEY (uuid) REFERENCES \"user\" (uuid) MATCH SIMPLE ON UPDATE CASCADE ON DELETE CASCADE;"
 }
 
-func afterUserServiceRegister(h *hitch.Hitch) {
-	h.Get("/api/user", http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+func afterUserServiceRegister(srv *ab.Server) {
+	srv.Get("/api/user", http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		sess := ab.GetSession(r)
 		if sess["uid"] != "" {
 			db := ab.GetDB(r)

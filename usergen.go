@@ -5,7 +5,6 @@ import (
 	"net/http"
 
 	"github.com/lib/pq"
-	"github.com/nbio/hitch"
 	"github.com/tamasd/ab"
 )
 
@@ -160,7 +159,7 @@ func LoadAllUser(db ab.DB, start, limit int) ([]*User, error) {
 type UserService struct {
 }
 
-func (s *UserService) Register(h *hitch.Hitch) error {
+func (s *UserService) Register(srv *ab.Server) error {
 	var err error
 
 	postMiddlewares := []func(http.Handler) http.Handler{}
@@ -177,15 +176,15 @@ func (s *UserService) Register(h *hitch.Hitch) error {
 		return err
 	}
 
-	h.Post("/api/user", s.userPostHandler(), postMiddlewares...)
+	srv.Post("/api/user", s.userPostHandler(), postMiddlewares...)
 
-	h.Get("/api/user/:id", s.userGetHandler(), getMiddlewares...)
+	srv.Get("/api/user/:id", s.userGetHandler(), getMiddlewares...)
 
-	h.Put("/api/user/:id", s.userPutHandler(), putMiddlewares...)
+	srv.Put("/api/user/:id", s.userPutHandler(), putMiddlewares...)
 
-	h.Delete("/api/user/:id", s.userDeleteHandler(), deleteMiddlewares...)
+	srv.Delete("/api/user/:id", s.userDeleteHandler(), deleteMiddlewares...)
 
-	afterUserServiceRegister(h)
+	afterUserServiceRegister(srv)
 
 	return err
 }
@@ -232,7 +231,7 @@ func (s *UserService) userPostHandler() http.Handler {
 
 func (s *UserService) userGetHandler() http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		id := hitch.Params(r).ByName("id")
+		id := ab.GetParams(r).ByName("id")
 		db := ab.GetDB(r)
 		abort := false
 		loadFunc := LoadUser
@@ -261,7 +260,7 @@ func (s *UserService) userGetHandler() http.Handler {
 
 func (s *UserService) userPutHandler() http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		id := hitch.Params(r).ByName("id")
+		id := ab.GetParams(r).ByName("id")
 
 		entity := &User{}
 		ab.MustDecode(r, entity)
@@ -294,7 +293,7 @@ func (s *UserService) userPutHandler() http.Handler {
 
 func (s *UserService) userDeleteHandler() http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		id := hitch.Params(r).ByName("id")
+		id := ab.GetParams(r).ByName("id")
 		db := ab.GetDB(r)
 		abort := false
 		loadFunc := LoadUser

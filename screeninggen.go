@@ -4,7 +4,6 @@ import (
 	"errors"
 
 	"github.com/lib/pq"
-	"github.com/nbio/hitch"
 	"github.com/tamasd/ab"
 )
 
@@ -134,7 +133,7 @@ func LoadAllScreening(db ab.DB, start, limit int) ([]*Screening, error) {
 type ScreeningService struct {
 }
 
-func (s *ScreeningService) Register(h *hitch.Hitch) error {
+func (s *ScreeningService) Register(srv *ab.Server) error {
 	var err error
 
 	// HOOK: beforeScreeningServiceRegister()
@@ -143,7 +142,7 @@ func (s *ScreeningService) Register(h *hitch.Hitch) error {
 		return err
 	}
 
-	afterScreeningServiceRegister(h)
+	afterScreeningServiceRegister(srv)
 
 	return err
 }
