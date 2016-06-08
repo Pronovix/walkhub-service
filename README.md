@@ -19,6 +19,12 @@ Check the [landing page](http://pronovix.com/walkhub) for more information.
 	cp config.json.minimal config.json
 	$EDITOR config.json
 
+Any configuration value can be overridden with an environment variable.
+
+### Docker
+
+[The official Docker image](https://hub.docker.com/r/pronovix/walkhub-service/) uses an empty configuration file. You either have to provide all configuration through environment variables, or you have to create an image and replace the empty configuration file.
+
 ### Mandatory values
 
 * `db`: connection string to the PostgreSQL database
