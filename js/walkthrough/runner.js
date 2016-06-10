@@ -21,6 +21,7 @@ class Runner {
 	onSave = noop;
 	onClose = noop;
 	actionClick = noop;
+	reloadHTTP = false;
 
 	start() {
 	}

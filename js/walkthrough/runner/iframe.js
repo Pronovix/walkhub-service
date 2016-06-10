@@ -19,6 +19,7 @@ import Runner from "walkthrough/runner";
 import WalkhubIframe from "components/walkhub_iframe";
 
 class IframeRunner extends Runner {
+	reloadHTTP = true;
 
 	getWidget(title) {
 		return (

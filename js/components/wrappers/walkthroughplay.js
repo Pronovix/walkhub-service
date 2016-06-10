@@ -164,7 +164,7 @@ class WalkthroughPlay extends React.Component {
 		const siteinfo = this.getSiteinfo(this.props);
 		if (wturl) {
 			const walkthroughProtocol = URI(wturl).protocol();
-			if (isHTTPSPage() && walkthroughProtocol === "http") {
+			if (isHTTPSPage() && walkthroughProtocol === "http" && this.createRunner().reloadHTTP) {
 				let httpOrigin = URI(WALKHUB_HTTP_URL);
 				let url = URI(window.location.href)
 					.protocol("http")
