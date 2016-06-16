@@ -30,6 +30,12 @@ import WalkhubBackend from "walkthrough/walkhub_backend";
 import $ from "jquery";
 import NetworkActivityWrapper from "components/wrappers/networkactivity";
 
+let FooterComponent = null;
+
+if (WALKHUB_CUSTOM_FOOTER) {
+	Footercomponent = require("FOOTER");
+}
+
 let menuItems = {
 	navbar: {
 		left: [
@@ -158,6 +164,9 @@ class AppWrapper extends React.Component {
 		Object.keys(this.state.classes).map((k) => {
 			className += ` ${k}-${this.state.classes[k]}`;
 		});
+
+		const footer = FooterComponent ? <FooterComponent /> : null;
+
 		return (
 			<App
 				currentUser={this.props.currentUser}
@@ -168,6 +177,7 @@ class AppWrapper extends React.Component {
 				footerConfig={menuItems.footer}
 				className={className}
 				containerClassName={this.getContainerClassName()}
+				footer={footer}
 				>
 				<NetworkActivityWrapper />
 				{this.props.children}

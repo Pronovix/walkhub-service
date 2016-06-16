@@ -29,6 +29,7 @@ class App extends React.Component {
 		footerConfig: {},
 		className: "",
 		containerClassName: "",
+		footer: null,
 	};
 
 	configEmpty(cfg) {
@@ -76,6 +77,7 @@ class App extends React.Component {
 					{this.props.children}
 				</div>
 				{footer}
+				{this.props.footer}
 			</div>
 		);
 	}

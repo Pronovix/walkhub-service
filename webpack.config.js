@@ -12,6 +12,7 @@ try {
 var contentpages = process.env.CONTENTPAGES || serverConfig.contentpages;
 var menuitems = process.env.MENUITEMS || serverConfig.menuitems;
 var frontpagecomponent = process.env.FRONTPAGECOMPONENT || serverConfig.frontpagecomponent;
+var footercomponent = process.env.FOOTERCOMPONENT || serverConfig.footercomponent;
 var baseurl = process.env.BASEURL || serverConfig.baseurl;
 var embedurl = process.env.EMBEDURL || serverConfig.embedurl;
 var httporigin = process.env.HTTPORIGIN || serverConfig.httporigin;
@@ -85,7 +86,8 @@ module.exports = {
 		alias: {
 			CONTENT_PAGES: contentpages,
 			MENU_ITEMS: menuitems,
-			FRONT_PAGE: frontpagecomponent || "components/frontpage"
+			FRONT_PAGE: frontpagecomponent || "components/frontpage",
+			FOOTER: footercomponent,
 		},
 		root: srcPath,
 		extensions: ["", ".js", ".less"],
@@ -125,7 +127,8 @@ module.exports = {
 			WALKHUB_HTTP_URL: JSON.stringify(httporigin ? httporigin : baseurl),
 			WALKHUB_MENU_ITEMS: !!menuitems,
 			WALKHUB_CONTENT_PAGES: !!contentpages,
-			GA_ACCOUNT: gaAccount
+			GA_ACCOUNT: gaAccount,
+			WALKHUB_CUSTOM_FOOTER: !!footercomponent,
 		}),
 		new webpack.NoErrorsPlugin(),
 		new webpack.optimize.OccurenceOrderPlugin(),
