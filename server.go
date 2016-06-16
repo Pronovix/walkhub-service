@@ -146,9 +146,7 @@ func (s *WalkhubServer) setupHTTPS() {
 				} else {
 					if s.HTTPOrigin == "" || r.Host == httpOrigin.Host {
 						whitelist := []string{
-							"/record",
 							"/walkthrough",
-							"/search",
 						}
 						if !pathIsWhitelisted(whitelist, r.URL.Path) {
 							redirectToHTTPS(w, r, baseURL)
@@ -274,6 +272,14 @@ func (s *WalkhubServer) Start(addr string, certfile string, keyfile string) erro
 		s.AddFile(path, "assets/index.html")
 	}
 
+	ec := ab.NewEntityController(s.GetDBConnection())
+	ec.
+		Add(&User{}, userEntityDelegate{}).
+		Add(&Walkthrough{}, walkthroughEntityDelegate{}).
+		Add(&Screening{}, nil).
+		Add(&EmbedLog{}, nil).
+		Add(&Log{}, nil)
+
 	s.Options("/*path", corsPreflightHandler(s.BaseURL, s.HTTPOrigin))
 
 	s.Use(corsMiddleware(s.BaseURL, s.HTTPOrigin))
@@ -287,11 +293,11 @@ func (s *WalkhubServer) Start(addr string, certfile string, keyfile string) erro
 		delegate.From = s.AuthCreds.SMTP.From
 		delegate.RegistrationEmailTemplate = regMailTemplate
 		delegate.LostPasswordEmailTemplate = lostpwMailTemplate
-		pwauth := auth.NewPasswordAuthProvider(NewPasswordDelegate(s.GetDBConnection()), delegate)
+		pwauth := auth.NewPasswordAuthProvider(ec, NewPasswordDelegate(s.GetDBConnection(), ec), delegate)
 		authProviders = append(authProviders, pwauth)
 	}
 	if !s.AuthCreds.Google.Empty() {
-		gauth := google.NewGoogleAuthProvider(s.AuthCreds.Google, &GoogleUserDelegate{})
+		gauth := google.NewGoogleAuthProvider(ec, s.AuthCreds.Google, &GoogleUserDelegate{})
 		authProviders = append(authProviders, gauth)
 	}
 	if len(authProviders) == 0 {
@@ -300,24 +306,20 @@ func (s *WalkhubServer) Start(addr string, certfile string, keyfile string) erro
 	authsvc := auth.NewService(s.BaseURL, UserDelegate, s.GetDBConnection(), authProviders...)
 	s.RegisterService(authsvc)
 
-	s.RegisterService(&UserService{})
+	s.RegisterService(userService(ec))
 
 	searchsvc := search.NewSearchService(s.GetDBConnection(), nil)
 	searchsvc.AddDelegate("walkthrough", &walkhubSearchDelegate{
-		db: s.GetDBConnection(),
+		db:         s.GetDBConnection(),
+		controller: ec,
 	})
 	s.RegisterService(searchsvc)
 
-	s.RegisterService(&WalkthroughService{
-		SearchService: searchsvc,
-		BaseURL:       s.BaseURL,
-	})
+	s.RegisterService(walkthroughService(ec, searchsvc, s.BaseURL))
 
-	s.RegisterService(&EmbedLogService{})
+	s.RegisterService(embedlogService(ec))
 
-	s.RegisterService(&LogService{
-		BaseURL: s.BaseURL,
-	})
+	s.RegisterService(logService(ec, s.BaseURL))
 
 	s.Get("/metrics", stdprometheus.Handler(), ab.RestrictPrivateAddressMiddleware())
 
@@ -328,7 +330,7 @@ func (s *WalkhubServer) Start(addr string, certfile string, keyfile string) erro
 
 	s.RegisterService(NewSiteinfoService(siteinfoBaseURLs...))
 
-	s.RegisterService(&ScreeningService{})
+	s.RegisterService(screeningService(ec))
 
 	if certfile != "" && keyfile != "" {
 		s.setupHTTPS()

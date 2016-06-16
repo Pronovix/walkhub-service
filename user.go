@@ -28,8 +28,6 @@ import (
 	"google.golang.org/api/plus/v1"
 )
 
-//go:generate abt --output=usergen.go --generate-service-struct-name=UserService --generate-service-list=false entity User
-
 var UserDelegate = &auth.SessionUserDelegate{}
 
 type User struct {
@@ -41,29 +39,45 @@ type User struct {
 	LastSeen time.Time
 }
 
-func afterUserSchemaSQL(sql string) (_sql string) {
+func (u *User) GetID() string {
+	return u.UUID
+}
+
+var _ ab.EntityDelegate = userEntityDelegate{}
+
+type userEntityDelegate struct{}
+
+func (d userEntityDelegate) Validate(e ab.Entity) error {
+	return nil
+}
+
+func (d userEntityDelegate) AlterSQL(sql string) string {
 	return sql + "\nALTER TABLE auth ADD CONSTRAINT auth_uuid_fkey FOREIGN KEY (uuid) REFERENCES \"user\" (uuid) MATCH SIMPLE ON UPDATE CASCADE ON DELETE CASCADE;"
 }
 
-func afterUserServiceRegister(srv *ab.Server) {
-	srv.Get("/api/user", http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		sess := ab.GetSession(r)
-		if sess["uid"] != "" {
-			db := ab.GetDB(r)
-
-			user, err := LoadUser(db, sess["uid"])
-			ab.MaybeFail(r, http.StatusInternalServerError, err)
-
-			ab.Render(r).
-				JSON(user)
-		}
-	}))
-}
-
-func LastSeenMiddleware(next http.Handler) http.Handler {
-	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-
+func userService(ec *ab.EntityController) ab.Service {
+	res := ab.EntityResource(ec, &User{}, ab.EntityResourceConfig{
+		DisableList: true,
 	})
+
+	res.ExtraEndpoints = func(srv *ab.Server) error {
+		srv.Get("/api/user", http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+			sess := ab.GetSession(r)
+			if sess["uid"] != "" {
+				db := ab.GetDB(r)
+
+				user, err := ec.Load(db, "user", sess["uid"])
+				ab.MaybeFail(r, http.StatusInternalServerError, err)
+
+				ab.Render(r).
+					JSON(user)
+			}
+		}))
+
+		return nil
+	}
+
+	return res
 }
 
 func userLoggedInMiddleware(next http.Handler) http.Handler {
@@ -95,7 +109,10 @@ func (gud *GoogleUserDelegate) Convert(u *plus.Person) (ab.Entity, error) {
 		}
 	}
 
-	return NewUser(u.DisplayName, mail), nil
+	return &User{
+		Name: u.DisplayName,
+		Mail: mail,
+	}, nil
 }
 
 type userRegData struct {
@@ -103,21 +120,27 @@ type userRegData struct {
 	auth.PasswordFields
 }
 
+func (u *userRegData) GetEntity() ab.Entity {
+	return u.User
+}
+
 var _ auth.PasswordAuthProviderDelegate = &PasswordDelegate{}
 
 type PasswordDelegate struct {
-	db ab.DB
+	db         ab.DB
+	controller *ab.EntityController
 }
 
-func NewPasswordDelegate(db ab.DB) *PasswordDelegate {
+func NewPasswordDelegate(db ab.DB, ec *ab.EntityController) *PasswordDelegate {
 	return &PasswordDelegate{
-		db: db,
+		db:         db,
+		controller: ec,
 	}
 }
 
 func (d *PasswordDelegate) GetPassword() auth.Password {
 	return &userRegData{
-		User:           EmptyUser(),
+		User:           &User{},
 		PasswordFields: auth.PasswordFields{},
 	}
 }
@@ -149,7 +172,7 @@ func (d *PasswordDelegate) Get2FAIssuer() string {
 }
 
 func (d *PasswordDelegate) LoadUser(uuid string) (ab.Entity, error) {
-	user, err := LoadUser(d.db, uuid)
+	user, err := d.controller.Load(d.db, "user", uuid)
 	if err != nil {
 		return nil, err
 	}
@@ -161,11 +184,11 @@ func (d *PasswordDelegate) LoadUser(uuid string) (ab.Entity, error) {
 }
 
 func (d *PasswordDelegate) LoadUserByMail(mail string) (ab.Entity, error) {
-	user, err := selectSingleUserFromQuery(d.db, "SELECT "+userFields+" FROM \"user\" u WHERE u.mail = $1", mail)
+	users, err := d.controller.LoadFromQuery(d.db, "user", "SELECT "+d.controller.FieldList("name")+" FROM \"user\" u WHERE u.mail = $1", mail)
 	// this is here to make sure that the returned interface is nil,
 	// not just the interface data
-	if user == nil {
+	if len(users) != 1 {
 		return nil, err
 	}
-	return user, err
+	return users[0], err
 }

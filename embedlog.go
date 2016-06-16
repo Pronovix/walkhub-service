@@ -25,8 +25,6 @@ import (
 	"github.com/tamasd/ab"
 )
 
-//go:generate abt --output=embedloggen.go --generate-service-struct-name=EmbedLogService --generate-crud-update=false --generate-crud-delete=false --generate-service-list=false --generate-service-get=false --generate-service-put=false --generate-service-patch=false --generate-service-delete=false entity EmbedLog
-
 type EmbedLog struct {
 	UUID    string    `dbtype:"uuid" dbdefault:"uuid_generate_v4()" json:"uuid"`
 	IPAddr  string    `json:"ip"`
@@ -35,20 +33,39 @@ type EmbedLog struct {
 	Mail    string    `json:"mail"`
 }
 
-func validateEmbedLog(e *EmbedLog) (err error) {
-	if e.Site == "" {
+func (el *EmbedLog) GetID() string {
+	return el.UUID
+}
+
+func (el *EmbedLog) Validate() error {
+	if el.Site == "" {
 		return errors.New("site is empty")
 	}
 
 	return nil
 }
 
-func embedlogPostValidation(r *http.Request, entity *EmbedLog) {
-	entity.UUID = ""
-	entity.Created = time.Now()
-	entity.IPAddr = r.RemoteAddr
-}
+func embedlogService(ec *ab.EntityController) ab.Service {
+	res := ab.EntityResource(ec, &EmbedLog{}, ab.EntityResourceConfig{
+		DisableList:   true,
+		DisableGet:    true,
+		DisablePut:    true,
+		DisableDelete: true,
+	})
 
-func afterEmbedLogPostInsertHandler(db ab.DB, entity *EmbedLog) {
-	DBLog(db, "embedlog", fmt.Sprintf("%s (%s) has created an embed log on %s at %s", entity.Mail, entity.IPAddr, entity.Site, entity.Created.String()))
+	res.AddPostEvent(ab.ResourceEventCallback{
+		BeforeCallback: func(r *http.Request, d ab.Resource) {
+			el := d.(*EmbedLog)
+			el.UUID = ""
+			el.Created = time.Now()
+			el.IPAddr = r.RemoteAddr
+		},
+		AfterCallback: func(r *http.Request, d ab.Resource) {
+			db := ab.GetDB(r)
+			el := d.(*EmbedLog)
+			DBLog(db, ec, "embedlog", fmt.Sprintf("%s (%s) has created an embed log on %s at %s", el.Mail, el.IPAddr, el.Site, el.Created.String()))
+		},
+	})
+
+	return res
 }

@@ -18,6 +18,7 @@ package walkhub
 
 import (
 	"database/sql"
+	"encoding/json"
 	"errors"
 	"fmt"
 	"html"
@@ -34,11 +35,188 @@ import (
 	"github.com/tamasd/ab/util"
 )
 
-//go:generate abt --output=walkthroughgen.go --generate-service-struct=false --generate-service-struct-name=WalkthroughService --generate-crud-update=false --generate-crud-delete=false --urlidfield=1 --idfield=1 entity Walkthrough
+var WalkthroughNotFoundError = errors.New("walkthrough is not found")
 
-type WalkthroughService struct {
-	SearchService *search.SearchService
-	BaseURL       string
+func walkthroughService(ec *ab.EntityController, search *search.SearchService, baseurl string) ab.Service {
+	h := &walkthroughEntityResourceHelper{
+		controller: ec,
+	}
+
+	res := ab.EntityResource(ec, &Walkthrough{}, ab.EntityResourceConfig{
+		PostMiddlewares:      []func(http.Handler) http.Handler{userLoggedInMiddleware},
+		PutMiddlewares:       []func(http.Handler) http.Handler{userLoggedInMiddleware},
+		DeleteMiddlewares:    []func(http.Handler) http.Handler{userLoggedInMiddleware},
+		EntityResourceLister: h,
+		EntityResourceLoader: h,
+	})
+
+	res.ExtraEndpoints = func(srv *ab.Server) error {
+		reindexing := false
+		var reindexingMutex sync.RWMutex
+		srv.Post("/api/reindexwalkthroughs", http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+			reindexingMutex.RLock()
+			idxing := reindexing
+			reindexingMutex.RUnlock()
+
+			if idxing {
+				ab.Fail(r, http.StatusServiceUnavailable, errors.New("reindexing is in progress"))
+			}
+
+			reindexingMutex.Lock()
+			reindexing = true
+			reindexingMutex.Unlock()
+
+			db := ab.GetDB(r)
+
+			go func() {
+				defer func() {
+					reindexingMutex.Lock()
+					reindexing = false
+					reindexingMutex.Unlock()
+				}()
+				err := search.PurgeIndex()
+				if err != nil {
+					log.Println(err)
+					return
+				}
+
+				wts, err := LoadAllActualWalkthroughs(db, ec, 0, 0)
+				if err != nil {
+					log.Println(err)
+					return
+				}
+
+				for _, wt := range wts {
+					err = search.IndexEntity("walkthrough", wt)
+					if err != nil {
+						log.Println(err)
+						return
+					}
+				}
+			}()
+
+			ab.Render(r).SetCode(http.StatusAccepted)
+		}), ab.RestrictPrivateAddressMiddleware())
+
+		srv.Get("/api/mysites", http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+			db := ab.GetDB(r)
+			uid := ab.GetSession(r)["uid"]
+
+			rows, err := db.Query("SELECT DISTINCT steps->0->'arg0' AS site FROM walkthrough WHERE uid = $1 ORDER BY site", uid)
+			ab.MaybeFail(r, http.StatusInternalServerError, err)
+			defer rows.Close()
+
+			sites := []string{}
+
+			for rows.Next() {
+				var site sql.NullString
+				err = rows.Scan(&site)
+				ab.MaybeFail(r, http.StatusInternalServerError, err)
+				if site.Valid {
+					siteName := site.String
+
+					// strip surrounding "
+					siteName = siteName[1:]
+					siteName = siteName[:len(siteName)-1]
+
+					sites = append(sites, siteName)
+				}
+			}
+
+			ab.Render(r).JSON(sites)
+		}), userLoggedInMiddleware)
+
+		return nil
+	}
+
+	res.AddPostEvent(ab.ResourceEventCallback{
+		BeforeCallback: func(r *http.Request, d ab.Resource) {
+			wt := d.(*Walkthrough)
+			uid := UserDelegate.CurrentUser(r)
+			if wt.UID == "" {
+				wt.UID = uid
+			}
+			if wt.UID != uid {
+				ab.Fail(r, http.StatusBadRequest, errors.New("invalid user id"))
+			}
+
+			wt.Updated = time.Now()
+			wt.Revision = ""
+			wt.UUID = ""
+		},
+		AfterCallback: func(r *http.Request, d ab.Resource) {
+			db := ab.GetDB(r)
+			wt := d.(*Walkthrough)
+			search.IndexEntity("walkthrough", wt)
+			userEntity, err := ec.Load(db, "user", wt.UID)
+			if err != nil {
+				log.Println(err)
+				return
+			}
+			user := userEntity.(*User)
+			startURL := ""
+			if len(wt.Steps) > 0 && wt.Steps[0].Command == "open" {
+				startURL = wt.Steps[0].Arg0
+			}
+			message := fmt.Sprintf("%s has recorded a Walkthrough (<%s|%s>) on %s",
+				user.Mail,
+				baseurl+"walkthrough/"+wt.UUID,
+				html.EscapeString(wt.Name),
+				html.EscapeString(startURL),
+			)
+			DBLog(db, ec, "walkthroughrecord", message)
+		},
+	})
+
+	res.AddPutEvent(ab.ResourceEventCallback{
+		BeforeCallback: func(r *http.Request, d ab.Resource) {
+			db := ab.GetDB(r)
+			wt := d.(*Walkthrough)
+			uid := UserDelegate.CurrentUser(r)
+			currentUserEntity, err := ec.Load(db, "user", uid)
+			ab.MaybeFail(r, http.StatusBadRequest, err)
+			currentUser := currentUserEntity.(*User)
+			if wt.UID != uid {
+				if !currentUser.Admin {
+					ab.Fail(r, http.StatusForbidden, nil)
+				}
+			}
+
+			previousRevision, err := LoadActualRevision(db, ec, wt.UUID)
+			ab.MaybeFail(r, http.StatusBadRequest, err)
+			if previousRevision == nil {
+				ab.Fail(r, http.StatusNotFound, nil)
+			}
+
+			if previousRevision.UID != uid && !currentUser.Admin {
+				ab.Fail(r, http.StatusForbidden, nil)
+			}
+
+			wt.Updated = time.Now()
+			wt.Revision = ""
+		},
+		AfterCallback: func(r *http.Request, d ab.Resource) {
+			search.IndexEntity("walkthrough", d.(*Walkthrough))
+		},
+	})
+
+	res.AddDeleteEvent(ab.ResourceEventCallback{
+		InsideCallback: func(r *http.Request, d ab.Resource) {
+			db := ab.GetDB(r)
+			uid := UserDelegate.CurrentUser(r)
+			wt := d.(*Walkthrough)
+			currentUserEntity, err := ec.Load(db, "user", uid)
+			ab.MaybeFail(r, http.StatusBadRequest, err)
+			currentUser := currentUserEntity.(*User)
+			if wt.UID != uid {
+				if !currentUser.Admin {
+					ab.Fail(r, http.StatusForbidden, nil)
+				}
+			}
+		},
+	})
+
+	return res
 }
 
 type Step struct {
@@ -61,23 +239,33 @@ type Walkthrough struct {
 	Published   bool      `json:"published"`
 }
 
-func validateWalkthrough(e *Walkthrough) (_err error) {
-	if e.Name == "" {
+func (w *Walkthrough) GetID() string {
+	return w.UUID
+}
+
+var _ ab.EntityDelegate = walkthroughEntityDelegate{}
+
+type walkthroughEntityDelegate struct{}
+
+func (d walkthroughEntityDelegate) Validate(e ab.Entity) error {
+	wt := e.(*Walkthrough)
+
+	if wt.Name == "" {
 		return ab.NewVerboseError("", "name must not be empty")
 	}
 
-	if e.UID == "" {
+	if wt.UID == "" {
 		return ab.NewVerboseError("", "uid must not be empty")
 	}
 
-	if len(e.Steps) == 0 {
+	if len(wt.Steps) == 0 {
 		return ab.NewVerboseError("", "a walkthrough must have at least one step")
 	}
 
 	return nil
 }
 
-func afterWalkthroughSchemaSQL(sql string) (_sql string) {
+func (d walkthroughEntityDelegate) AlterSQL(sql string) string {
 	return sql + `
 		ALTER TABLE walkthrough ADD CONSTRAINT walkthrough_uuid_fkey FOREIGN KEY (uid)
 			REFERENCES "user" (uuid) MATCH SIMPLE
@@ -90,10 +278,16 @@ func afterWalkthroughSchemaSQL(sql string) (_sql string) {
 	`
 }
 
-func beforeWalkthroughInsert(e *Walkthrough) {
+func (e *Walkthrough) Insert(db ab.DB) error {
 	if e.UUID == "" {
 		e.UUID = uuid.NewRandom().String()
 	}
+
+	jsonSteps := ""
+
+	bjsonSteps, _ := json.Marshal(e.Steps)
+	jsonSteps = string(bjsonSteps)
+	return db.QueryRow("INSERT INTO \"walkthrough\"(uuid, uid, name, description, steps, updated, published) VALUES($1, $2, $3, $4, $5, $6, $7) RETURNING revision", e.UUID, e.UID, e.Name, e.Description, jsonSteps, e.Updated, e.Published).Scan(&e.Revision)
 }
 
 func (e *Walkthrough) Update(db ab.DB) error {
@@ -119,215 +313,91 @@ func (e *Walkthrough) Delete(db ab.DB) error {
 	return nil
 }
 
-func LoadUserActualWalkthroughs(uid string) func(db ab.DB, start, limit int) ([]*Walkthrough, error) {
-	return func(db ab.DB, start, limit int) ([]*Walkthrough, error) {
-		return selectWalkthroughFromQuery(db, `WITH
-		latestwt AS (SELECT uuid, MAX(updated) u FROM walkthrough WHERE published = true GROUP BY uuid ORDER BY u DESC),
-		latestuuid AS (SELECT w.revision FROM latestwt l JOIN walkthrough w ON l.uuid = w.uuid AND l.u = w.updated)
-		SELECT `+walkthroughFields+` FROM walkthrough w JOIN latestuuid l ON l.revision = w.revision WHERE uid = $1 ORDER BY updated DESC`, uid)
-	}
+var _ ab.EntityResourceLister = &walkthroughEntityResourceHelper{}
+
+type walkthroughEntityResourceHelper struct {
+	controller *ab.EntityController
 }
 
-func LoadAllActualWalkthroughs(db ab.DB, start, limit int) ([]*Walkthrough, error) {
-	return selectWalkthroughFromQuery(db, `WITH
+func (h *walkthroughEntityResourceHelper) List(r *http.Request, start, limit int) (string, []interface{}) {
+	walkthroughFields := h.controller.FieldList("walkthrough")
+	if uid := r.URL.Query().Get("uid"); uid != "" {
+		return `WITH
+		latestwt AS (SELECT uuid, MAX(updated) u FROM walkthrough WHERE published = true GROUP BY uuid ORDER BY u DESC),
+		latestuuid AS (SELECT w.revision FROM latestwt l JOIN walkthrough w ON l.uuid = w.uuid AND l.u = w.updated)
+		SELECT ` + walkthroughFields + ` FROM walkthrough w JOIN latestuuid l ON l.revision = w.revision WHERE uid = $1 ORDER BY updated DESC`, []interface{}{uid}
+	}
+
+	return `WITH
+	latestwt AS (SELECT uuid, MAX(updated) u FROM walkthrough WHERE published = true GROUP BY uuid ORDER BY u DESC),
+	latestuuid AS (SELECT w.revision FROM latestwt l JOIN walkthrough w ON l.uuid = w.uuid AND l.u = w.updated)
+	SELECT ` + walkthroughFields + ` FROM walkthrough w JOIN latestuuid l ON l.revision = w.revision ORDER BY updated DESC`, []interface{}{}
+}
+
+func LoadAllActualWalkthroughs(db ab.DB, ec *ab.EntityController, start, limit int) ([]*Walkthrough, error) {
+	walkthroughFields := ec.FieldList("walkthrough")
+	entities, err := ec.LoadFromQuery(db, "walkthrough", `WITH
 	latestwt AS (SELECT uuid, MAX(updated) u FROM walkthrough WHERE published = true GROUP BY uuid ORDER BY u DESC),
 	latestuuid AS (SELECT w.revision FROM latestwt l JOIN walkthrough w ON l.uuid = w.uuid AND l.u = w.updated)
 	SELECT `+walkthroughFields+` FROM walkthrough w JOIN latestuuid l ON l.revision = w.revision ORDER BY updated DESC`)
+
+	if err != nil {
+		return []*Walkthrough{}, err
+	}
+
+	wts := make([]*Walkthrough, len(entities))
+	for i, e := range entities {
+		wts[i] = e.(*Walkthrough)
+	}
+
+	return wts, nil
 }
 
-func LoadActualRevisions(db ab.DB, uuids []string) ([]*Walkthrough, error) {
+func (h *walkthroughEntityResourceHelper) Load(id string, r *http.Request) (ab.Resource, error) {
+	return LoadActualRevision(ab.GetDB(r), h.controller, id)
+}
+
+func LoadActualRevisions(db ab.DB, ec *ab.EntityController, uuids []string) ([]*Walkthrough, error) {
+	walkthroughFields := ec.FieldList("walkthrough")
 	placeholders := util.GeneratePlaceholders(1, uint(len(uuids))+1)
-	return selectWalkthroughFromQuery(db, `WITH
+	entities, err := ec.LoadFromQuery(db, "walkthrough", `WITH
 	latestwt AS (SELECT uuid, MAX(updated) u FROM walkthrough WHERE published = true GROUP BY uuid ORDER BY u DESC),
 	latestuuid AS (SELECT w.revision FROM latestwt l JOIN walkthrough w ON l.uuid = w.uuid AND l.u = w.updated)
 	SELECT `+walkthroughFields+` FROM walkthrough w JOIN latestuuid l ON l.revision = w.revision WHERE w.uuid IN (`+placeholders+`)
 	`, util.StringSliceToInterfaceSlice(uuids)...)
-}
 
-func LoadActualRevision(db ab.DB, UUID string) (*Walkthrough, error) {
-	return selectSingleWalkthroughFromQuery(db, "SELECT "+walkthroughFields+" FROM walkthrough w WHERE UUID = $1 AND published = true ORDER BY Updated DESC LIMIT 1", UUID)
-}
-
-func beforeWalkthroughServiceRegister() (listMiddlewares, postMiddlewares, getMiddlewares, putMiddlewares, deleteMiddlewares []func(http.Handler) http.Handler) {
-	postMiddlewares = append(postMiddlewares, userLoggedInMiddleware)
-	putMiddlewares = append(putMiddlewares, userLoggedInMiddleware)
-	deleteMiddlewares = append(deleteMiddlewares, userLoggedInMiddleware)
-
-	return listMiddlewares, postMiddlewares, getMiddlewares, putMiddlewares, deleteMiddlewares
-}
-
-func afterWalkthroughServiceRegister(s *WalkthroughService, srv *ab.Server) {
-	reindexing := false
-	var reindexingMutex sync.RWMutex
-	srv.Post("/api/reindexwalkthroughs", http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		reindexingMutex.RLock()
-		idxing := reindexing
-		reindexingMutex.RUnlock()
-
-		if idxing {
-			ab.Fail(r, http.StatusServiceUnavailable, errors.New("reindexing is in progress"))
-		}
-
-		reindexingMutex.Lock()
-		reindexing = true
-		reindexingMutex.Unlock()
-
-		db := ab.GetDB(r)
-
-		go func() {
-			defer func() {
-				reindexingMutex.Lock()
-				reindexing = false
-				reindexingMutex.Unlock()
-			}()
-			err := s.SearchService.PurgeIndex()
-			if err != nil {
-				log.Println(err)
-				return
-			}
-
-			wts, err := LoadAllActualWalkthroughs(db, 0, 0)
-			if err != nil {
-				log.Println(err)
-				return
-			}
-
-			for _, wt := range wts {
-				err = s.SearchService.IndexEntity("walkthrough", wt)
-				if err != nil {
-					log.Println(err)
-					return
-				}
-			}
-		}()
-
-		ab.Render(r).SetCode(http.StatusAccepted)
-	}), ab.RestrictPrivateAddressMiddleware())
-
-	srv.Get("/api/mysites", http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		db := ab.GetDB(r)
-		uid := ab.GetSession(r)["uid"]
-
-		rows, err := db.Query("SELECT DISTINCT steps->0->'arg0' AS site FROM walkthrough WHERE uid = $1 ORDER BY site", uid)
-		ab.MaybeFail(r, http.StatusInternalServerError, err)
-		defer rows.Close()
-
-		sites := []string{}
-
-		for rows.Next() {
-			var site sql.NullString
-			err = rows.Scan(&site)
-			ab.MaybeFail(r, http.StatusInternalServerError, err)
-			if site.Valid {
-				siteName := site.String
-
-				// strip surrounding "
-				siteName = siteName[1:]
-				siteName = siteName[:len(siteName)-1]
-
-				sites = append(sites, siteName)
-			}
-		}
-
-		ab.Render(r).JSON(sites)
-	}), userLoggedInMiddleware)
-}
-
-func beforeWalkthroughListHandler(r *http.Request) (_loadFunc func(ab.DB, int, int) ([]*Walkthrough, error)) {
-	if uid := r.URL.Query().Get("uid"); uid != "" {
-		return LoadUserActualWalkthroughs(uid)
-	}
-
-	return LoadAllActualWalkthroughs
-}
-
-func beforeWalkthroughGetHandler() (_loadFunc func(ab.DB, string) (*Walkthrough, error)) {
-	return LoadActualRevision
-}
-
-func walkthroughPostValidation(entity *Walkthrough, r *http.Request) {
-	uid := UserDelegate.CurrentUser(r)
-	if entity.UID == "" {
-		entity.UID = uid
-	}
-	if entity.UID != uid {
-		ab.Fail(r, http.StatusBadRequest, errors.New("invalid user id"))
-	}
-
-	entity.Updated = time.Now()
-	entity.Revision = ""
-	entity.UUID = ""
-}
-
-func beforeWalkthroughPutUpdateHandler(r *http.Request, entity *Walkthrough, db ab.DB) {
-	uid := UserDelegate.CurrentUser(r)
-	currentUser, err := LoadUser(db, uid)
-	ab.MaybeFail(r, http.StatusBadRequest, err)
-	if entity.UID != uid {
-		if !currentUser.Admin {
-			ab.Fail(r, http.StatusForbidden, nil)
-		}
-	}
-
-	previousRevision, err := LoadActualRevision(db, entity.UUID)
-	ab.MaybeFail(r, http.StatusBadRequest, err)
-	if previousRevision == nil {
-		ab.Fail(r, http.StatusNotFound, nil)
-	}
-
-	if previousRevision.UID != uid && !currentUser.Admin {
-		ab.Fail(r, http.StatusForbidden, nil)
-	}
-
-	entity.Updated = time.Now()
-	entity.Revision = ""
-}
-
-func beforeWalkthroughDeleteHandler() (_loadFunc func(ab.DB, string) (*Walkthrough, error)) {
-	return LoadActualRevision
-}
-
-func insideWalkthroughDeleteHandler(r *http.Request, entity *Walkthrough, db ab.DB) {
-	uid := UserDelegate.CurrentUser(r)
-	currentUser, err := LoadUser(db, uid)
-	ab.MaybeFail(r, http.StatusBadRequest, err)
-	if entity.UID != uid {
-		if !currentUser.Admin {
-			ab.Fail(r, http.StatusForbidden, nil)
-		}
-	}
-}
-
-func afterWalkthroughPostInsertHandler(db ab.DB, s *WalkthroughService, entity ab.Entity) {
-	s.SearchService.IndexEntity("walkthrough", entity)
-
-	wt := entity.(*Walkthrough)
-	user, err := LoadUser(db, wt.UID)
 	if err != nil {
-		log.Println(err)
-		return
+		return []*Walkthrough{}, err
 	}
-	startURL := ""
-	if len(wt.Steps) > 0 && wt.Steps[0].Command == "open" {
-		startURL = wt.Steps[0].Arg0
+
+	wts := make([]*Walkthrough, len(entities))
+	for i, e := range entities {
+		wts[i] = e.(*Walkthrough)
 	}
-	message := fmt.Sprintf("%s has recorded a Walkthrough (<%s|%s>) on %s",
-		user.Mail,
-		s.BaseURL+"walkthrough/"+wt.UUID,
-		html.EscapeString(wt.Name),
-		html.EscapeString(startURL),
-	)
-	DBLog(db, "walkthroughrecord", message)
+
+	return wts, nil
 }
 
-func afterWalkthroughPutUpdateHandler(s *WalkthroughService, entity ab.Entity) {
-	s.SearchService.IndexEntity("walkthrough", entity)
+func LoadActualRevision(db ab.DB, ec *ab.EntityController, UUID string) (*Walkthrough, error) {
+	walkthroughFields := ec.FieldList("walkthrough")
+	entities, err := ec.LoadFromQuery(db, "walkthrough", "SELECT "+walkthroughFields+" FROM walkthrough w WHERE UUID = $1 AND published = true ORDER BY Updated DESC LIMIT 1", UUID)
+
+	if err != nil {
+		return nil, err
+	}
+
+	if len(entities) != 1 {
+		return nil, nil
+	}
+
+	return entities[0].(*Walkthrough), nil
 }
 
 var _ search.SearchServiceDelegate = &walkhubSearchDelegate{}
 
 type walkhubSearchDelegate struct {
-	db ab.DB
+	controller *ab.EntityController
+	db         ab.DB
 }
 
 func (d *walkhubSearchDelegate) IndexEntity(entity ab.Entity) []search.IndexData {
@@ -362,7 +432,7 @@ func (d *walkhubSearchDelegate) IndexEntity(entity ab.Entity) []search.IndexData
 }
 
 func (d *walkhubSearchDelegate) LoadEntities(uuids []string) []ab.Entity {
-	wts, err := LoadActualRevisions(d.db, uuids)
+	wts, err := LoadActualRevisions(d.db, d.controller, uuids)
 	if err != nil {
 		log.Println(err)
 		return []ab.Entity{}

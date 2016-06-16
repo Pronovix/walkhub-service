@@ -47,6 +47,10 @@ type Screening struct {
 	Published bool      `json:"published"`
 }
 
+func (s *Screening) GetID() string {
+	return s.UUID
+}
+
 func (s *Screening) GIFPath() string {
 	return fmt.Sprintf("public/%s__%s.gif", s.WID, s.UUID)
 }
@@ -104,132 +108,154 @@ func image2paletted(height uint, img image.Image) *image.Paletted {
 	return paletted
 }
 
-func afterScreeningSchemaSQL(sql string) (_sql string) {
-	return sql + `
-	`
+func LoadActualScreeningForWalkthrough(db ab.DB, ec *ab.EntityController, wid string) (*Screening, error) {
+	screeningFields := ec.FieldList("screening")
+	screenings, err := ec.LoadFromQuery(db, "screening", "SELECT "+screeningFields+" FROM screening s WHERE wid = $1 AND published = true ORDER BY created LIMIT 1", wid)
+	if err != nil {
+		return nil, err
+	}
+
+	if len(screenings) != 1 {
+		return nil, nil
+	}
+
+	return screenings[0].(*Screening), nil
 }
 
-func LoadActualScreeningForWalkthrough(db ab.DB, wid string) (*Screening, error) {
-	return selectSingleScreeningFromQuery(db, "SELECT "+screeningFields+" FROM screening s WHERE wid = $1 AND published = true ORDER BY created LIMIT 1", wid)
+func screeningService(ec *ab.EntityController) ab.Service {
+	res := ab.EntityResource(ec, &Screening{}, ab.EntityResourceConfig{
+		DisablePost:   true,
+		DisableList:   true,
+		DisableGet:    true,
+		DisablePut:    true,
+		DisableDelete: true,
+	})
+
+	res.ExtraEndpoints = func(srv *ab.Server) error {
+		srv.Post("/api/walkthrough/:id/screening", http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+			wid := ab.GetParams(r).ByName("id")
+			data := []string{}
+			ab.MustDecode(r, &data)
+
+			db := ab.GetDB(r)
+			uid := ab.GetSession(r)["uid"]
+
+			userEntity, err := ec.Load(db, "user", uid)
+			ab.MaybeFail(r, http.StatusInternalServerError, err)
+			user := userEntity.(*User)
+
+			wt, err := LoadActualRevision(db, ec, wid)
+			ab.MaybeFail(r, http.StatusBadRequest, err)
+
+			if wt.UID != uid && !user.Admin {
+				ab.Fail(r, http.StatusForbidden, nil)
+			}
+
+			if len(data) == 0 || len(data) != len(wt.Steps)-1 {
+				ab.Fail(r, http.StatusBadRequest, fmt.Errorf("got %d images, expected: %d", len(data), len(wt.Steps)-1))
+			}
+
+			screening := &Screening{
+				WID:       wid,
+				UID:       uid,
+				Steps:     uint(len(wt.Steps) - 1),
+				Created:   time.Now(),
+				Published: true,
+			}
+
+			err = ec.Insert(db, screening)
+			ab.MaybeFail(r, http.StatusInternalServerError, err)
+
+			images := map[string][]byte{}
+			for i, d := range data {
+				dataurl, err := dataurl.DecodeString(d)
+				ab.MaybeFail(r, http.StatusBadRequest, err)
+				if dataurl.ContentType() != "image/png" {
+					ab.Fail(r, http.StatusBadRequest, errors.New("not a png"))
+				}
+				fn := screening.ScreenshotPath(uint(i))
+				images[fn] = dataurl.Data
+			}
+
+			for name, content := range images {
+				if err := ioutil.WriteFile(name, content, 0644); err != nil {
+					ab.LogUser(r).Println(err)
+				}
+			}
+
+			ab.Render(r).
+				SetCode(http.StatusCreated).
+				JSON(screening)
+		}), userLoggedInMiddleware)
+
+		lock := map[string]chan struct{}{}
+		var mtx sync.Mutex
+
+		srv.Get("/api/walkthrough/:id/screening", http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+			wid := ab.GetParams(r).ByName("id")
+			db := ab.GetDB(r)
+
+			screening, err := LoadActualScreeningForWalkthrough(db, ec, wid)
+			ab.MaybeFail(r, http.StatusInternalServerError, err)
+			if screening == nil {
+				ab.Fail(r, http.StatusNotFound, nil)
+			}
+
+			fn := screening.GIFPath()
+
+			reply := func() {
+				filelist := make([]string, int(screening.Steps))
+				for i := uint(0); i < screening.Steps; i++ {
+					filelist[i] = screening.ScreenshotPath(i)
+				}
+
+				ab.Render(r).AddOffer("image/gif", func(w http.ResponseWriter) {
+					f, err := os.Open(fn)
+					ab.MaybeFail(r, http.StatusInternalServerError, err)
+					defer f.Close()
+					io.Copy(w, f)
+				}).JSON(filelist)
+			}
+
+			if _, err := os.Stat(fn); err == nil {
+				reply()
+				return
+			}
+
+			mtx.Lock()
+			l, ok := lock[fn]
+			if ok {
+				mtx.Unlock()
+				select {
+				case <-l:
+					reply()
+				case <-time.After(5 * time.Second):
+					w.Header().Set("Retry-After", "30")
+					ab.Render(r).SetCode(http.StatusServiceUnavailable)
+				}
+				return
+			}
+			l = make(chan struct{})
+			lock[fn] = l
+			mtx.Unlock()
+
+			err = screening.createGIF(false)
+
+			defer func() {
+				mtx.Lock()
+				delete(lock, fn)
+				mtx.Unlock()
+			}()
+
+			ab.MaybeFail(r, http.StatusInternalServerError, err)
+			close(l)
+			reply()
+		}))
+		return nil
+	}
+
+	return res
 }
 
 func afterScreeningServiceRegister(srv *ab.Server) {
-	srv.Post("/api/walkthrough/:id/screening", http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		wid := ab.GetParams(r).ByName("id")
-		data := []string{}
-		ab.MustDecode(r, &data)
-
-		db := ab.GetDB(r)
-		uid := ab.GetSession(r)["uid"]
-
-		user, err := LoadUser(db, uid)
-		ab.MaybeFail(r, http.StatusInternalServerError, err)
-
-		wt, err := LoadActualRevision(db, wid)
-		ab.MaybeFail(r, http.StatusBadRequest, err)
-
-		if wt.UID != uid && !user.Admin {
-			ab.Fail(r, http.StatusForbidden, nil)
-		}
-
-		if len(data) == 0 || len(data) != len(wt.Steps)-1 {
-			ab.Fail(r, http.StatusBadRequest, fmt.Errorf("got %d images, expected: %d", len(data), len(wt.Steps)-1))
-		}
-
-		screening := &Screening{
-			WID:       wid,
-			UID:       uid,
-			Steps:     uint(len(wt.Steps) - 1),
-			Created:   time.Now(),
-			Published: true,
-		}
-
-		err = screening.Insert(db)
-		ab.MaybeFail(r, http.StatusInternalServerError, err)
-
-		images := map[string][]byte{}
-		for i, d := range data {
-			dataurl, err := dataurl.DecodeString(d)
-			ab.MaybeFail(r, http.StatusBadRequest, err)
-			if dataurl.ContentType() != "image/png" {
-				ab.Fail(r, http.StatusBadRequest, errors.New("not a png"))
-			}
-			fn := screening.ScreenshotPath(uint(i))
-			images[fn] = dataurl.Data
-		}
-
-		for name, content := range images {
-			if err := ioutil.WriteFile(name, content, 0644); err != nil {
-				ab.LogUser(r).Println(err)
-			}
-		}
-
-		ab.Render(r).
-			SetCode(http.StatusCreated).
-			JSON(screening)
-	}), userLoggedInMiddleware)
-
-	lock := map[string]chan struct{}{}
-	var mtx sync.Mutex
-
-	srv.Get("/api/walkthrough/:id/screening", http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		wid := ab.GetParams(r).ByName("id")
-		db := ab.GetDB(r)
-
-		screening, err := LoadActualScreeningForWalkthrough(db, wid)
-		ab.MaybeFail(r, http.StatusInternalServerError, err)
-		if screening == nil {
-			ab.Fail(r, http.StatusNotFound, nil)
-		}
-
-		fn := screening.GIFPath()
-
-		reply := func() {
-			filelist := make([]string, int(screening.Steps))
-			for i := uint(0); i < screening.Steps; i++ {
-				filelist[i] = screening.ScreenshotPath(i)
-			}
-
-			ab.Render(r).AddOffer("image/gif", func(w http.ResponseWriter) {
-				f, err := os.Open(fn)
-				ab.MaybeFail(r, http.StatusInternalServerError, err)
-				defer f.Close()
-				io.Copy(w, f)
-			}).JSON(filelist)
-		}
-
-		if _, err := os.Stat(fn); err == nil {
-			reply()
-			return
-		}
-
-		mtx.Lock()
-		l, ok := lock[fn]
-		if ok {
-			mtx.Unlock()
-			select {
-			case <-l:
-				reply()
-			case <-time.After(5 * time.Second):
-				w.Header().Set("Retry-After", "30")
-				ab.Render(r).SetCode(http.StatusServiceUnavailable)
-			}
-			return
-		}
-		l = make(chan struct{})
-		lock[fn] = l
-		mtx.Unlock()
-
-		err = screening.createGIF(false)
-
-		defer func() {
-			mtx.Lock()
-			delete(lock, fn)
-			mtx.Unlock()
-		}()
-
-		ab.MaybeFail(r, http.StatusInternalServerError, err)
-		close(l)
-		reply()
-	}))
 }

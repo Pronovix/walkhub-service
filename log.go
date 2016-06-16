@@ -28,8 +28,6 @@ import (
 	"github.com/tamasd/ab"
 )
 
-//go:generate abt --output=loggen.go --generate-crud-update=false --generate-crud-delete=false --generate-service-struct=false --generate-service-struct-name=LogService --generate-service-list=false --generate-service-get=false --generate-service-post=false --generate-service-put=false --generate-service-delete=false --generate-service-patch=false entity Log
-
 type Log struct {
 	UUID    string    `dbtype:"uuid" dbdefault:"uuid_generate_v4()" json:"uuid"`
 	Type    string    `json:"type"`
@@ -37,14 +35,18 @@ type Log struct {
 	Created time.Time `dbdefault:"now()" json:"created"`
 }
 
-func DBLog(db ab.DB, logtype, message string) error {
+func (l *Log) GetID() string {
+	return l.UUID
+}
+
+func DBLog(db ab.DB, ec *ab.EntityController, logtype, message string) error {
 	l := &Log{
 		Type:    logtype,
 		Message: message,
 		Created: time.Now(),
 	}
 
-	return l.Insert(db)
+	return ec.Insert(db, l)
 }
 
 type helpCenterOpenedLog struct {
@@ -62,15 +64,16 @@ type walkthroughPageVisitedLog struct {
 	EmbedOrigin string `json:"embedOrigin"`
 }
 
-func getLogUserID(r *http.Request) string {
+func getLogUserID(r *http.Request, ec *ab.EntityController) string {
 	db := ab.GetDB(r)
 	userid := r.RemoteAddr
 	uid := ab.GetSession(r)["uid"]
 	if uid != "" {
-		user, err := LoadUser(db, uid)
+		userEntity, err := ec.Load(db, "user", uid)
 		if err != nil {
 			log.Println(err)
 		} else {
+			user := userEntity.(*User)
 			userid = user.Mail
 		}
 	}
@@ -82,95 +85,107 @@ type LogService struct {
 	BaseURL string
 }
 
-func (s *LogService) Register(srv *ab.Server) error {
-	walkthroughPlayed := prometheus.NewCounter(stdprometheus.CounterOpts{
-		Namespace: "walkhub",
-		Subsystem: "metrics",
-		Name:      "walkthrough_played",
-		Help:      "Number of walkthrough plays",
-	}, []string{"uuid", "embedorigin"})
+func logService(ec *ab.EntityController, baseurl string) ab.Service {
+	res := ab.EntityResource(ec, &Log{}, ab.EntityResourceConfig{
+		DisableList:   true,
+		DisableGet:    true,
+		DisablePost:   true,
+		DisablePut:    true,
+		DisableDelete: true,
+	})
 
-	walkthroughVisited := prometheus.NewCounter(stdprometheus.CounterOpts{
-		Namespace: "walkhub",
-		Subsystem: "metrics",
-		Name:      "walkthrough_visited",
-		Help:      "Number of walkthrough visits",
-	}, []string{"uuid", "embedorigin"})
+	res.ExtraEndpoints = func(srv *ab.Server) error {
+		walkthroughPlayed := prometheus.NewCounter(stdprometheus.CounterOpts{
+			Namespace: "walkhub",
+			Subsystem: "metrics",
+			Name:      "walkthrough_played",
+			Help:      "Number of walkthrough plays",
+		}, []string{"uuid", "embedorigin"})
 
-	srv.Post("/api/log/helpcenteropened", http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		l := helpCenterOpenedLog{}
-		ab.MustDecode(r, &l)
+		walkthroughVisited := prometheus.NewCounter(stdprometheus.CounterOpts{
+			Namespace: "walkhub",
+			Subsystem: "metrics",
+			Name:      "walkthrough_visited",
+			Help:      "Number of walkthrough visits",
+		}, []string{"uuid", "embedorigin"})
 
-		db := ab.GetDB(r)
-		userid := getLogUserID(r)
+		srv.Post("/api/log/helpcenteropened", http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+			l := helpCenterOpenedLog{}
+			ab.MustDecode(r, &l)
 
-		message := fmt.Sprintf("%s has opened the help center on %s", userid, l.URL)
-		ab.MaybeFail(r, http.StatusInternalServerError, DBLog(db, "helpcenteropened", message))
-	}))
+			db := ab.GetDB(r)
+			userid := getLogUserID(r, ec)
 
-	srv.Post("/api/log/walkthroughplayed", http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		l := walkthroughPlayedLog{}
-		ab.MustDecode(r, &l)
+			message := fmt.Sprintf("%s has opened the help center on %s", userid, l.URL)
+			ab.MaybeFail(r, http.StatusInternalServerError, DBLog(db, ec, "helpcenteropened", message))
+		}))
 
-		db := ab.GetDB(r)
-		userid := getLogUserID(r)
-		wt, err := LoadActualRevision(db, l.UUID)
-		ab.MaybeFail(r, http.StatusBadRequest, err)
-		if wt == nil {
-			ab.Fail(r, http.StatusNotFound, nil)
-		}
+		srv.Post("/api/log/walkthroughplayed", http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+			l := walkthroughPlayedLog{}
+			ab.MustDecode(r, &l)
 
-		message := ""
+			db := ab.GetDB(r)
+			userid := getLogUserID(r, ec)
+			wt, err := LoadActualRevision(db, ec, l.UUID)
+			ab.MaybeFail(r, http.StatusBadRequest, err)
+			if wt == nil {
+				ab.Fail(r, http.StatusNotFound, nil)
+			}
 
-		embedPart := ""
-		if l.EmbedOrigin != "" {
-			embedPart = "from the help center on " + l.EmbedOrigin + " "
-		}
+			message := ""
 
-		wturl := s.BaseURL + "walkthrough/" + wt.UUID
+			embedPart := ""
+			if l.EmbedOrigin != "" {
+				embedPart = "from the help center on " + l.EmbedOrigin + " "
+			}
 
-		if l.ErrorMessage == "" {
-			message = fmt.Sprintf("%s has played the walkthrough %s<%s|%s>", userid, embedPart, wturl, wt.Name)
-		} else {
-			message = fmt.Sprintf("%s has failed to play the walkthrough %s<%s|%s> with the error message %s", userid, embedPart, wturl, wt.Name, l.ErrorMessage)
-		}
+			wturl := baseurl + "walkthrough/" + wt.UUID
 
-		ab.MaybeFail(r, http.StatusInternalServerError, DBLog(db, "walkthroughplayed", message))
+			if l.ErrorMessage == "" {
+				message = fmt.Sprintf("%s has played the walkthrough %s<%s|%s>", userid, embedPart, wturl, wt.Name)
+			} else {
+				message = fmt.Sprintf("%s has failed to play the walkthrough %s<%s|%s> with the error message %s", userid, embedPart, wturl, wt.Name, l.ErrorMessage)
+			}
 
-		walkthroughPlayed.
-			With(metrics.Field{Key: "uuid", Value: l.UUID}).
-			With(metrics.Field{Key: "embedorigin", Value: l.EmbedOrigin}).
-			Add(1)
-	}))
+			ab.MaybeFail(r, http.StatusInternalServerError, DBLog(db, ec, "walkthroughplayed", message))
 
-	srv.Post("/api/log/walkthroughpagevisited", http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		l := walkthroughPageVisitedLog{}
-		ab.MustDecode(r, &l)
+			walkthroughPlayed.
+				With(metrics.Field{Key: "uuid", Value: l.UUID}).
+				With(metrics.Field{Key: "embedorigin", Value: l.EmbedOrigin}).
+				Add(1)
+		}))
 
-		db := ab.GetDB(r)
-		userid := getLogUserID(r)
-		wt, err := LoadActualRevision(db, l.UUID)
-		ab.MaybeFail(r, http.StatusBadRequest, err)
-		if wt == nil {
-			ab.Fail(r, http.StatusNotFound, nil)
-		}
+		srv.Post("/api/log/walkthroughpagevisited", http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+			l := walkthroughPageVisitedLog{}
+			ab.MustDecode(r, &l)
 
-		embedPart := ""
-		if l.EmbedOrigin != "" {
-			embedPart = "embedded on " + l.EmbedOrigin + " "
-		}
+			db := ab.GetDB(r)
+			userid := getLogUserID(r, ec)
+			wt, err := LoadActualRevision(db, ec, l.UUID)
+			ab.MaybeFail(r, http.StatusBadRequest, err)
+			if wt == nil {
+				ab.Fail(r, http.StatusNotFound, nil)
+			}
 
-		wturl := s.BaseURL + "walkthrough/" + wt.UUID
+			embedPart := ""
+			if l.EmbedOrigin != "" {
+				embedPart = "embedded on " + l.EmbedOrigin + " "
+			}
 
-		message := fmt.Sprintf("%s has visited the walkthrough page %s<%s|%s>", userid, embedPart, wturl, wt.Name)
+			wturl := baseurl + "walkthrough/" + wt.UUID
 
-		ab.MaybeFail(r, http.StatusInternalServerError, DBLog(db, "walkthroughvisited", message))
+			message := fmt.Sprintf("%s has visited the walkthrough page %s<%s|%s>", userid, embedPart, wturl, wt.Name)
 
-		walkthroughVisited.
-			With(metrics.Field{Key: "uuid", Value: l.UUID}).
-			With(metrics.Field{Key: "embedorigin", Value: l.EmbedOrigin}).
-			Add(1)
-	}))
+			ab.MaybeFail(r, http.StatusInternalServerError, DBLog(db, ec, "walkthroughvisited", message))
 
-	return nil
+			walkthroughVisited.
+				With(metrics.Field{Key: "uuid", Value: l.UUID}).
+				With(metrics.Field{Key: "embedorigin", Value: l.EmbedOrigin}).
+				Add(1)
+		}))
+
+		return nil
+	}
+
+	return res
 }
