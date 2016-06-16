@@ -245,6 +245,11 @@ class RecordWrapper extends React.Component {
 	componentDidMount() {
 		this.initBackend();
 		this.dispatcherToken = flux.dispatcher.register(this.onChange);
+		if (this.state.startingUrl) {
+			setTimeout(() => {
+				WalkthroughStore.performSiteinfo(this.state.startingUrl);
+			}, 0);
+		}
 	}
 
 	componentWillUnmount() {
