@@ -45,6 +45,7 @@ type WalkhubServer struct {
 	EnforceDomains bool
 	CustomPaths    []string
 	PWAuth         bool
+	cfg            *viper.Viper
 	AuthCreds      struct {
 		SMTP struct {
 			Addr                               string
@@ -108,6 +109,7 @@ func NewServer(cfg *viper.Viper) (*WalkhubServer, error) {
 
 	s := &WalkhubServer{
 		Server: b,
+		cfg:    cfg,
 	}
 
 	return s, nil
@@ -279,6 +281,10 @@ func (s *WalkhubServer) Start(addr string, certfile string, keyfile string) erro
 		Add(&Screening{}, nil).
 		Add(&EmbedLog{}, nil).
 		Add(&Log{}, nil)
+
+	if mailchimpClient := createMailchimpClient(s.cfg, s.Logger); mailchimpClient != nil {
+		ec.AddInsertEvent(mailchimpClient)
+	}
 
 	s.Options("/*path", corsPreflightHandler(s.BaseURL, s.HTTPOrigin))
 

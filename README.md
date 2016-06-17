@@ -54,6 +54,7 @@ If unsure, leave them empty.
 * `frontpagecomponent`: overrides the component for the front page
 * `menuitems`: path to a JSON file that describes menu paths. Only change this if you want to change the menu of the site. See `js/components/wrappers/app.js` for more info on the structure.
 * `googleanalyticsaccount`: enables Google Analytics.
+* `mailchimp`: mailchimp-related configuration. If set, new users will be added to a mailing list.
 
 ## Build & Run
 
