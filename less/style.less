@@ -14,57 +14,11 @@
 // You should have received a copy of the GNU Affero General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-// Importing custom TrueType Fonts from file.
-@font-face {
-	font-family: 'Open Sans Light';
-	src: url('fonts/OpenSans-Light.ttf');
-}
-
-@font-face {
-	font-family: 'Open Sans';
-	src: url('fonts/OpenSans-Regular.ttf');
-}
-
-@font-face {
-	font-family: 'Open Sans Bold';
-	src: url('fonts/OpenSans-Bold.ttf');
-}
-
-@font-face {
-	font-family: 'Open Sans Semi-Bold';
-	src: url('fonts/OpenSans-Semibold.ttf');
-}
-
-// Color variables.
-@color-black: #000;
-@color-white: #fff;
-@color-button-google-connect: #dc4e41;
-@color-record-close: #ff4d4d;
-@color-record-finish-save: #00b300;
-@color-navbar-bg: lighten(#222, 10%);
-@color-warning: #efa843;
-@color-success: #84c441;
-
-// Customized Bootstrap variables.
-@font-family-sans-serif: 'Open Sans Light', Helvetica,Arial, sans-serif;
-@navbar-border-radius: 0px;
-@navbar-inverse-color: lighten(@gray-light, 10%);
-@navbar-inverse-bg: @color-navbar-bg;
-@navbar-inverse-link-hover-color: @color-success;
-@navbar-inverse-link-color: lighten(@gray-light, 30%);
-@body-bg: transparent;
-@btn-border-radius-base: 0px;
-@btn-border-radius-small: 0px;
-@btn-warning-bg: @color-warning;
-@btn-success-bg: @color-success;
-@btn-success-border: @btn-success-bg;
-@state-success-text: @color-success;
-@profile-card-bg: lighten(@gray-light, 50%);
-@btn-default-border: lighten(@gray-light, 40%);
-
-@MAXIMUM_ZINDEX: 2147483647;
-@font-family-sans-serif-bold: 'Open Sans Bold', Helvetica, Arial, sans-serif;
-@font-family-sans-serif-semi-bold: 'Open Sans Semi-Bold', Helvetica, Arial, sans-serif;
+@import "variables/fonts";
+@import "variables/brand-colors";
+@import "variables/custom-variables";
+@import "variables/bootstrap-variable-overrides";
+@import "page/connect";
 
 strong {
 	font-family: 'Open Sans Bold', Helvetica, Arial, sans-serif;
@@ -199,17 +153,23 @@ div.nocookie {
 	margin-top: 20px;
 }
 
-.navbar-inverse .navbar-header {
+.navbar-main .navbar-header {
 	a {
 		padding: 5px;
 		&:hover, &:focus {
-			color: @navbar-inverse-link-color;
+			color: @navbar-default-link-color;
 		}
 	}
 	.navbar-brand object {
 		width: 90px;
 		pointer-events: none;
 	}
+}
+
+.navbar-main {
+	-webkit-box-shadow: 0 0 4px 0 @color-navy-blue-25;
+	-moz-box-shadow: 0 0 4px 0 @color-navy-blue-25;
+	box-shadow: 0 0 4px 0 @color-navy-blue-25;
 }
 
 div.state-list, div.state-recorded, div.state-saved {
@@ -340,8 +300,16 @@ div.spacer {
 			.list-wt {
 				.wt-buttons {
 					text-align: right;
+
+					a {
+						margin: 0 2px;
+					}
 				}
 			}
+		}
+
+		.collapsible-container {
+			margin-bottom: 24px;
 		}
 	}
 
@@ -357,6 +325,10 @@ div.spacer {
 				color: @navbar-inverse-bg;
 				margin-top: 0;
 			}
+		}
+
+		.profile-save-cancel {
+			text-align: right;
 		}
 
 		input#name {
@@ -397,7 +369,7 @@ div.spacer {
 
 .collapsible-container {
 	a.title {
-		font-size: 18px;
+		font-size: 16px;
 		color: @text-color;
 		cursor: pointer;
 		text-decoration: none;
@@ -433,18 +405,36 @@ div.spacer {
 }
 
 @media screen and (min-width: @screen-sm-min) {
-	.navbar-inverse ul.navbar-nav li {
+	.navbar-main ul.navbar-nav li {
 		transition: background .5s ease, box-shadow 0.25s ease;
 		-webkit-transition: background .5s ease, box-shadow 0.25s ease;
+
 		&:hover {
-			background: rgba(255,255,255,0.05);
-			box-shadow: 0 5px 1px -2px @navbar-inverse-link-hover-color;
+			background: @color-navy-blue-25;
+			box-shadow: 0 5px 1px -2px @navbar-default-link-hover-color;
 		}
+
 		a {
 			transition: all .5s ease;
 			-webkit-transition: all .5s ease;
 		}
+
+		&[class="Get Started"] {
+			background: @color-navy-blue-100;
+
+			&:hover {
+				background: @color-navy-blue-100;
+				color: @color-white;
+				box-shadow: none;
+			}
+
+			a {
+				color: @color-white;
+			}
+		}
 	}
+
+
 }
 
 @media screen and (max-width: @screen-sm-max) {

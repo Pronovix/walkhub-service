@@ -52,9 +52,9 @@ class Navbar extends React.Component {
 
 		const target = this.linkTarget(item.path);
 		const link = this.isExternal(item.path) ?
-			<a key={i} href={item.path} className={item.className} target={target}>{icon} {item.label}</a> :
-			<Link key={i} to={item.path} className={item.className}>{icon} {item.label}</Link>;
-		return <li key={i}>{link}</li>;
+			<a key={i} href={item.path} className={item.className} target={target}>{item.label} {icon}</a> :
+			<Link key={i} to={item.path} className={item.className}>{item.label} {icon}</Link>;
+		return <li className={item.label} key={i}>{link}</li>;
 	};
 
 	render() {

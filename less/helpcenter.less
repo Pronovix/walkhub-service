@@ -20,12 +20,14 @@ div.state-list {
 				padding-top: 5px;
 				padding-bottom: 5px;
 				border-bottom: 1px solid lightgrey;
+				font-size: 18px;
 			}
 		}
 
 		.list-link {
 			a {
 				text-decoration: none;
+				color: #337ab7;
 			}
 
 			.yt-icon {
@@ -40,6 +42,7 @@ div.state-list {
 
 			.list-link-title {
 				margin: 2px 0;
+				font-size: 14px;
 
 				.glyphicon-link {
 					height: 15px;
@@ -51,6 +54,7 @@ div.state-list {
 		.list-wt {
 			a {
 				text-decoration: none;
+				color: #337ab7;
 
 				.list-play-button {
 					color: #84c441;
@@ -78,15 +82,42 @@ div.state-list {
 		}
 	}
 
+	.navbar-record {
+		li {
+			a {
+				&:hover {
+					background-color: transparent;
+				}
+			}
+		}
+	}
+
 	.navbar-fixed-top {
 		border-top: 1px solid #e7e7e7;
 		border-left: 1px solid #e7e7e7;
 		border-right: 1px solid #e7e7e7;
+		-webkit-box-shadow: 0 0 2px 0 #eee;
+		-moz-box-shadow: 0 0 2px 0 #eee;
+		box-shadow: 0 0 2px 0 #eee;
+
+		& * {
+			color: #777;
+		}
+
+		.navbar-brand {
+			font-size: 18px;
+		}
 
 		ul.navbar-right {
 			position: absolute;
 			top: 0px;
 			right: 0px;
+
+			li {
+				a:hover {
+					background-color: transparent;
+				}
+			}
 		}
 	}
 
@@ -94,10 +125,19 @@ div.state-list {
 		border-bottom: 1px solid #e7e7e7;
 		border-left: 1px solid #e7e7e7;
 		border-right: 1px solid #e7e7e7;
-		font-family: 'Open Sans Light',Helvetica,Arial,sans-serif;
+		font-family: 'Open Sans Light', Helvetica, Arial, sans-serif;
 		height: 30px;
 		min-height: 0px;
-	  font-size: 12px;
+		color: #777;
+
+		strong {
+			font-family: 'Open Sans Light', Helvetica, Arial, sans-serif;
+			font-weight: bold;
+		}
+
+		& * {
+			font-size: 12px;
+		}
 
 		ul.navbar-right {
 			position: absolute;
@@ -112,6 +152,10 @@ div.state-list {
 			a {
 				display: inline;
 				padding: 0;
+
+				&:hover {
+					background-color: transparent;
+				}
 			}
 		}
 	}
@@ -153,20 +197,39 @@ div.state-list {
 }
 
 .help-button {
-	padding: 5px 12px;
+	padding: 6px 12px;
+	font-size: 14px;
+	border: 0;
+
 	span {
 		vertical-align: middle;
 	}
 }
 
 .btn-record-true, .btn-record-false {
-	 span {
+	border: 0;
+
+	span {
 		vertical-align: middle;
+	}
+
+	& * {
+		font-size: 14px;
 	}
 }
 
 div.wh-record-wrapper {
 	ul.navbar-right {
 		margin-right: 10px;
+	}
+}
+
+#widget-footer {
+	a {
+		color: #333;
+
+		&:hover {
+			background-color: transparent;
+		}
 	}
 }

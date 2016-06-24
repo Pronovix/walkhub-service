@@ -33,7 +33,7 @@ import NetworkActivityWrapper from "components/wrappers/networkactivity";
 let FooterComponent = null;
 
 if (WALKHUB_CUSTOM_FOOTER) {
-	Footercomponent = require("FOOTER");
+	FooterComponent = require("FOOTER");
 }
 
 let menuItems = {

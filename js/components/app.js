@@ -62,7 +62,7 @@ class App extends React.Component {
 		}
 
 		const navbar = this.configEmpty(this.props.navbarConfig) ? null :
-			<Navbar hasHeader={true} config={this.props.navbarConfig} loggedin={!!this.props.currentUser.UUID} className="navbar-inverse" />;
+			<Navbar hasHeader={true} config={this.props.navbarConfig} loggedin={!!this.props.currentUser.UUID} className="navbar-default navbar-main" />;
 		const footer = this.configEmpty(this.props.footerConfig) ? null :
 				<Navbar config={this.props.footerConfig} loggedin={!!this.props.currentUser.UUID} className="navbar-default" />;
 
