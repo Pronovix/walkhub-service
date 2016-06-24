@@ -57,7 +57,7 @@ class ProfileEdit extends React.Component {
 		return (
 			<Form onSubmit={this.props.onSubmit}>
 				<div className="row">
-					<div className="col-xs-7">
+					<div className="col-xs-6">
 						<TextField
 							id="name"
 							label={t("Name")}
@@ -66,7 +66,7 @@ class ProfileEdit extends React.Component {
 							decoration={false}
 						/>
 					</div>
-					<div className="col-xs-5">
+					<div className="col-xs-6 profile-save-cancel">
 						<ButtonSet>
 							<ButtonSetButton
 								type="submit"
