@@ -15,6 +15,7 @@
 	"footercomponent": "",
 	"menuitems": "",
 	"pwauth": true,
+	"extrabuild": "",
 	"google": {
 		"id": "",
 		"secret": ""

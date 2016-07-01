@@ -52,6 +52,7 @@ If unsure, leave them empty.
 * `redirectall`: redirects all HTTP requests to HTTPS if the server is running in HTTPS mode. If this is set to false, only a few pages will be enabled in HTTP mode
 * `contentpages`: path to a JSON file that describes custom pages. The JSON file is a simple dictionary, where the key is the path (see react-router for the syntax) and the value is the `require()` path for the component
 * `frontpagecomponent`: overrides the component for the front page
+* `extrabuild`: a javascript file that exports a single function. This function can alter the webpack config.
 * `menuitems`: path to a JSON file that describes menu paths. Only change this if you want to change the menu of the site. See `js/components/wrappers/app.js` for more info on the structure.
 * `googleanalyticsaccount`: enables Google Analytics.
 * `mailchimp`: mailchimp-related configuration. If set, new users will be added to a mailing list.

@@ -17,6 +17,7 @@ var baseurl = process.env.BASEURL || serverConfig.baseurl;
 var embedurl = process.env.EMBEDURL || serverConfig.embedurl;
 var httporigin = process.env.HTTPORIGIN || serverConfig.httporigin;
 var gaAccount = process.env.GOOGLEANALYTICSACCOUNT || serverConfig.googleanalyticsaccount;
+var extraBuild = process.env.EXTRABUILD || serverConfig.extrabuild;
 
 var path = require("path");
 var srcPath = path.join(__dirname, "js");
@@ -163,3 +164,7 @@ module.exports = {
 		historyApiFallback: true
 	}
 };
+
+if (extraBuild) {
+	require(extraBuild)(module.exports);
+}
