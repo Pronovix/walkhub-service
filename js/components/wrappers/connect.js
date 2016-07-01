@@ -30,7 +30,7 @@ import {t} from "t";
 class ConnectWrapper extends React.Component {
 
 	state = {
-		signin: false,
+		signup: false,
 		signin2fa: false,
 		signinMail: "",
 		signinPassword: "",
@@ -74,7 +74,7 @@ class ConnectWrapper extends React.Component {
 			signupPasswordChange={this.textChange("signupPassword")}
 			signupPasswordConfirmChange={this.textChange("signupPasswordConfirm")}
 			lostPasswordMailChange={this.textChange("lostPasswordMail")}
-			signinClick={this.signinClick}
+			signupClick={this.signupClick}
 			signinSubmit={this.signinSubmit}
 			signin2faSubmit={this.signin2faSubmit}
 			signupSubmit={this.signupSubmit}
@@ -108,10 +108,10 @@ class ConnectWrapper extends React.Component {
 		});
 	};
 
-	signinClick = (evt) => {
+	signupClick = (evt) => {
 		noop(evt);
 		this.setState({
-			signin: true,
+			signup: true,
 			lostPassword: false,
 		});
 	};

@@ -27,7 +27,7 @@ class Connect extends React.Component {
 		providers: [],
 		password: true,
 
-		signin: false,
+		signup: false,
 		signin2fa: false,
 		signinMail: "",
 		signinPassword: "",
@@ -44,7 +44,7 @@ class Connect extends React.Component {
 		signupMailChange: noop,
 		signupPasswordChange: noop,
 		signupPasswordConfirmChange: noop,
-		signinClick: noop,
+		signupClick: noop,
 		signinSubmit: noop,
 		signin2faSubmit: noop,
 		signupSubmit: noop,
@@ -62,8 +62,8 @@ class Connect extends React.Component {
 			);
 		});
 
-		const signinButton = (this.props.password && !this.props.signin) ? (
-			<a className="btn btn-default" onClick={this.props.signinClick}>{t("Sign in")}</a>
+		const signupButton = (this.props.password && !this.props.signup) ? (
+			<a className="btn btn-default" onClick={this.props.signupClick}>{t("Sign up")}</a>
 		) : null;
 
 		let signinForm = null;
@@ -78,7 +78,7 @@ class Connect extends React.Component {
 				</ButtonSetButton>
 		);
 
-		if (this.props.password && this.props.signin) {
+		if (this.props.password) {
 			if (this.props.signin2fa) {
 				signinForm = (
 					<Form onSubmit={this.props.signin2faSubmit}>
@@ -159,15 +159,14 @@ class Connect extends React.Component {
 
 		const signinWrapper = this.props.password ? (
 			<div className="row">
-				<div className="col-xs-12 col-md-5 col-md-offset-7 text-right connect-signin">
-					{signinButton}
+				<div className="col-xs-12 col-md-6 col-md-offset-3 connect-signin">
 					{signinForm}
 					{lostPasswordForm}
 				</div>
 			</div>
 		) : null;
 
-		const signupForm = (this.props.password) ? (
+		const signupForm = (this.props.password && this.props.signup) ? (
 			<form onSubmit={this.props.signupSubmit} name="signup-form">
 				<TextField
 					id="mail"
@@ -206,7 +205,8 @@ class Connect extends React.Component {
 
 		const signupWrapper = this.props.password ? (
 			<div className="row">
-				<div className="col-xs-12 col-md-6 col-md-offset-3 connect-signup">
+				<div className="col-xs-12 col-md-6 col-md-offset-6 text-right connect-signup">
+					{signupButton}
 					{signupForm}
 				</div>
 			</div>
@@ -214,7 +214,7 @@ class Connect extends React.Component {
 
 		return (
 			<section className="wh-connect">
-				{signinWrapper}
+				{signupWrapper}
 				<div className="row">
 					<div className="col-xs-12 text-center">
 						<p><img src={logo} width="300" height="300" /></p>
@@ -226,7 +226,7 @@ class Connect extends React.Component {
 					{providers}
 				</div>
 				<hr />
-				{signupWrapper}
+				{signinWrapper}
 			</section>
 		);
 	}
