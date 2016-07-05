@@ -19,8 +19,6 @@ import {csrfToken} from "util";
 import {t} from "t";
 import {noop, TextField, Button, ButtonSet, ButtonSetButton, Form} from "form";
 
-import logo from "images/walkhub-official-logo.jpg"
-
 class Connect extends React.Component {
 
 	static defaultProps = {
@@ -56,26 +54,26 @@ class Connect extends React.Component {
 		const providers = this.props.providers.map((provider) => {
 			const url = `/api/auth/${provider.id}/connect?token=${csrfToken}`;
 			return (
-				<div key={provider.id} className={"col-xs-12 col-md-4 col-md-offset-4 provider-"+provider.id}>
+				<div key={provider.id} className={"col-xs-12 provider-"+provider.id}>
 					<a href={url} className="btn btn-primary btn-block">{t("Log in with @label", {"@label": provider.label})}</a>
 				</div>
 			);
 		});
 
 		const signupButton = (this.props.password && !this.props.signup) ? (
-			<a className="btn btn-default" onClick={this.props.signupClick}>{t("Sign up")}</a>
+			<span>New to WalkHub? <a href="#" className="register-link" onClick={this.props.signupClick}>{t("Register")}</a></span>
 		) : null;
 
 		let signinForm = null;
 
 		const lostPasswordButton = this.props.lostPassword ? null : (
-				<ButtonSetButton
+				<a
 					onClick={this.props.lostPasswordClick}
-					className="btn-default"
+					href="#"
 					id="signinLostPassword"
 					>
-						{t("Lost password")}
-				</ButtonSetButton>
+						{t("Forgot your password?")}
+				</a>
 		);
 
 		if (this.props.password) {
@@ -120,10 +118,10 @@ class Connect extends React.Component {
 							label={t("Password")}
 							placeholder="********"
 						/>
-						<ButtonSet>
+						<ButtonSet className="signin-buttons">
 							<ButtonSetButton
 								type="submit"
-								className="btn-default"
+								className="btn-default btn-sm"
 								onClick={() => {}}
 								id="signinSubmit"
 								>
@@ -159,7 +157,7 @@ class Connect extends React.Component {
 
 		const signinWrapper = this.props.password ? (
 			<div className="row">
-				<div className="col-xs-12 col-md-6 col-md-offset-3 connect-signin">
+				<div className="col-xs-12 connect-signin">
 					{signinForm}
 					{lostPasswordForm}
 				</div>
@@ -205,7 +203,7 @@ class Connect extends React.Component {
 
 		const signupWrapper = this.props.password ? (
 			<div className="row">
-				<div className="col-xs-12 col-md-6 col-md-offset-6 text-right connect-signup">
+				<div className="col-xs-12 text-right connect-signup">
 					{signupButton}
 					{signupForm}
 				</div>
@@ -214,19 +212,27 @@ class Connect extends React.Component {
 
 		return (
 			<section className="wh-connect">
-				{signupWrapper}
-				<div className="row">
-					<div className="col-xs-12 text-center">
-						<p><img src={logo} width="300" height="300" /></p>
-						<h4>{t("Record walkthroughs and play them on top of websites")}</h4>
-						<hr />
+				<div className="col-xs-12 col-md-6 col-md-offset-3">
+					<div className="row">
+						<div className="col-xs-12 text-center">
+							<h4>{t("Record walkthroughs and play them on top of websites")}</h4>
+						</div>
 					</div>
+					<div className="row">
+						<div className="col-xs-3 text-left">
+							Log in
+						</div>
+						<div className="col-xs-9 text-right">
+							{signupWrapper}
+						</div>
+					</div>
+					<hr/>
+					<div className="row">
+						{providers}
+					</div>
+					<hr />
+					{signinWrapper}
 				</div>
-				<div className="row">
-					{providers}
-				</div>
-				<hr />
-				{signinWrapper}
 			</section>
 		);
 	}
