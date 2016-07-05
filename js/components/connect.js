@@ -54,7 +54,7 @@ class Connect extends React.Component {
 		const providers = this.props.providers.map((provider) => {
 			const url = `/api/auth/${provider.id}/connect?token=${csrfToken}`;
 			return (
-				<div key={provider.id} className={"col-xs-12 provider-"+provider.id}>
+				<div key={provider.id} className={"col-xs-10 col-xs-offset-1 provider-"+provider.id}>
 					<a href={url} className="btn btn-primary btn-block">{t("Log in with @label", {"@label": provider.label})}</a>
 				</div>
 			);
@@ -146,7 +146,7 @@ class Connect extends React.Component {
 				/>
 				<Button
 					type="submit"
-					className="btn-default"
+					className="btn-default btn-sm"
 					onClick={() => {}}
 					id="lostpasswordSubmit"
 					>
@@ -212,7 +212,7 @@ class Connect extends React.Component {
 
 		return (
 			<section className="wh-connect">
-				<div className="col-xs-12 col-md-6 col-md-offset-3">
+				<div className="col-xs-12 col-md-8 col-md-offset-2">
 					<div className="row">
 						<div className="col-xs-12 text-center">
 							<h4>{t("Record walkthroughs and play them on top of websites")}</h4>
