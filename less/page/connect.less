@@ -1,9 +1,48 @@
 .container.connect {
   @media (min-width: @screen-md-min) {
-    margin-bottom: @body-margin-bottom + 18px;
+    margin-bottom: @body-margin-bottom + @container-margin-bottom;
   }
 
   @media (max-width: @screen-sm-max) {
-    margin-bottom: 18px;
+    margin-bottom: @container-margin-bottom;
+  }
+
+  .wh-connect {
+    h4 {
+      margin: 64px 0;
+    }
+  }
+
+  .connect-signup {
+    form[name=signup-form] {
+      font-size: 14px;
+
+      input {
+        font-size: 14px;
+      }
+    }
+  }
+
+  .connect-signin {
+    font-size: 14px;
+  }
+
+  #signinLostPassword {
+    margin: 12px;
+  }
+
+  #lostpasswordSubmit {
+    margin-top: 6px;
+  }
+
+  .signin-buttons {
+    & > div {
+      margin-top: 12px;
+      margin-bottom: 12px;
+    }
+  }
+
+  hr {
+    margin: 12px 0;
   }
 }
