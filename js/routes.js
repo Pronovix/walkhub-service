@@ -26,6 +26,7 @@ import SearchWrapper from "components/wrappers/search";
 import EmbedCodeBuilderWrapper from "components/wrappers/embedcodebuilder";
 import HelpCenterListWrapper  from "components/wrappers/helpcenterlist";
 import ProfileWrapper from "components/wrappers/profile";
+import OuterClassActions from "actions/outerclass";
 
 let contentPagesConfig = {};
 
@@ -33,20 +34,28 @@ if (WALKHUB_CONTENT_PAGES) {
 	contentPagesConfig = require("CONTENT_PAGES");
 }
 
+function onEnter(nextState, replaceState) {
+	const matches = this.path.match(/^\/?([a-z0.9]*)/);
+	const path = (matches.length > 1) ? (matches[1] || "front") : null;
+	setTimeout(() => {
+		OuterClassActions.changeOuterClasses({path: path});
+	}, 0);
+}
+
 const contentPages = Object.keys(contentPagesConfig).map(function(path) {
-	return <Route key={path} path={path} component={contentPagesConfig[path]} />;
+	return <Route key={path} path={path} component={contentPagesConfig[path]} onEnter={onEnter} />;
 });
 
 const Routes = (
 	<Route component={AppWrapper}>
-		<Route path="/" component={FrontpageComponent} />
-		<Route path="/connect" component={ConnectWrapper} />
-		<Route path="/record" component={RecordWrapper} />
-		<Route path="/walkthrough/:uuid" component={WalkthroughWrapper} />
-		<Route path="/search" component={SearchWrapper} />
-		<Route path="/embedcode" component={EmbedCodeBuilderWrapper} />
-		<Route path="/helpcenterlist" component={HelpCenterListWrapper} />
-		<Route path="/profile/:UUID" component={ProfileWrapper} />
+		<Route path="/" component={FrontpageComponent} onEnter={onEnter} />
+		<Route path="/connect" component={ConnectWrapper} onEnter={onEnter} />
+		<Route path="/record" component={RecordWrapper} onEnter={onEnter} />
+		<Route path="/walkthrough/:uuid" component={WalkthroughWrapper} onEnter={onEnter} />
+		<Route path="/search" component={SearchWrapper} onEnter={onEnter} />
+		<Route path="/embedcode" component={EmbedCodeBuilderWrapper} onEnter={onEnter} />
+		<Route path="/helpcenterlist" component={HelpCenterListWrapper} onEnter={onEnter} />
+		<Route path="/profile/:UUID" component={ProfileWrapper} onEnter={onEnter} />
 		{contentPages}
 	</Route>
 );
