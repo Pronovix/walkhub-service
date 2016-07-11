@@ -17,6 +17,7 @@
 import React from "react";
 import Runner from "walkthrough/runner";
 import WalkhubIframe from "components/walkhub_iframe";
+import {t} from "t";
 
 class IframeRunner extends Runner {
 	reloadHTTP = true;
