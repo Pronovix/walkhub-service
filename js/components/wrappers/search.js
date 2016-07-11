@@ -102,7 +102,7 @@ class SearchWrapper extends React.Component {
 
 		const bar = this.isEmbedded() ? (
 			<Bar
-				brand={t("Help")}
+				brand={t("Walkthroughs on the site")}
 				onClose={this.onBarCloseClick}
 			/>
 		) : null;

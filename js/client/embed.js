@@ -116,7 +116,7 @@ function fixIFrameSize(iframe) {
 					height = 35;
 					break;
 				case "list":
-					width = 800;
+					width = 600;
 					height = 400;
 					break;
 			}

@@ -19,7 +19,7 @@ import {Link} from "react-router";
 import {csrfToken} from "util";
 import {t} from "t";
 
-import logo from "images/walkhub-navbar-logo.svg";
+import logo from "images/walkhub-navbar-logo.png";
 
 class Navbar extends React.Component {
 
@@ -64,7 +64,7 @@ class Navbar extends React.Component {
 		const header = this.props.hasHeader ?
 			(
 				<Link to="/" className="navbar-brand">
-					<object type="image/svg+xml" data={logo}>{t("WalkHub")}</object>
+					<img src={logo} alt="WalkHub logo" />
 				</Link>
 			) :
 			null;

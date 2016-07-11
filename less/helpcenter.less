@@ -1,7 +1,56 @@
+// Theming on search iframe.
+div.path-search.state-list {
+	section.row {
+		padding: 0;
+	}
+
+	.navbar-record {
+		border-top: 1px solid #e7e7e7;
+		border-left: 1px solid #e7e7e7;
+		border-right: 1px solid #e7e7e7;
+		-webkit-box-shadow: 0 0 2px 0 #eee;
+		-moz-box-shadow: 0 0 2px 0 #eee;
+		box-shadow: 0 0 2px 0 #eee;
+		border-right: 0;
+
+		& * {
+			color: #777;
+		}
+
+		.navbar-brand {
+			font-size: 18px;
+		}
+
+		ul.navbar-right {
+			position: absolute;
+			top: 0px;
+			right: 0px;
+
+			li {
+				a {
+					&:hover {
+						background-color: transparent;
+					}
+
+					&:active {
+						box-shadow: none;
+					}
+				}
+			}
+		}
+	}
+
+	.wt-buttons {
+		a {
+			margin-right: 4px;
+		}
+	}
+}
+
 // Helpcenter theming.
 
-div.state-list {
-	font-family: 'Open Sans',Helvetica,Arial,sans-serif;
+div.path-helpcenterlist.state-list {
+	font-family: 'Open Sans', Helvetica, Arial, sans-serif;
 
 	section.row {
 		padding-top: 60px;
@@ -52,22 +101,23 @@ div.state-list {
 		}
 
 		.list-wt {
-			a {
-				text-decoration: none;
-				color: #337ab7;
-
-				.list-play-button {
-					color: #84c441;
-					margin-right: 10px;
-				}
-			}
-
 			.wt-title {
 				margin: 2px 0;
 				font-size: 13px;
+
+				&> a {
+					text-decoration: none;
+					color: #337ab7;
+				}
 			}
 
-			.glyphicon-link, .list-play-button {
+			.list-play-button {
+				color: #84c441;
+				margin-right: 10px;
+			}
+
+			.glyphicon-link,
+			.list-play-button {
 				font-size: 15px;
 			}
 		}
@@ -114,8 +164,14 @@ div.state-list {
 			right: 0px;
 
 			li {
-				a:hover {
-					background-color: transparent;
+				a {
+					&:hover {
+						background-color: transparent;
+					}
+
+					&:active {
+						box-shadow: none;
+					}
 				}
 			}
 		}
