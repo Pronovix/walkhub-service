@@ -160,13 +160,14 @@ div.nocookie {
 			color: @navbar-default-link-color;
 		}
 	}
-	.navbar-brand object {
+	.navbar-brand img {
 		width: 90px;
 		pointer-events: none;
 	}
 }
 
 .navbar-main {
+	font-weight: bold;
 	-webkit-box-shadow: 0 0 4px 0 @color-navy-blue-25;
 	-moz-box-shadow: 0 0 4px 0 @color-navy-blue-25;
 	box-shadow: 0 0 4px 0 @color-navy-blue-25;
@@ -220,16 +221,27 @@ div.state-recorded .navbar-right {
 
 div.wh-modal {
 	.navbar-record {
-		.btn-close .glyphicon {
-			color: @color-record-close;
+		.btn-close {
+			.glyphicon {
+				color: @color-record-close;
+			}
 
 			&:hover {
-				color: darken(@navbar-inverse-link-color, 50%);
+				background-color: transparent;
+
+				.glyphicon {
+					color: darken(@color-record-close, 10%);
+				}
 			}
 		}
 
 		.btn-finishsave {
 			color: @color-record-finish-save;
+
+			&:hover {
+				color: darken(@color-record-finish-save, 10%);
+				background-color: transparent;
+			}
 		}
 	}
 }
@@ -375,7 +387,7 @@ div.spacer {
 		text-decoration: none;
 
 		&:before {
-			font-family: 'Glyphicons Halflings';
+			font-family: 'Squid-Line';
 			font-size: 12px;
 			margin-right: 5px;
 			vertical-align: middle;
@@ -384,13 +396,13 @@ div.spacer {
 
 	&.collapsed {
 		.title:before {
-			content: "\e250";
+			content: "\e939";
 		}
 	}
 
 	&.expanded {
 		.title:before {
-			content: "\e252";
+			content: "\e918";
 		}
 	}
 
@@ -422,14 +434,17 @@ div.spacer {
 		&[class="Get Started"] {
 			background: @color-navy-blue-100;
 
-			&:hover {
-				background: @color-navy-blue-100;
-				color: @color-white;
+			&:hover, &:focus {
 				box-shadow: none;
 			}
 
 			a {
 				color: @color-white;
+
+				&:hover, &:focus {
+					background: @color-navy-blue-100;
+					color: @color-white;
+				}
 			}
 		}
 	}
