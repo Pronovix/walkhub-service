@@ -119,7 +119,7 @@ class WalkhubBackend {
 		const wt = WalkthroughStore.getState().walkthroughs[this.state.walkthrough];
 
 		this.screenshots = [];
-		this.screenshots.length = wt.steps.length - 1;
+		this.screenshots.length = wt ? (wt.steps.length - 1) : 0;
 
 		WalkhubBackend.embeddedPost({type: "start"});
 		window.addEventListener("message", this.onMessageEventHandler);
