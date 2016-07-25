@@ -83,7 +83,6 @@ class EmbedCode extends React.Component {
 	componentDidUpdate() {
 		const element = ReactDOM.findDOMNode(this.refs.embedbox);
 		if (this.props.autoselect) {
-
 			selectAll(element);
 		}
 
