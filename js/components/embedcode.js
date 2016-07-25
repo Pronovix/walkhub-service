@@ -27,6 +27,13 @@ class EmbedCode extends React.Component {
 		autoselect: false,
 	};
 
+	handleSelectEmbedCode(element, e) {
+		if ((e.metaKey || e.ctrlKey) && e.keyCode === 65) {
+			e.preventDefault();
+			selectAll(element);
+		}
+	}
+
 	render() {
 		const origin = WALKHUB_URL;
 		const clienturl = origin + "assets/client.js";
@@ -74,10 +81,12 @@ class EmbedCode extends React.Component {
 	}
 
 	componentDidUpdate() {
+		const element = ReactDOM.findDOMNode(this.refs.embedbox);
 		if (this.props.autoselect) {
-			const element = ReactDOM.findDOMNode(this.refs.embedbox);
 			selectAll(element);
 		}
+
+		window.addEventListener("keydown", this.handleSelectEmbedCode.bind(this, element));
 	}
 
 }

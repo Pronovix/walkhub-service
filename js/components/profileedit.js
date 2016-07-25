@@ -106,7 +106,7 @@ class ProfileEdit extends React.Component {
 
 	getPasswordChangeForm() {
 		const oldPwTextField = this.props.hasPassword ? (
-			<TextField label={t("Old:")} id="oldpassword" value={this.props.oldPassword} onChange={this.props.oldPasswordChange} labelgrid={4} inputgrid={8} />
+			<TextField label={t("Old:")} id="oldpassword" value={this.props.oldPassword} onChange={this.props.oldPasswordChange} type="password" labelgrid={4} inputgrid={8} />
 		) : null;
 
 		return (
