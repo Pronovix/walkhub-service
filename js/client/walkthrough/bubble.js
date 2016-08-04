@@ -117,7 +117,6 @@ class Bubble {
 			.addClass("wtbubble-button")
 			.click(function (event) {
 				event.preventDefault();
-				that.hide();
 				that.controller.nextStep();
 			})
 			.appendTo(this.contentWrapper);

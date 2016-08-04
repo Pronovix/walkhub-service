@@ -96,7 +96,7 @@ function fixIFrameSize(iframe) {
 					break;
 				case "recorded":
 					width = null; // 100%
-					height = 220;
+					height = 130;
 					break;
 				case "saved":
 					width = null;

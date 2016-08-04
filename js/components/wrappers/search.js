@@ -82,11 +82,21 @@ class SearchWrapper extends React.Component {
 		WalkhubBackend.embedResetState();
 	};
 
+	forceList() {
+		return !!this.context.location.query.force_list;
+	}
+
 	componentWillMount() {
+		const forceList = this.forceList();
 		this.setState({
 			search: this.context.location.query.q,
-			helpButton: this.isEmbedded(),
+			helpButton: this.isEmbedded() && !forceList,
 		});
+		setTimeout(() => {
+			if (forceList) {
+				WalkhubBackend.embedSetListState();
+			}
+		}, 0);
 	}
 
 	componentDidMount() {

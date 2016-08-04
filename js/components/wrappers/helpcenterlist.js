@@ -23,6 +23,7 @@ import HelpCenterList from "components/helpcenterlist";
 import WalkhubBackend from "walkthrough/walkhub_backend";
 import HelpButton from "components/helpbutton";
 import Bar from "components/bar";
+import URI from "URIjs";
 import {noop} from "form";
 import {t} from "t";
 
@@ -141,6 +142,10 @@ class HelpCenterListWrapper extends React.Component {
 		return !!this.context.location.query.embedded;
 	}
 
+	forceList() {
+		return !!this.context.location.query.force_list;
+	}
+
 	onHelpClick = (evt) => {
 		this.setState({
 			helpButton: false,
@@ -195,9 +200,15 @@ class HelpCenterListWrapper extends React.Component {
 	}
 
 	componentWillMount() {
+		const forceList = this.forceList();
 		this.setState({
-			helpButton: this.isEmbedded(),
+			helpButton: this.isEmbedded() && !forceList,
 		});
+		setTimeout(() => {
+			if (forceList) {
+				WalkhubBackend.embedSetListState();
+			}
+		}, 0);
 	}
 
 	getURL() {

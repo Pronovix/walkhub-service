@@ -23,6 +23,9 @@ import UserStore from "stores/user";
 import WalkthroughStore from "stores/walkthrough";
 import URI from "URIjs";
 import {isHTTPSPage} from "util";
+import flux from "control";
+import WalkthroughActions from "actions/walkthrough";
+import LogActions from "actions/log";
 
 @connectToStores
 class WalkthroughPlay extends React.Component {
@@ -30,7 +33,6 @@ class WalkthroughPlay extends React.Component {
 		walkthrough: {},
 		currentUser: {},
 		siteinfos: {},
-		screeningSaved: false,
 	};
 
 	static getStores(props) {
@@ -43,7 +45,6 @@ class WalkthroughPlay extends React.Component {
 		return {
 			currentUser: state.users[state.currentUser] || {},
 			siteinfos: wtstate.siteinfos || {},
-			screeningSaved: wtstate.screeningSaved,
 		};
 	}
 
@@ -54,6 +55,8 @@ class WalkthroughPlay extends React.Component {
 		autoplayed: false,
 		siteinfoLoaded: false,
 		goingBack: false,
+		logging: false,
+		creatingScreening: false,
 	};
 
 	static contextTypes = {
@@ -85,16 +88,26 @@ class WalkthroughPlay extends React.Component {
 		this.startWalkthrough(evt, true);
 	};
 
+	getChildContext() {
+		return {
+			playWalkthrough: this.playWalkthrough,
+			screenWalkthrough: this.isEditable() ? this.screenWalktrough : null,
+		};
+	}
+
+	static childContextTypes = {
+		playWalkthrough: React.PropTypes.func,
+		screenWalkthrough: React.PropTypes.func,
+	};
+
 	playClose = (evt) => {
 		noop(evt);
 
 		this.setState({
 			goingBack: true,
-		});
-
-		this.setState({
 			widget: null,
 		});
+
 		this.backend.stop();
 	}
 
@@ -103,13 +116,19 @@ class WalkthroughPlay extends React.Component {
 		this.backend.onclose = this.playClose;
 	}
 
+	dispatcherToken = null;
+
 	componentDidMount() {
 		this.maybeAutoplay(this.props);
 		this.maybeGetSiteinfo(this.props);
+		this.dispatcherToken = flux.dispatcher.register(this.onChange);
 	}
 
 	componentWillUnmount() {
 		this.backend.stop();
+		if (this.dispatcherToken) {
+			flux.dispatcher.unregister(this.dispatcherToken);
+		}
 	}
 
 	componentWillReceiveProps(nextProps) {
@@ -120,6 +139,31 @@ class WalkthroughPlay extends React.Component {
 	componentWillUpdate(nextProps, nextState) {
 		this.maybeGoBack(nextProps, nextState);
 	}
+
+	onChange = (event) => {
+		switch (event.action) {
+			case WalkthroughActions.CREATING_SCREENING:
+				this.setState({
+					creatingScreening: true,
+				});
+				break;
+			case WalkthroughActions.CREATED_SCREENING:
+				this.setState({
+					creatingScreening: false,
+				});
+				break;
+			case LogActions.CREATING_LOG:
+				this.setState({
+					logging: true,
+				});
+				break;
+			case LogActions.CREATED_LOG:
+				this.setState({
+					logging: false,
+				});
+				break;
+		}
+	};
 
 	maybeAutoplay(props) {
 		if (this.shouldAutoplay(props)) {
@@ -148,7 +192,11 @@ class WalkthroughPlay extends React.Component {
 			return;
 		}
 
-		if (state.goingBack && (this.context.location.query.screening ? props.screeningSaved : true)) {
+		if (state.creatingScreening || state.logging) {
+			return;
+		}
+
+		if (state.goingBack) {
 			window.location = goback;
 		}
 	}
@@ -166,13 +214,22 @@ class WalkthroughPlay extends React.Component {
 			const walkthroughProtocol = URI(wturl).protocol();
 			if (isHTTPSPage() && walkthroughProtocol === "http" && this.createRunner().reloadHTTP) {
 				let httpOrigin = URI(WALKHUB_HTTP_URL);
+				let gobackurl = URI(window.location.href);
+
+				if (this.isEmbedded()) {
+					gobackurl.addSearch("force_list", true);
+				}
+
 				let url = URI(window.location.href)
 					.protocol("http")
 					.host(httpOrigin.host())
 					.path(`/walkthrough/${this.props.walkthrough.uuid}`)
 					.addSearch("autoplay", this.props.walkthrough.uuid)
-					.addSearch("screening", screening)
-					.addSearch("goback", window.location.href);
+					.addSearch("goback", gobackurl.toString());
+
+				if (screening) {
+					url.addSearch("screening", "true");
+				}
 
 				if (siteinfo) {
 					url.addSearch("force_runner", WalkhubBackend.runnerNameForSiteinfo(siteinfo));
@@ -183,6 +240,14 @@ class WalkthroughPlay extends React.Component {
 		}
 
 		return "";
+	}
+
+	isEmbedded() {
+		return !!this.context.location.query.embedded;
+	}
+
+	forceList() {
+		return !!this.context.location.query.force_list;
 	}
 
 	maybeGetSiteinfo(props) {
@@ -219,8 +284,13 @@ class WalkthroughPlay extends React.Component {
 		return this.getSiteinfo().blocks_iframe;
 	}
 
+	isEditable() {
+		return this.props.walkthrough.uid !== "" && this.props.walkthrough.uid === this.props.currentUser.UUID;
+	}
+
 	render() {
-		this.backend.canEdit = this.props.walkthrough.uid !== "" && this.props.walkthrough.uid === this.props.currentUser.UUID;
+		const editable = this.isEditable();
+		this.backend.canEdit = editable;
 
 		const httpReloadURL = this.getHTTPReloadURL(false);
 
@@ -229,11 +299,13 @@ class WalkthroughPlay extends React.Component {
 				<Walkthrough
 					onPlayClick={this.playWalkthrough}
 					onScreeningClick={this.screenWalktrough}
-					editable={this.props.currentUser.UUID === this.props.walkthrough.uid}
+					editable={editable}
 					httpReload={!!httpReloadURL}
 					iframeBlocked={this.iframeBlocked()}
 					{...this.props}
-				/>
+					>
+					{this.props.children}
+				</Walkthrough>
 				{this.state.widget}
 			</div>
 		);

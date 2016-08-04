@@ -67,6 +67,10 @@ class PopupRunner extends Runner {
 		return this.widget;
 	}
 
+	getName() {
+		return "popup";
+	}
+
 }
 
 class PopupWidget extends React.Component {
@@ -90,7 +94,7 @@ class PopupWidget extends React.Component {
 	render() {
 		const innerWrapper = this.props.runner.popup ? (
 			<div className="inner-wrapper wt-running">
-				<p>{t("A walkthrough is playing in a different window or tab. Do not close this window.")}</p>
+				<p>{t("A walkthrough is playing or recording in a different window or tab. Do not close this window.")}</p>
 				<p className="text-center">
 					<a href="#" className="btn btn-default btn-lg" onClick={this.props.cancelClick}>
 						{t("Abort walkthrough")}

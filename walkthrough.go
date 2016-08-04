@@ -59,7 +59,7 @@ func walkthroughService(ec *ab.EntityController, search *search.SearchService, b
 			reindexingMutex.RUnlock()
 
 			if idxing {
-				ab.Fail(r, http.StatusServiceUnavailable, errors.New("reindexing is in progress"))
+				ab.Fail(http.StatusServiceUnavailable, errors.New("reindexing is in progress"))
 			}
 
 			reindexingMutex.Lock()
@@ -103,7 +103,7 @@ func walkthroughService(ec *ab.EntityController, search *search.SearchService, b
 			uid := ab.GetSession(r)["uid"]
 
 			rows, err := db.Query("SELECT DISTINCT steps->0->'arg0' AS site FROM walkthrough WHERE uid = $1 ORDER BY site", uid)
-			ab.MaybeFail(r, http.StatusInternalServerError, err)
+			ab.MaybeFail(http.StatusInternalServerError, err)
 			defer rows.Close()
 
 			sites := []string{}
@@ -111,7 +111,7 @@ func walkthroughService(ec *ab.EntityController, search *search.SearchService, b
 			for rows.Next() {
 				var site sql.NullString
 				err = rows.Scan(&site)
-				ab.MaybeFail(r, http.StatusInternalServerError, err)
+				ab.MaybeFail(http.StatusInternalServerError, err)
 				if site.Valid {
 					siteName := site.String
 
@@ -137,7 +137,7 @@ func walkthroughService(ec *ab.EntityController, search *search.SearchService, b
 				wt.UID = uid
 			}
 			if wt.UID != uid {
-				ab.Fail(r, http.StatusBadRequest, errors.New("invalid user id"))
+				ab.Fail(http.StatusBadRequest, errors.New("invalid user id"))
 			}
 
 			wt.Updated = time.Now()
@@ -174,22 +174,22 @@ func walkthroughService(ec *ab.EntityController, search *search.SearchService, b
 			wt := d.(*Walkthrough)
 			uid := UserDelegate.CurrentUser(r)
 			currentUserEntity, err := ec.Load(db, "user", uid)
-			ab.MaybeFail(r, http.StatusBadRequest, err)
+			ab.MaybeFail(http.StatusBadRequest, err)
 			currentUser := currentUserEntity.(*User)
 			if wt.UID != uid {
 				if !currentUser.Admin {
-					ab.Fail(r, http.StatusForbidden, nil)
+					ab.Fail(http.StatusForbidden, nil)
 				}
 			}
 
 			previousRevision, err := LoadActualRevision(db, ec, wt.UUID)
-			ab.MaybeFail(r, http.StatusBadRequest, err)
+			ab.MaybeFail(http.StatusBadRequest, err)
 			if previousRevision == nil {
-				ab.Fail(r, http.StatusNotFound, nil)
+				ab.Fail(http.StatusNotFound, nil)
 			}
 
 			if previousRevision.UID != uid && !currentUser.Admin {
-				ab.Fail(r, http.StatusForbidden, nil)
+				ab.Fail(http.StatusForbidden, nil)
 			}
 
 			wt.Updated = time.Now()
@@ -206,11 +206,11 @@ func walkthroughService(ec *ab.EntityController, search *search.SearchService, b
 			uid := UserDelegate.CurrentUser(r)
 			wt := d.(*Walkthrough)
 			currentUserEntity, err := ec.Load(db, "user", uid)
-			ab.MaybeFail(r, http.StatusBadRequest, err)
+			ab.MaybeFail(http.StatusBadRequest, err)
 			currentUser := currentUserEntity.(*User)
 			if wt.UID != uid {
 				if !currentUser.Admin {
-					ab.Fail(r, http.StatusForbidden, nil)
+					ab.Fail(http.StatusForbidden, nil)
 				}
 			}
 		},

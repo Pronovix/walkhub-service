@@ -146,13 +146,15 @@ class RecordWrapper extends React.Component {
 		this.saveClick(evt);
 	};
 
-	stepAdded = (cmd, arg0, arg1) => {
+	stepAdded = (cmd, arg0, arg1, title, description) => {
 		let steps = this.state.steps;
 		steps.push({
 			cmd: cmd,
 			arg0: arg0,
 			arg1: arg1,
 			highlight: arg0, // TODO
+			title: title,
+			description: description,
 		});
 
 		this.setState({steps: steps});
@@ -175,7 +177,11 @@ class RecordWrapper extends React.Component {
 			t("Walkthrough on @domain", {
 				"@domain": URI(this.state.startingUrl).hostname(),
 			});
-		this.backend.startRecord(this.state.startingUrl, this.getRunner());
+		const runner = this.getRunner();
+		if (runner.getName() === "popup") {
+			window.alert(t("Your Walkthrough will be recorded in a new browser tab, just close the tab when you are finished."));
+		}
+		this.backend.startRecord(this.state.startingUrl, runner);
 		this.setState({
 			widget: this.backend.widget,
 			title: title,

@@ -36,6 +36,9 @@ class IframeRunner extends Runner {
 		);
 	}
 
+	getName() {
+		return "iframe";
+	}
 }
 
 export default IframeRunner;

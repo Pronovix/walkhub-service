@@ -188,52 +188,55 @@ class Controller {
 	nextStep() {
 		var that = this;
 
-		if (!this.state.completed && this.step) {
-			this.client.log("Executing incomplete step.");
-			this.state.completed = true;
-			this.client.updateState(this.state);
-			this.executor.execute(this.step, true);
-		}
+		this.maybeScreenshot(() => {
+			Bubble.current && Bubble.current.hide();
+			if (!this.state.completed && this.step) {
+				this.client.log("Executing incomplete step.");
+				this.state.completed = true;
+				this.client.updateState(this.state);
+				this.executor.execute(this.step, true);
+			}
 
-		if (this.walkthrough.steps.length === this.state.stepIndex+1) { // Last step
-			this.client.log("Last step");
+			if (this.walkthrough.steps.length === this.state.stepIndex+1) { // Last step
+				this.client.log("Last step");
 
-			setTimeout(function () {
-				var url = that.walkthrough.url;
+				setTimeout(function () {
+					var url = that.walkthrough.url;
 
-				var share = "";
-				for (var sl in SocialSharing) {
-					if (SocialSharing.hasOwnProperty(sl)) {
-						share += " " + SocialSharing[sl](url, that.name) + " ";
+					var share = "";
+					for (var sl in SocialSharing) {
+						if (SocialSharing.hasOwnProperty(sl)) {
+							share += " " + SocialSharing[sl](url, that.name) + " ";
+						}
 					}
-				}
 
-				var finish_text = "<p>This is the end of this walkthrough. Liked it?</p>";
-				if (that.state.socialSharing === "1") {
-					finish_text += "<p>Share it through one of the following services:</p>";
-					finish_text += share;
-				}
+					var finish_text = "<p>This is the end of this walkthrough. Liked it?</p>";
+					if (that.state.socialSharing === "1") {
+						finish_text += "<p>Share it through one of the following services:</p>";
+						finish_text += share;
+					}
 
-				var buttons = {};
-				buttons.Finish = function () {
-					that.finish();
-				};
-				if (that.state.next && that.state.next.length > 0) {
-					buttons.Next = function () {
-						that.next();
+					var buttons = {};
+					buttons.Finish = function () {
+						that.finish();
 					};
-				}
+					if (that.state.next && that.state.next.length > 0) {
+						buttons.Next = function () {
+							that.next();
+						};
+					}
 
-				that.executor.showExitDialog(finish_text, buttons);
-			}, 100);
-			return;
-		}
+					that.executor.showExitDialog(finish_text, buttons);
+				}, 100);
+				return;
+			}
 
-		this.client.log("Loading next step (" + this.state.stepIndex + ")");
-		this.state.stepIndex++;
-		this.state.completed = false;
-		this.client.updateState(this.state);
-		this.refreshStep();
+			this.client.log("Loading next step (" + this.state.stepIndex + ")");
+			this.state.stepIndex++;
+			this.state.completed = false;
+			this.client.updateState(this.state);
+			this.refreshStep();
+		});
 	}
 
 	updateCurrentStep(step, callback) {
@@ -316,7 +319,7 @@ class Controller {
 		return tmpcanvas;
 	}
 
-	maybeScreenshot() {
+	maybeScreenshot(after) {
 		if (this.state.screening) {
 			html2canvas(document.body, {
 				onrendered: (canvas) => {
@@ -334,10 +337,18 @@ class Controller {
 
 					const data = canvas.toDataURL("image/png");
 					this.client.sendScreenshot(data);
+
+					if (after) {
+						after();
+					}
 				},
 				background: undefined,
 				letterRendering: true,
 			})
+		} else {
+			if (after) {
+				after();
+			}
 		}
 	}
 

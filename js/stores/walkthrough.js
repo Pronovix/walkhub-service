@@ -33,7 +33,6 @@ class WalkthroughStore {
 			mysites: null,
 			screenings: {},
 			recordSaved: false,
-			screeningSaved: false,
 		};
 
 		this.registerAsync(WalkthroughSource);
@@ -131,21 +130,22 @@ class WalkthroughStore {
 		this.state.mysites = result.data;
 	}
 
-	@bind(WalkthroughActions.creatingScreening)
-	creatingScreening() {
-		this.state.screeningSaved = false;
-	}
-
-	@bind(WalkthroughActions.createdScreening)
-	createdScreening(result) {
-		this.state.screeningSaved = true;
+	cacheScreening(result, screening) {
+		const wid = result.config.url.match(/[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}/i)[0];
+		const ct = result.headers["content-type"];
+		this.state.screenings[wid] = this.state.screenings[wid] || {};
+		this.state.screenings[wid][ct] = screening;
 	}
 
 	@bind(WalkthroughActions.receivedScreening)
 	receivedScreening(result) {
-		console.log(result);
-		//this.state.screenings[wid] = this.state.screenings[wid] || {};
-		//this.state.screenings[wid][ct] = result.data;
+		const screening = result.data;
+		this.cacheScreening(result, screening);
+	}
+
+	@bind(WalkthroughActions.loadingScreeningFailed)
+	loadingScreeningFailed(result) {
+		this.cacheScreening(result, []);
 	}
 }
 

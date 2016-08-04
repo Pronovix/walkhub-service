@@ -26,6 +26,7 @@ import {noop} from "form";
 import flux from "control";
 import WalkhubBackend from "walkthrough/walkhub_backend";
 import LogStore from "stores/log";
+import ScreeningWidgetWrapper from "components/wrappers/screeningwidget";
 
 @connectToStores
 class WalkthroughWrapper extends React.Component {
@@ -88,16 +89,25 @@ class WalkthroughWrapper extends React.Component {
 			);
 		} else {
 			const editable = this.props.user && this.props.walkthrough && (this.props.user.Admin || this.props.user.UUID === this.props.walkthrough.uid);
-			return (
+			const screening = (
+				<ScreeningWidgetWrapper uuid={this.props.params.uuid} />
+			);
+			return this.screeningOnly() ? screening : (
 				<WalkthroughPlay
 					embedded={!!this.context.location.query.embedded}
 					walkthrough={this.props.walkthrough}
 					editable={editable}
 					onEditClick={this.editWalkthrough}
 					onDeleteClick={this.deleteWalkthrough}
-				/>
+					>
+					{screening}
+				</WalkthroughPlay>
 			);
 		}
+	}
+
+	screeningOnly() {
+		return !!this.context.location.query.screening_only;
 	}
 
 	editWalkthrough = (evt) => {

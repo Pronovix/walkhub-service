@@ -67,7 +67,7 @@ func userService(ec *ab.EntityController) ab.Service {
 				db := ab.GetDB(r)
 
 				user, err := ec.Load(db, "user", sess["uid"])
-				ab.MaybeFail(r, http.StatusInternalServerError, err)
+				ab.MaybeFail(http.StatusInternalServerError, err)
 
 				ab.Render(r).
 					JSON(user)
@@ -83,7 +83,7 @@ func userService(ec *ab.EntityController) ab.Service {
 func userLoggedInMiddleware(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		if !UserDelegate.IsLoggedIn(r) {
-			ab.Fail(r, http.StatusForbidden, errors.New("user is not logged in"))
+			ab.Fail(http.StatusForbidden, errors.New("user is not logged in"))
 		}
 		next.ServeHTTP(w, r)
 	})
@@ -184,7 +184,7 @@ func (d *PasswordDelegate) LoadUser(uuid string) (ab.Entity, error) {
 }
 
 func (d *PasswordDelegate) LoadUserByMail(mail string) (ab.Entity, error) {
-	users, err := d.controller.LoadFromQuery(d.db, "user", "SELECT "+d.controller.FieldList("name")+" FROM \"user\" u WHERE u.mail = $1", mail)
+	users, err := d.controller.LoadFromQuery(d.db, "user", "SELECT "+d.controller.FieldList("user")+" FROM \"user\" u WHERE u.mail = $1", mail)
 	// this is here to make sure that the returned interface is nil,
 	// not just the interface data
 	if len(users) != 1 {

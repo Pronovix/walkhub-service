@@ -130,12 +130,14 @@ class Client {
 		this.post({type: "setState", state: state});
 	}
 
-	saveStep(cmd, arg0, arg1) {
+	saveStep(cmd, arg0, arg1, title, description) {
 		this.post({
 			type: "saveStep",
 			cmd: cmd,
 			arg0: arg0,
-			arg1: arg1
+			arg1: arg1,
+			title: title,
+			description: description,
 		});
 	}
 

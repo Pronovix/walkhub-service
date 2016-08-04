@@ -106,8 +106,8 @@ class Executor {
 	}
 
 	execute(step, force, onStepComplete) {
-		function noElement() {
-			const bubble = new Bubble(that.controller, null, step);
+		const noElement = () => {
+			const bubble = new Bubble(this.controller, null, step);
 			bubble.show();
 		}
 
@@ -127,9 +127,6 @@ class Executor {
 							}
 							const bubble = new Bubble(this.controller, jqobj, step);
 							bubble.show();
-							setTimeout(() => {
-								this.controller.maybeScreenshot();
-							}, 500);
 						},
 						waiting: (tries, remainingtries) => {
 							const message = step.canEdit ?

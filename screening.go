@@ -36,8 +36,6 @@ import (
 	"github.com/vincent-petithory/dataurl"
 )
 
-//go:generate abt --output=screeninggen.go --generate-service-struct=true --generate-service-struct-name=ScreeningService --generate-service-post=false --generate-service-list=false --generate-service-get=false --generate-service-put=false --generate-service-delete=false --generate-crud-delete=false entity Screening
-
 type Screening struct {
 	UUID      string    `dbtype:"uuid" dbdefault:"uuid_generate_v4()" json:"uuid"`
 	WID       string    `dbtype:"uuid" json:"wid"`
@@ -110,7 +108,7 @@ func image2paletted(height uint, img image.Image) *image.Paletted {
 
 func LoadActualScreeningForWalkthrough(db ab.DB, ec *ab.EntityController, wid string) (*Screening, error) {
 	screeningFields := ec.FieldList("screening")
-	screenings, err := ec.LoadFromQuery(db, "screening", "SELECT "+screeningFields+" FROM screening s WHERE wid = $1 AND published = true ORDER BY created LIMIT 1", wid)
+	screenings, err := ec.LoadFromQuery(db, "screening", "SELECT "+screeningFields+" FROM screening s WHERE wid = $1 AND published = true ORDER BY created DESC LIMIT 1", wid)
 	if err != nil {
 		return nil, err
 	}
@@ -141,18 +139,18 @@ func screeningService(ec *ab.EntityController) ab.Service {
 			uid := ab.GetSession(r)["uid"]
 
 			userEntity, err := ec.Load(db, "user", uid)
-			ab.MaybeFail(r, http.StatusInternalServerError, err)
+			ab.MaybeFail(http.StatusInternalServerError, err)
 			user := userEntity.(*User)
 
 			wt, err := LoadActualRevision(db, ec, wid)
-			ab.MaybeFail(r, http.StatusBadRequest, err)
+			ab.MaybeFail(http.StatusBadRequest, err)
 
 			if wt.UID != uid && !user.Admin {
-				ab.Fail(r, http.StatusForbidden, nil)
+				ab.Fail(http.StatusForbidden, nil)
 			}
 
 			if len(data) == 0 || len(data) != len(wt.Steps)-1 {
-				ab.Fail(r, http.StatusBadRequest, fmt.Errorf("got %d images, expected: %d", len(data), len(wt.Steps)-1))
+				ab.Fail(http.StatusBadRequest, fmt.Errorf("got %d images, expected: %d", len(data), len(wt.Steps)-1))
 			}
 
 			screening := &Screening{
@@ -164,14 +162,20 @@ func screeningService(ec *ab.EntityController) ab.Service {
 			}
 
 			err = ec.Insert(db, screening)
-			ab.MaybeFail(r, http.StatusInternalServerError, err)
+			ab.MaybeFail(http.StatusInternalServerError, err)
 
 			images := map[string][]byte{}
 			for i, d := range data {
+				if d == "" {
+					continue
+				}
 				dataurl, err := dataurl.DecodeString(d)
-				ab.MaybeFail(r, http.StatusBadRequest, err)
+				if err != nil {
+					ab.LogTrace(r).Printf("data url error: %s", dataurl)
+					ab.Fail(http.StatusBadRequest, err)
+				}
 				if dataurl.ContentType() != "image/png" {
-					ab.Fail(r, http.StatusBadRequest, errors.New("not a png"))
+					ab.Fail(http.StatusBadRequest, errors.New("not a png"))
 				}
 				fn := screening.ScreenshotPath(uint(i))
 				images[fn] = dataurl.Data
@@ -196,9 +200,9 @@ func screeningService(ec *ab.EntityController) ab.Service {
 			db := ab.GetDB(r)
 
 			screening, err := LoadActualScreeningForWalkthrough(db, ec, wid)
-			ab.MaybeFail(r, http.StatusInternalServerError, err)
+			ab.MaybeFail(http.StatusInternalServerError, err)
 			if screening == nil {
-				ab.Fail(r, http.StatusNotFound, nil)
+				ab.Fail(http.StatusNotFound, nil)
 			}
 
 			fn := screening.GIFPath()
@@ -206,12 +210,12 @@ func screeningService(ec *ab.EntityController) ab.Service {
 			reply := func() {
 				filelist := make([]string, int(screening.Steps))
 				for i := uint(0); i < screening.Steps; i++ {
-					filelist[i] = screening.ScreenshotPath(i)
+					filelist[i] = "/" + screening.ScreenshotPath(i)
 				}
 
 				ab.Render(r).AddOffer("image/gif", func(w http.ResponseWriter) {
 					f, err := os.Open(fn)
-					ab.MaybeFail(r, http.StatusInternalServerError, err)
+					ab.MaybeFail(http.StatusInternalServerError, err)
 					defer f.Close()
 					io.Copy(w, f)
 				}).JSON(filelist)
@@ -247,7 +251,7 @@ func screeningService(ec *ab.EntityController) ab.Service {
 				mtx.Unlock()
 			}()
 
-			ab.MaybeFail(r, http.StatusInternalServerError, err)
+			ab.MaybeFail(http.StatusInternalServerError, err)
 			close(l)
 			reply()
 		}))

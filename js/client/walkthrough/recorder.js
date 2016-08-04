@@ -18,6 +18,7 @@ import $ from "jquery";
 import EventAbsorber from "client/walkthrough/eventabsorber";
 import Util from "client/walkthrough/util";
 import LocatorGenerator from "client/walkthrough/locator_generator";
+import AutoTitle from "client/walkthrough/autotitle";
 
 class Recorder {
 
@@ -105,8 +106,9 @@ class Recorder {
 		}
 
 		if (!Util.isInputElement(clickedElement)) {
-			var locator = LocatorGenerator.instance().generate(clickedElement);
-			this.client.saveStep("click", locator, null);
+			const locator = LocatorGenerator.instance().generate(clickedElement);
+			const [title, description] = AutoTitle.instance().titleAndDescription("click", locator);
+			this.client.saveStep("click", locator, null, title, description);
 			this.animateRecordedElement(clickedElement);
 		}
 
@@ -144,9 +146,11 @@ class Recorder {
 		}
 
 		var tagName = (element.prop("tagName") || "").toLowerCase();
+		let title, description;
 		switch (tagName) {
 			case "select":
-				this.client.saveStep("select", locator, "value=" + value);
+				[title, description] = AutoTitle.instance().titleAndDescription("select", locator, value);
+				this.client.saveStep("select", locator, "value=" + value, title, description);
 				this.animateRecordedElement(element);
 				break;
 			case "input":
@@ -155,7 +159,9 @@ class Recorder {
 				if (ispw) {
 					this.client.enablePasswordParameter();
 				}
-				this.client.saveStep("type", locator, ispw ? "[password]" : value);
+				const value = ispw ? "[password]" : value;
+				[title, description] = AutoTitle.instance().titleAndDescription("type", locator, value);
+				this.client.saveStep("type", locator, value);
 				this.animateRecordedElement(element);
 				break;
 			default:
@@ -163,7 +169,8 @@ class Recorder {
 					var valueDom = $(element.html());
 					valueDom.find(".walkthrough-eventabsorber-hover").removeClass("walkthrough-eventabsorber-hover");
 					var finalValue = $("<div />").append(valueDom).html();
-					this.client.saveStep("type", locator, finalValue);
+					[title, description] = AutoTitle.instance().titleAndDescription("type", locator, finalValue);
+					this.client.saveStep("type", locator, finalValue, title, description);
 					this.animateRecordedElement(element);
 				} else {
 					this.client.log(["TODO add support for: " + tagName, locator, value]);

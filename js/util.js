@@ -158,3 +158,20 @@ export function parseGoDate(datestr) {
 		second: matches[6],
 	};
 };
+
+// Split is a proper implementation of string splitting.
+//
+// Unlike the stock implementation, this concatenates the
+// remaining parts instead of cutting them off.
+export function split(str, separator, limit = 0) {
+	const parts = str.split(separator);
+	if (limit > 0) {
+		const limitedParts = parts.slice(0, limit-1);
+		const otherParts = parts.slice(limit-1);
+		limitedParts.push(otherParts.join(separator));
+
+		return limitedParts;
+	}
+
+	return parts;
+}

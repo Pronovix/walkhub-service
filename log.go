@@ -117,7 +117,7 @@ func logService(ec *ab.EntityController, baseurl string) ab.Service {
 			userid := getLogUserID(r, ec)
 
 			message := fmt.Sprintf("%s has opened the help center on %s", userid, l.URL)
-			ab.MaybeFail(r, http.StatusInternalServerError, DBLog(db, ec, "helpcenteropened", message))
+			ab.MaybeFail(http.StatusInternalServerError, DBLog(db, ec, "helpcenteropened", message))
 		}))
 
 		srv.Post("/api/log/walkthroughplayed", http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
@@ -127,9 +127,9 @@ func logService(ec *ab.EntityController, baseurl string) ab.Service {
 			db := ab.GetDB(r)
 			userid := getLogUserID(r, ec)
 			wt, err := LoadActualRevision(db, ec, l.UUID)
-			ab.MaybeFail(r, http.StatusBadRequest, err)
+			ab.MaybeFail(http.StatusBadRequest, err)
 			if wt == nil {
-				ab.Fail(r, http.StatusNotFound, nil)
+				ab.Fail(http.StatusNotFound, nil)
 			}
 
 			message := ""
@@ -147,7 +147,7 @@ func logService(ec *ab.EntityController, baseurl string) ab.Service {
 				message = fmt.Sprintf("%s has failed to play the walkthrough %s<%s|%s> with the error message %s", userid, embedPart, wturl, wt.Name, l.ErrorMessage)
 			}
 
-			ab.MaybeFail(r, http.StatusInternalServerError, DBLog(db, ec, "walkthroughplayed", message))
+			ab.MaybeFail(http.StatusInternalServerError, DBLog(db, ec, "walkthroughplayed", message))
 
 			walkthroughPlayed.
 				With(metrics.Field{Key: "uuid", Value: l.UUID}).
@@ -162,9 +162,9 @@ func logService(ec *ab.EntityController, baseurl string) ab.Service {
 			db := ab.GetDB(r)
 			userid := getLogUserID(r, ec)
 			wt, err := LoadActualRevision(db, ec, l.UUID)
-			ab.MaybeFail(r, http.StatusBadRequest, err)
+			ab.MaybeFail(http.StatusBadRequest, err)
 			if wt == nil {
-				ab.Fail(r, http.StatusNotFound, nil)
+				ab.Fail(http.StatusNotFound, nil)
 			}
 
 			embedPart := ""
@@ -176,7 +176,7 @@ func logService(ec *ab.EntityController, baseurl string) ab.Service {
 
 			message := fmt.Sprintf("%s has visited the walkthrough page %s<%s|%s>", userid, embedPart, wturl, wt.Name)
 
-			ab.MaybeFail(r, http.StatusInternalServerError, DBLog(db, ec, "walkthroughvisited", message))
+			ab.MaybeFail(http.StatusInternalServerError, DBLog(db, ec, "walkthroughvisited", message))
 
 			walkthroughVisited.
 				With(metrics.Field{Key: "uuid", Value: l.UUID}).

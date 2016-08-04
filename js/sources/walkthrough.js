@@ -133,7 +133,7 @@ const WalkthroughSource = {
 			});
 		},
 		local(state, wid, contentType) {
-			return state.screenings[wid] && state.screenings[wid][contentType];
+			return state.screenings[wid] ? state.screenings[wid][contentType] : null;
 		},
 		loading: WalkthroughActions.loadingScreening,
 		success: WalkthroughActions.receivedScreening,

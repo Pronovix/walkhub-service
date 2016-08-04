@@ -248,9 +248,9 @@ class WalkhubBackend {
 		}
 	}
 
-	addStep(cmd, arg0, arg1) {
+	addStep(cmd, arg0, arg1, title, description) {
 		if (this.addStepCallback) {
-			this.addStepCallback(cmd, arg0, arg1);
+			this.addStepCallback(cmd, arg0, arg1, title, description);
 		}
 		WalkhubBackendActions.addStep(cmd, arg0, arg1);
 		WalkhubBackend.embeddedPost({type: "embedState", state: "recorded"});
@@ -301,7 +301,7 @@ class WalkhubBackend {
 	}
 
 	handleSaveStep(data, source) {
-		this.addStep(data.cmd, data.arg0, data.arg1);
+		this.addStep(data.cmd, data.arg0, data.arg1, data.title, data.description);
 	}
 
 	handleEnablePasswordParameter(data, source) {
@@ -348,7 +348,6 @@ class WalkhubBackend {
 
 	handleScreenshot(data) {
 		this.screenshots[this.state.stepIndex - 1] = data.data;
-		//this.screenshots.push(data.data);
 	}
 
 	handleFinished(data, source) {

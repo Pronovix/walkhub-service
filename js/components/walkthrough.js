@@ -21,7 +21,6 @@ import {noop} from "form";
 import {t} from "t";
 import {Link} from "react-router";
 import {parseGoDate} from "util";
-import ScreeningGif from "components/wrappers/screeninggif";
 
 class Walkthrough extends React.Component {
 
@@ -67,7 +66,6 @@ class Walkthrough extends React.Component {
 				editbuttons.push(<a href={href} key="edit" target="_blank" className="btn btn-default btn-sm">{t("Edit")}</a>);
 				editbuttons.push(<a href={href} key="delete" className="btn btn-danger btn-sm">{t("Delete")}</a>);
 			} else {
-				editbuttons.push(<a onClick={this.props.onScreeningClick} key="screen" className="btn btn-default btn-sm">{t("New screening")}</a>);
 				editbuttons.push(<a onClick={this.props.onEditClick} key="edit" className="btn btn-default btn-sm">{t("Edit")}</a>);
 				editbuttons.push(<a onClick={this.props.onDeleteClick} key="delete" className="btn btn-danger btn-sm">{t("Delete")}</a>);
 			}
@@ -121,13 +119,22 @@ class Walkthrough extends React.Component {
 			</div>
 		);
 
+		const screeninglink = "<img src=\""+WALKHUB_URL+"api/walkthrough/"+walkthrough.uuid+"/screening"+"\" />";
+
+		const screeningWidget = `<iframe src="`+WALKHUB_URL+`walkthrough/${walkthrough.uuid}?embedded=1&screening_only=1"></iframe>`;
+
 		const embed = (
 			<div className="row">
 				<div className="col-xs-4">
-					<h3> {t("Embed code")} </h3>
+					<h3> {t("Embed codes")} </h3>
 				</div>
 				<div className="col-xs-8">
+					<p>{t("Walkthrough")}</p>
 					<EmbedCode uuid={walkthrough.uuid} />
+					<p>{t("Screening gif")}</p>
+					<pre ref="embedbox" className="walkthrough-embedcode">{screeninglink}</pre>
+					<p>{t("Screening widget")}</p>
+					<pre ref="embedbox" className="walkthrough-embedcode">{screeningWidget}</pre>
 				</div>
 			</div>
 		);
@@ -140,16 +147,12 @@ class Walkthrough extends React.Component {
 			<p className="bg-danger walkthrough-iframe-blocked-message">{t("This walkthrough is only enabled in popup mode")}</p>
 		) : null;
 
-		const screening = (
-			<ScreeningGif uuid={walkthrough.uuid} />
-		);
-
 		return (
 			<section key={walkthrough.revision} className={`walkthrough-uuid-${walkthrough.uuid} walkthrough-revision-${walkthrough.revision}`}>
 				{title}
 				{this.props.compact ? null : reloadHTTP}
 				{this.props.compact ? null : iframeBlocked}
-				{this.props.compact ? null : screening}
+				{this.props.compact ? null : this.props.children}
 				{this.props.compact ? null : description}
 				{this.props.compact ? null : stepsWidget}
 				{this.props.compact ? null : embed}

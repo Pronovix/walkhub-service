@@ -57,20 +57,20 @@ func (sis *SiteinfoService) Register(srv *ab.Server) error {
 		db := ab.GetDB(r)
 
 		info, err := sis.getFromDB(db, d.Url)
-		ab.MaybeFail(r, http.StatusInternalServerError, err)
+		ab.MaybeFail(http.StatusInternalServerError, err)
 
 		if info.Empty() {
 			info, err = sis.fetchAndSaveSiteinfo(db, d.Url, clientjs)
 			if err != nil {
 				if err == timeoutError {
-					ab.Fail(r, http.StatusServiceUnavailable, err)
+					ab.Fail(http.StatusServiceUnavailable, err)
 				} else {
-					ab.Fail(r, http.StatusBadGateway, err)
+					ab.Fail(http.StatusBadGateway, err)
 				}
 			}
 			if info.Empty() {
 				info, err = sis.getFromDB(db, d.Url)
-				ab.MaybeFail(r, http.StatusInternalServerError, err)
+				ab.MaybeFail(http.StatusInternalServerError, err)
 			}
 		}
 

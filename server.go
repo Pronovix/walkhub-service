@@ -102,7 +102,7 @@ func domainEnforcerMiddleware(httpsHost, httpHost string) func(http.Handler) htt
 }
 
 func NewServer(cfg *viper.Viper) (*WalkhubServer, error) {
-	b, err := ab.PetBunny(cfg, nil, nil, prometheusMiddleware())
+	b, err := ab.PetBunny(cfg, nil, prometheusMiddleware())
 	if err != nil {
 		return nil, err
 	}
@@ -211,14 +211,14 @@ func corsPreflightHandler(baseURL, httpOrigin string) http.Handler {
 		w.Header().Add("Vary", "Access-Control-Request-Headers")
 
 		if origin == "" || method == "" {
-			ab.Fail(r, http.StatusBadRequest, nil)
+			ab.Fail(http.StatusBadRequest, nil)
 		}
 
 		originurl, err := url.Parse(origin)
-		ab.MaybeFail(r, http.StatusBadRequest, err)
+		ab.MaybeFail(http.StatusBadRequest, err)
 
 		if originurl.Host != baseurl.Host && originurl.Host != httporigin.Host {
-			ab.Fail(r, http.StatusForbidden, nil)
+			ab.Fail(http.StatusForbidden, nil)
 		}
 
 		w.Header().Set("Access-Control-Allow-Origin", origin)

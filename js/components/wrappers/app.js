@@ -29,6 +29,7 @@ import MessageActions from "actions/message";
 import WalkhubBackend from "walkthrough/walkhub_backend";
 import $ from "jquery";
 import NetworkActivityWrapper from "components/wrappers/networkactivity";
+import WalkthroughActions from "actions/walkthrough";
 
 let FooterComponent = null;
 
@@ -98,6 +99,12 @@ class AppWrapper extends React.Component {
 		}
 	}
 
+	blacklistedErrors() {
+		return [
+			WalkthroughActions.LOADING_SCREENING_FAILED,
+		];
+	}
+
 	onChange = (event) => {
 		const messages = this.state.messages;
 		let classes = this.state.classes;
@@ -112,7 +119,7 @@ class AppWrapper extends React.Component {
 		}
 
 		// error, failed
-		if (event.action.match(/(error|fail)/i)) {
+		if (event.action.match(/(error|fail)/i) && this.blacklistedErrors().indexOf(event.action) === -1) {
 			if (event.data && event.data.status && !(event.data.config.method === "get" && event.data.config.url === "/api/user")) { // Network error, but not related to the current user.
 				messages.push({
 					type: "danger",

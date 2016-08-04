@@ -21,6 +21,9 @@ class ScreeningGif extends React.Component {
 
 	static defaultProps = {
 		uuid: null,
+		onClick: noop,
+		onMouseEnter: noop,
+		onMouseLeave: noop,
 	};
 
 	state = {
@@ -30,12 +33,15 @@ class ScreeningGif extends React.Component {
 
 	render() {
 		return this.props.uuid && this.state.show ? (
-			<div className="row">
+			<div className="row screening-gif">
 				<div className="col-xs-12 text-center">
 					<img
 						src={`/api/walkthrough/${this.props.uuid}/screening`}
 						onLoad={this.onLoad}
 						onError={this.onError}
+						onClick={this.props.onClick}
+						onMouseEnter={this.props.onMouseEnter}
+						onMouseLeave={this.props.onMouseLeave}
 					/>
 				</div>
 			</div>

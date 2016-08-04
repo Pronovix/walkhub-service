@@ -36,6 +36,9 @@ class Runner {
 		return null;
 	}
 
+	getName() {
+		return "";
+	}
 }
 
 export default Runner;

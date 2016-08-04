@@ -65,7 +65,7 @@ class Record extends React.Component {
 
 		const recordButtonClass = "btn-danger btn-record-" + this.props.embedded;
 
-		const compatWarn = this.props.compatibilityWarning ? (
+		const compatWarn = this.props.compatibilityWarning && !this.props.embedded ? (
 			<p className="text-warning">{t("The site might not be compatible with this walkhub")}</p>
 		) : null;
 
