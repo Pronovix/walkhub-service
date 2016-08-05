@@ -18,7 +18,6 @@ import React from "react";
 import connectToStores from "alt/utils/connectToStores";
 import WalkthroughStore from "stores/walkthrough";
 import ScreeningWidget from "components/screeningwidget";
-import ScreeningGif from "components/wrappers/screeninggif";
 import {noop} from "form";
 
 @connectToStores
@@ -46,21 +45,21 @@ class ScreeningWidgetWrapper extends React.Component {
 	}
 
 	state = {
-		showImages: false,
+		showBars: false,
 		currentImage: 0,
 		nextButtonEnabled: false,
 		prevButtonEnabled: false,
 	};
 
-	showImages = () => {
+	showBars = () => {
 		this.setState({
-			showImages: true,
+			showBars: true,
 		});
 	}
 
-	hideImages = () => {
+	hideBars = () => {
 		this.setState({
-			showImages: false,
+			showBars: false,
 		});
 	}
 
@@ -110,9 +109,33 @@ class ScreeningWidgetWrapper extends React.Component {
 		});
 	}
 
+	autoNext = () => {
+		if (!this.state.showBars) {
+			if (this.state.currentImage < (this.props.walkthrough.steps.length - 2)) {
+				this.nextClick();
+			} else {
+				this.setState({
+					currentImage: 0,
+				});
+				this.fixButtons(null, Object.assign({}, this.state, {
+					currentImage: 0,
+				}));
+			}
+		}
+	}
+
+	interval = null;
+
 	componentDidMount() {
 		this.fixButtons();
 		this.maybeLoad(this.props);
+		this.interval = setInterval(this.autoNext, 1000);
+	}
+
+	componentWillUnmount() {
+		if (this.interval) {
+			clearInterval(this.interval);
+		}
 	}
 
 	componentWillReceiveProps(nextProps) {
@@ -141,16 +164,12 @@ class ScreeningWidgetWrapper extends React.Component {
 			<ScreeningWidget
 				walkthrough={this.props.walkthrough}
 				screening={this.props.screening || []}
-				onMouseLeave={this.hideImages}
+				onMouseLeave={this.hideBars}
+				onMouseEnter={this.showBars}
 				prevButtonClick={this.prevClick}
 				nextButtonClick={this.nextClick}
 				{...this.state}
-				>
-				<ScreeningGif
-					uuid={this.props.walkthrough.uuid}
-					onMouseEnter={this.showImages}
-					/>
-			</ScreeningWidget>
+				/>
 		);
 	}
 }

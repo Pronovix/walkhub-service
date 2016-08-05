@@ -492,13 +492,42 @@ img.slideshow-image {
 }
 
 div.slideshow {
-	margin-top: -80px;
-	background-color: black;
-	color: white;
-	opacity: 0.75;
+	background-image: -moz-linear-gradient(to bottom, rgba(63, 63, 63, .85)1%, rgba(0, 0, 0, .9)100%);
+	background-image: -webkit-linear-gradient(to bottom, rgba(63, 63, 63, .85)1%, rgba(0, 0, 0, .9)100%);
+	background-image: linear-gradient(to bottom, rgba(63, 63, 63, .85)1%, rgba(0, 0, 0, .9)100%);
+	opacity: 0.85;
+	margin-top: 438px;
+	-moz-user-select: none;
+	-webkit-user-select: none;
+	user-select: none;
 
 	div.control-prev {
 		text-align: right;
+	}
+
+	img.walkhub-logo {
+		height: 36px;
+	}
+}
+
+div.screening-widget {
+	color: white;
+	width: 990px;
+	min-width: 990px;
+	height: 540px;
+	min-height: 540px;
+	margin: auto;
+	background-size: contain;
+	background-repeat: no-repeat;
+	background-position: center;
+
+	a.logo img {
+		width: 73px;
+		height: 36px;
+
+		&:hover {
+			opacity: 0.95;
+		}
 	}
 }
 
@@ -509,8 +538,24 @@ div.screening-button {
 	margin: auto;
 }
 
-div.has-screening-button {
-	img.slideshow-image {
-		margin-top: -36px;
+a.slideshow-button {
+	border: 2px solid gray;
+	border-radius: 50px;
+	color: gray;
+	font-size: 24px;
+	display: inline-block;
+	width: 36px;
+	height: 36px;
+	overflow: hidden;
+	text-align: center;
+	cursor: pointer;
+
+	&.slideshow-button-share, &.slideshow-button-fullscreen {
+		border: none;
+	}
+
+	&:hover {
+		color: lightgray;
+		border-color: lightgray;
 	}
 }

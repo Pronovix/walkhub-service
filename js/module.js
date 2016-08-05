@@ -31,6 +31,8 @@ import {t} from "t";
 import NetworkActivityActions from "actions/networkactivity";
 import {startGoogleAnalytics} from "util";
 
+require("font-awesome-webpack2");
+
 let history = createBrowserHistory();
 
 axios.defaults.xsrfCookieName = "WALKHUB_CSRF";
