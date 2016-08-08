@@ -30,9 +30,9 @@ import (
 	"time"
 
 	"github.com/pborman/uuid"
-	"github.com/tamasd/ab"
-	"github.com/tamasd/ab/services/search"
-	"github.com/tamasd/ab/util"
+	"gitlab.com/tamasd/ab"
+	"gitlab.com/tamasd/ab/services/search"
+	"gitlab.com/tamasd/ab/util"
 )
 
 var WalkthroughNotFoundError = errors.New("walkthrough is not found")

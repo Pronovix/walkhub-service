@@ -22,9 +22,9 @@ import (
 	"time"
 
 	"github.com/lib/pq"
-	"github.com/tamasd/ab"
-	"github.com/tamasd/ab/providers/auth/google"
-	"github.com/tamasd/ab/services/auth"
+	"gitlab.com/tamasd/ab"
+	"gitlab.com/tamasd/ab/providers/auth/google"
+	"gitlab.com/tamasd/ab/services/auth"
 	"google.golang.org/api/plus/v1"
 )
 

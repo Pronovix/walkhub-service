@@ -22,7 +22,7 @@ import (
 	"net/http"
 	"time"
 
-	"github.com/tamasd/ab"
+	"gitlab.com/tamasd/ab"
 )
 
 type EmbedLog struct {

@@ -26,7 +26,7 @@ import (
 	"sync"
 	"time"
 
-	"github.com/tamasd/ab"
+	"gitlab.com/tamasd/ab"
 )
 
 var timeoutError = errors.New("siteinfo wait timeout")

@@ -30,10 +30,10 @@ import (
 	"github.com/go-kit/kit/metrics/prometheus"
 	stdprometheus "github.com/prometheus/client_golang/prometheus"
 	"github.com/spf13/viper"
-	"github.com/tamasd/ab"
-	"github.com/tamasd/ab/providers/auth/google"
-	"github.com/tamasd/ab/services/auth"
-	"github.com/tamasd/ab/services/search"
+	"gitlab.com/tamasd/ab"
+	"gitlab.com/tamasd/ab/providers/auth/google"
+	"gitlab.com/tamasd/ab/services/auth"
+	"gitlab.com/tamasd/ab/services/search"
 )
 
 type WalkhubServer struct {

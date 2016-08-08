@@ -25,7 +25,7 @@ import (
 	"github.com/go-kit/kit/metrics"
 	"github.com/go-kit/kit/metrics/prometheus"
 	stdprometheus "github.com/prometheus/client_golang/prometheus"
-	"github.com/tamasd/ab"
+	"gitlab.com/tamasd/ab"
 )
 
 type Log struct {

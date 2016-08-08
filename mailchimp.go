@@ -24,8 +24,8 @@ import (
 	"net/http"
 
 	"github.com/spf13/viper"
-	"github.com/tamasd/ab"
-	"github.com/tamasd/ab/lib/log"
+	"gitlab.com/tamasd/ab"
+	"gitlab.com/tamasd/ab/lib/log"
 )
 
 var _ ab.EntityWriteEvent = &mailchimpClient{}

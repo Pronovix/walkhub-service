@@ -32,8 +32,8 @@ import (
 	"time"
 
 	"github.com/nfnt/resize"
-	"github.com/tamasd/ab"
 	"github.com/vincent-petithory/dataurl"
+	"gitlab.com/tamasd/ab"
 )
 
 type Screening struct {

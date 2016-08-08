@@ -26,9 +26,9 @@ import (
 
 	"github.com/Pronovix/walkhub-service"
 	"github.com/spf13/viper"
-	"github.com/tamasd/ab/lib/log"
-	"github.com/tamasd/ab/services/auth"
-	"github.com/tamasd/ab/util"
+	"gitlab.com/tamasd/ab/lib/log"
+	"gitlab.com/tamasd/ab/services/auth"
+	"gitlab.com/tamasd/ab/util"
 )
 
 func isHTTPS(baseurl string) bool {
