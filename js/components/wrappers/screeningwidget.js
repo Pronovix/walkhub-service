@@ -19,6 +19,7 @@ import connectToStores from "alt/utils/connectToStores";
 import WalkthroughStore from "stores/walkthrough";
 import ScreeningWidget from "components/screeningwidget";
 import {noop} from "form";
+import {t} from "t";
 
 @connectToStores
 class ScreeningWidgetWrapper extends React.Component {
@@ -26,6 +27,7 @@ class ScreeningWidgetWrapper extends React.Component {
 		uuid: null,
 		walkthrough: {},
 		screening: null,
+		className: "",
 	};
 
 	static getStores(props) {
@@ -47,8 +49,8 @@ class ScreeningWidgetWrapper extends React.Component {
 	state = {
 		showBars: false,
 		currentImage: 0,
-		nextButtonEnabled: false,
-		prevButtonEnabled: false,
+		nextButtonEnabled: true,
+		prevButtonEnabled: true,
 	};
 
 	showBars = () => {
@@ -68,13 +70,12 @@ class ScreeningWidgetWrapper extends React.Component {
 		let currentImage = this.state.currentImage;
 		if (this.state.currentImage < (this.props.walkthrough.steps.length - 2)) {
 			currentImage++;
-			this.setState({
-				currentImage: currentImage,
-			});
+		} else {
+			currentImage = 0;
 		}
-		this.fixButtons(null, Object.assign({}, this.state, {
+		this.setState({
 			currentImage: currentImage,
-		}));
+		});
 	}
 
 	prevClick = (evt) => {
@@ -82,44 +83,43 @@ class ScreeningWidgetWrapper extends React.Component {
 		let currentImage = this.state.currentImage;
 		if (currentImage > 0) {
 			currentImage--;
-			this.setState({
-				currentImage: currentImage,
-			});
+		} else {
+			currentImage = this.props.walkthrough.steps.length - 2;
 		}
-		this.fixButtons(null, Object.assign({}, this.state, {
+		this.setState({
 			currentImage: currentImage,
-		}));
+		});
 	}
 
 	onClick = (evt) => {
 		noop(evt);
-	}
-
-	fixButtons(props = null, state = null) {
-		if (!props) {
-			props = this.props;
-		}
-		if (!state) {
-			state = this.state;
-		}
-		const steps = props.walkthrough.steps ? props.walkthrough.steps.length : 0;
-		this.setState({
-			nextButtonEnabled: state.currentImage < (steps - 2),
-			prevButtonEnabled: state.currentImage > 0,
-		});
+		this.nextClick();
 	}
 
 	autoNext = () => {
 		if (!this.state.showBars) {
-			if (this.state.currentImage < (this.props.walkthrough.steps.length - 2)) {
-				this.nextClick();
-			} else {
-				this.setState({
-					currentImage: 0,
-				});
-				this.fixButtons(null, Object.assign({}, this.state, {
-					currentImage: 0,
-				}));
+			this.nextClick();
+		}
+	}
+
+	shareClick = (evt) => {
+		noop(evt);
+	}
+
+	fullscreenClick = (evt) => {
+		noop(evt);
+		if (document.fullscreenElement || document.webkitFullscreenElement) {
+			if (document.exitFullscreen) {
+				document.exitFullscreen();
+			} else if (document.webkitExitFullscreen) {
+				document.webkitExitFullscreen();
+			}
+		} else {
+			const elem = this.refs.screeningwrapper;
+			if (elem.requestFullscreen) {
+				elem.requestFullscreen();
+			} else if (elem.webkitRequestFullscreen) {
+				elem.webkitRequestFullscreen();
 			}
 		}
 	}
@@ -127,9 +127,11 @@ class ScreeningWidgetWrapper extends React.Component {
 	interval = null;
 
 	componentDidMount() {
-		this.fixButtons();
 		this.maybeLoad(this.props);
-		this.interval = setInterval(this.autoNext, 1000);
+		const autoadvance = this.context.location && this.context.location.query && this.context.location.query.autoadvance ?
+			this.context.location.query.autoadvance :
+			2000;
+		this.interval = setInterval(this.autoNext, autoadvance);
 	}
 
 	componentWillUnmount() {
@@ -139,7 +141,6 @@ class ScreeningWidgetWrapper extends React.Component {
 	}
 
 	componentWillReceiveProps(nextProps) {
-		this.fixButtons(nextProps);
 		this.maybeLoad(nextProps);
 	}
 
@@ -161,15 +162,20 @@ class ScreeningWidgetWrapper extends React.Component {
 
 	render() {
 		return (
-			<ScreeningWidget
-				walkthrough={this.props.walkthrough}
-				screening={this.props.screening || []}
-				onMouseLeave={this.hideBars}
-				onMouseEnter={this.showBars}
-				prevButtonClick={this.prevClick}
-				nextButtonClick={this.nextClick}
-				{...this.state}
-				/>
+			<div ref="screeningwrapper" className={"screeningwidget-wrapper container-fluid "+this.props.className}>
+				<ScreeningWidget
+					walkthrough={this.props.walkthrough}
+					screening={this.props.screening || []}
+					onMouseLeave={this.hideBars}
+					onMouseEnter={this.showBars}
+					onClick={this.onClick}
+					prevButtonClick={this.prevClick}
+					nextButtonClick={this.nextClick}
+					shareClick={this.shareClick}
+					fullscreenClick={this.fullscreenClick}
+					{...this.state}
+					/>
+			</div>
 		);
 	}
 }

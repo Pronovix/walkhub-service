@@ -121,7 +121,7 @@ class Walkthrough extends React.Component {
 
 		const screeninglink = "<img src=\""+WALKHUB_URL+"api/walkthrough/"+walkthrough.uuid+"/screening"+"\" />";
 
-		const screeningWidget = `<iframe src="`+WALKHUB_URL+`walkthrough/${walkthrough.uuid}?embedded=1&screening_only=1"></iframe>`;
+		const screeningWidget = `<iframe width="990" height="540" src="`+WALKHUB_URL+`walkthrough/${walkthrough.uuid}?embedded=1&screening_only=1&autoadvance=2000"></iframe>`;
 
 		const embed = (
 			<div className="row">

@@ -69,6 +69,13 @@ class HelpCenterListWrapper extends React.Component {
 		};
 	}
 
+	convertWalkthroughToScreening(link) {
+		return URI(link)
+			.addSearch("embedded", "1")
+			.addSearch("screening_only", "1")
+			.toString();
+	}
+
 	render() {
 		if (this.state.helpButton) {
 			return <HelpButton helpClick={this.onHelpClick} />;
@@ -83,11 +90,11 @@ class HelpCenterListWrapper extends React.Component {
 					type: "group",
 				});
 			} else if (this.walkthroughRegexp.test(item.link)) {
-				const uuid = this.walkthroughRegexp.exec(item.link)[1];
 				items.push({
-					link: item.link,
-					type: "walkthrough",
-					uuid: uuid,
+					link: this.convertWalkthroughToScreening(item.link),
+					type: "iframe",
+					title: item.title,
+					description: item.description,
 				});
 			} else if (this.youtubeRegexp.test(item.link)) {
 				const id = this.youtubeID.exec(item.link)[1];

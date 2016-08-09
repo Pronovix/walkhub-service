@@ -27,6 +27,7 @@ import flux from "control";
 import WalkhubBackend from "walkthrough/walkhub_backend";
 import LogStore from "stores/log";
 import ScreeningWidgetWrapper from "components/wrappers/screeningwidget";
+import {t} from "t";
 
 @connectToStores
 class WalkthroughWrapper extends React.Component {
@@ -89,10 +90,14 @@ class WalkthroughWrapper extends React.Component {
 			);
 		} else {
 			const editable = this.props.user && this.props.walkthrough && (this.props.user.Admin || this.props.user.UUID === this.props.walkthrough.uid);
+			const screeningOnly = this.screeningOnly();
 			const screening = (
-				<ScreeningWidgetWrapper uuid={this.props.params.uuid} />
+				<ScreeningWidgetWrapper
+					uuid={this.props.params.uuid}
+					className={screeningOnly ? "screening-only" : ""}
+					/>
 			);
-			return this.screeningOnly() ? screening : (
+			return screeningOnly ? screening : (
 				<WalkthroughPlay
 					embedded={!!this.context.location.query.embedded}
 					walkthrough={this.props.walkthrough}
@@ -100,7 +105,9 @@ class WalkthroughWrapper extends React.Component {
 					onEditClick={this.editWalkthrough}
 					onDeleteClick={this.deleteWalkthrough}
 					>
-					{screening}
+					<div className="walkthrough-screening-wrapper">
+						{screening}
+					</div>
 				</WalkthroughPlay>
 			);
 		}
@@ -120,7 +127,9 @@ class WalkthroughWrapper extends React.Component {
 
 	deleteWalkthrough = (evt) => {
 		noop(evt);
-		WalkthroughStore.performDelete(this.props.params.uuid);
+		if (window.confirm(t("Are you sure that you want to delete this walkthrough?"))) {
+			WalkthroughStore.performDelete(this.props.params.uuid);
+		}
 	};
 
 	cancelEditWalktrough = (evt) => {

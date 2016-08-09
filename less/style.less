@@ -496,10 +496,12 @@ div.slideshow {
 	background-image: -webkit-linear-gradient(to bottom, rgba(63, 63, 63, .85)1%, rgba(0, 0, 0, .9)100%);
 	background-image: linear-gradient(to bottom, rgba(63, 63, 63, .85)1%, rgba(0, 0, 0, .9)100%);
 	opacity: 0.85;
-	margin-top: 438px;
 	-moz-user-select: none;
 	-webkit-user-select: none;
 	user-select: none;
+	bottom: 0;
+	position: absolute;
+	width: 100%;
 
 	div.control-prev {
 		text-align: right;
@@ -512,14 +514,11 @@ div.slideshow {
 
 div.screening-widget {
 	color: white;
-	width: 990px;
-	min-width: 990px;
-	height: 540px;
-	min-height: 540px;
 	margin: auto;
 	background-size: contain;
 	background-repeat: no-repeat;
 	background-position: center;
+	position: relative;
 
 	a.logo img {
 		width: 73px;
@@ -536,6 +535,9 @@ div.screening-button {
 	opacity: 0.75;
 	width: 100%;
 	margin: auto;
+	margin-top: 0;
+	top: 0;
+	position: absolute;
 }
 
 a.slideshow-button {
@@ -558,4 +560,26 @@ a.slideshow-button {
 		color: lightgray;
 		border-color: lightgray;
 	}
+}
+
+div.screeningwidget-wrapper, div.screening-widget, div.screening-widget-inner {
+	width: 100%;
+	height: 100%;
+}
+
+div.screeningwidget-wrapper, div.screening-widget-inner {
+	background-color: black;
+	padding: 0;
+}
+
+div.screeningwidget-wrapper.screening-only {
+	height: 100vh;
+}
+
+div.walkthrough-screening-wrapper {
+	width: 990px;
+	min-width: 990px;
+	height: 540px;
+	min-height: 540px;
+	margin: auto;
 }

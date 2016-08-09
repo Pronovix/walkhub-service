@@ -131,20 +131,20 @@ class ScreeningWidget extends React.Component {
 		const content = (
 			<div
 				onClick={this.props.onClick}
+				onMouseDown={(evt) => { evt.preventDefault(); }}
 				onMouseEnter={this.props.onMouseEnter}
 				onMouseLeave={this.props.onMouseLeave}
 				className={classes.join(" ")}
 				style={style}
 				>
 				{topbar}
-				{"\u00a0"}
 				{bottombar}
 			</div>
 		);
 
 		return (
 			<div className="row screening-widget">
-				<div className="col-xs-12">
+				<div className="col-xs-12 screening-widget-inner">
 					{content}
 				</div>
 			</div>
