@@ -328,9 +328,10 @@ func (s *WalkhubServer) Start(addr string, certfile string, keyfile string) erro
 	s.RegisterService(logService(ec, s.BaseURL))
 
 	metricsRestrictAddressMiddleware := ab.RestrictPrivateAddressMiddleware()
-	if addresses := s.cfg.GetStringSlice("metricsaddresses"); len(addresses) > 0 {
-		s.Logger.User().Printf("access to metrics from: %v\n", addresses)
-		metricsRestrictAddressMiddleware = ab.RestrictAddressMiddleware(addresses...)
+	if addresses := s.cfg.GetString("metricsaddresses"); addresses != "" {
+		addresslist := strings.Split(addresses, ",")
+		s.Logger.User().Printf("access to metrics from: %v\n", addresslist)
+		metricsRestrictAddressMiddleware = ab.RestrictAddressMiddleware(addresslist...)
 	}
 	s.Get("/metrics", stdprometheus.Handler(), metricsRestrictAddressMiddleware)
 
