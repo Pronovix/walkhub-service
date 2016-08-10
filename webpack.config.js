@@ -128,7 +128,7 @@ module.exports = {
 			WALKHUB_HTTP_URL: JSON.stringify(httporigin ? httporigin : baseurl),
 			WALKHUB_MENU_ITEMS: !!menuitems,
 			WALKHUB_CONTENT_PAGES: !!contentpages,
-			GA_ACCOUNT: gaAccount,
+			GA_ACCOUNT: JSON.stringify(gaAccount),
 			WALKHUB_CUSTOM_FOOTER: !!footercomponent,
 		}),
 		new webpack.NoErrorsPlugin(),
