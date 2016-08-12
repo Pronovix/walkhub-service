@@ -322,6 +322,14 @@ div.spacer {
 
 		.collapsible-container {
 			margin-bottom: 24px;
+
+			a.title {
+				font-weight: bold;
+			}
+
+			div.content {
+				padding-left: 18px;
+			}
 		}
 	}
 
@@ -583,3 +591,9 @@ div.walkthrough-screening-wrapper {
 	min-height: 540px;
 	margin: auto;
 }
+
+// Adding extra margin because of the fixed navbar.
+div.container.navbar-is-fixed-top {
+	margin-top: @navbar-height;
+}
+

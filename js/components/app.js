@@ -30,6 +30,7 @@ class App extends React.Component {
 		className: "",
 		containerClassName: "",
 		footer: null,
+		navbarIsFixedTop: false,
 	};
 
 	configEmpty(cfg) {
@@ -62,14 +63,14 @@ class App extends React.Component {
 		}
 
 		const navbar = this.configEmpty(this.props.navbarConfig) ? null :
-			<Navbar hasHeader={true} config={this.props.navbarConfig} loggedin={!!this.props.currentUser.UUID} className="navbar-default navbar-main" />;
+			<Navbar hasHeader={true} config={this.props.navbarConfig} loggedin={!!this.props.currentUser.UUID} className={"navbar-default navbar-main" + (this.props.navbarIsFixedTop ? " navbar-fixed-top" : "")} />;
 		const footer = this.configEmpty(this.props.footerConfig) ? null :
 				<Navbar config={this.props.footerConfig} loggedin={!!this.props.currentUser.UUID} className="navbar-default" />;
 
 		return (
 			<div className={this.props.className}>
 				{navbar}
-				<div className={"container "+this.props.containerClassName}>
+				<div className={"container " + this.props.containerClassName + (this.props.navbarIsFixedTop ? " navbar-is-fixed-top" : "")}>
 					<ErrorBar
 						messages={this.props.messages}
 						onMessageClose={this.props.onMessageClose}

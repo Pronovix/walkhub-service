@@ -185,6 +185,7 @@ class AppWrapper extends React.Component {
 				className={className}
 				containerClassName={this.getContainerClassName()}
 				footer={footer}
+				navbarIsFixedTop={true}
 				>
 				<NetworkActivityWrapper />
 				{this.props.children}
