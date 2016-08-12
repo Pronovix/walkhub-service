@@ -52,7 +52,7 @@ class WalkthroughList extends React.Component {
 
 			return (
 				<div className="row">
-					<Collapsible title={site} isExpanded={false}>
+					<Collapsible title={site} isExpanded={true}>
 						{list}
 					</Collapsible>
 				</div>
