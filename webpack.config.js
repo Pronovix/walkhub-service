@@ -157,12 +157,8 @@ module.exports = {
 		extensions: ["", ".js"],
 		modulesDirectories: ["node_modules", "js/build"]
 	},
-	debug: true,
-	devtool: "source-map",
-	devServer: {
-		contentBase: "./assets",
-		historyApiFallback: true
-	}
+	debug: process.env.NODE_ENV !== "production",
+	devtool: process.env.NODE_ENV === "production" ? null : "source-map",
 };
 
 if (extraBuild) {
