@@ -52,7 +52,10 @@ func (d userEntityDelegate) Validate(e ab.Entity) error {
 }
 
 func (d userEntityDelegate) AlterSQL(sql string) string {
-	return sql + "\nALTER TABLE auth ADD CONSTRAINT auth_uuid_fkey FOREIGN KEY (uuid) REFERENCES \"user\" (uuid) MATCH SIMPLE ON UPDATE CASCADE ON DELETE CASCADE;"
+	return sql + `
+		ALTER TABLE auth ADD CONSTRAINT auth_uuid_fkey FOREIGN KEY (uuid) REFERENCES "user" (uuid) MATCH SIMPLE ON UPDATE CASCADE ON DELETE CASCADE;
+		ALTER TABLE "user" ADD CONSTRAINT user_mail_key UNIQUE (mail);
+	`
 }
 
 func userService(ec *ab.EntityController) ab.Service {
@@ -110,9 +113,22 @@ func (gud *GoogleUserDelegate) Convert(u *plus.Person) (ab.Entity, error) {
 	}
 
 	return &User{
-		Name: u.DisplayName,
-		Mail: mail,
+		Name:    u.DisplayName,
+		Mail:    mail,
+		Created: time.Now(),
 	}, nil
+}
+
+func (gud *GoogleUserDelegate) ResolveUniqueID(db ab.DB, entity ab.Entity) (string, error) {
+	if user, ok := entity.(*User); ok {
+		var uuid string
+		err := db.QueryRow(`SELECT uuid FROM "user" WHERE mail = $1`, user.Mail).Scan(&uuid)
+		if err != nil {
+			return "", err
+		}
+		return uuid, nil
+	}
+	return "", nil
 }
 
 type userRegData struct {
