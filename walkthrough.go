@@ -102,7 +102,7 @@ func walkthroughService(ec *ab.EntityController, search *search.SearchService, b
 			db := ab.GetDB(r)
 			uid := ab.GetSession(r)["uid"]
 
-			rows, err := db.Query("SELECT DISTINCT steps->0->'arg0' AS site FROM walkthrough WHERE uid = $1 ORDER BY site", uid)
+			rows, err := db.Query("SELECT DISTINCT steps->0->'arg0' AS site FROM walkthrough WHERE uid = $1 AND published ORDER BY site", uid)
 			ab.MaybeFail(http.StatusInternalServerError, err)
 			defer rows.Close()
 
@@ -275,6 +275,11 @@ func (d walkthroughEntityDelegate) AlterSQL(sql string) string {
 			ON public.walkthrough
 			USING btree
 			(((steps -> 0) ->> 'arg0'::text) COLLATE pg_catalog."default");
+
+		CREATE INDEX walkthrough_published_idx
+			ON public.walkthrough
+			USING btree
+			(published);
 	`
 }
 
