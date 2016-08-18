@@ -90,11 +90,18 @@ class HelpCenterListWrapper extends React.Component {
 					type: "group",
 				});
 			} else if (this.walkthroughRegexp.test(item.link)) {
+				const uuid = this.walkthroughRegexp.exec(item.link)[1];
+				if (!this.props.walkthroughs[uuid]) {
+					setTimeout(() => {
+						WalkthroughStore.performLoad(uuid);
+					}, 0);
+				}
+				const wt = this.props.walkthroughs[uuid] || {};
 				items.push({
 					link: this.convertWalkthroughToScreening(item.link),
 					type: "iframe",
-					title: item.title,
-					description: item.description,
+					title: item.title || wt.name || t("Untitled walkthrough"),
+					description: item.description || wt.description,
 				});
 			} else if (this.youtubeRegexp.test(item.link)) {
 				const id = this.youtubeID.exec(item.link)[1];
