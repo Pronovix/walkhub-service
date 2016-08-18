@@ -1,5 +1,4 @@
-# TODO change this back to golang:latest after the 1.7 release
-FROM golang:1.7
+FROM golang:latest
 
 RUN apt-get update && apt-get -y install apt-transport-https
 RUN curl -s https://deb.nodesource.com/gpgkey/nodesource.gpg.key | apt-key add -
