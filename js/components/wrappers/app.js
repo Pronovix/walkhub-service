@@ -102,6 +102,7 @@ class AppWrapper extends React.Component {
 	blacklistedErrors() {
 		return [
 			WalkthroughActions.LOADING_SCREENING_FAILED,
+			WalkthroughActions.RECEIVING_SITEINFO_FAILED,
 		];
 	}
 
