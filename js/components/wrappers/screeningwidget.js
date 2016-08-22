@@ -46,6 +46,11 @@ class ScreeningWidgetWrapper extends React.Component {
 		};
 	}
 
+	static contextTypes = {
+		location: React.PropTypes.shape,
+		history: React.PropTypes.shape,
+	};
+
 	state = {
 		showBars: false,
 		currentImage: 0,
