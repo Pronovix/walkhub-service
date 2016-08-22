@@ -35,6 +35,7 @@ class ScreeningWidget extends React.Component {
 		onClick: noop,
 		onMouseEnter: noop,
 		onMouseLeave: noop,
+		sharing: false,
 	};
 
 	static contextTypes = {
@@ -62,7 +63,7 @@ class ScreeningWidget extends React.Component {
 			<a className="btn btn-primary" onClick={this.context.screenWalkthrough}>{t("Update your Walkthrough GIF")}</a>
 		) : null;
 
-		const topbar = this.props.showBars ? (
+		const topbar = this.props.showBars && !this.props.sharing ? (
 			<div className="row screening-button">
 				<h4 className="col-xs-8 text-left">
 					{`${this.props.walkthrough.name} (${this.props.currentImage+1}/${this.props.screening.length})`}
@@ -73,7 +74,7 @@ class ScreeningWidget extends React.Component {
 			</div>
 		) : null;
 
-		const bottombar = this.props.showBars ? (
+		const bottombar = this.props.showBars && !this.props.sharing ? (
 			<div className="slideshow">
 				<div className="row control-bar">
 					<div className="col-xs-4 text-left">
@@ -128,6 +129,18 @@ class ScreeningWidget extends React.Component {
 			backgroundImage: `url(${imageURL})`,
 		};
 
+		const embedcode = `<iframe width="990" height="540" src="`+WALKHUB_URL+`walkthrough/${this.props.walkthrough.uuid}?embedded=1&screening_only=1&autoadvance=2000"></iframe>`;
+
+		const sharingMouseEvt = (evt) => {
+			evt.stopPropagation();
+		};
+
+		const sharing = this.props.sharing ? (
+			<div className="screening-sharing">
+				<pre onClick={sharingMouseEvt} onMouseDown={sharingMouseEvt} ref="embedbox" className="walkthrough-embedcode">{embedcode}</pre>
+			</div>
+		) : null;
+
 		const content = (
 			<div
 				onClick={this.props.onClick}
@@ -138,6 +151,7 @@ class ScreeningWidget extends React.Component {
 				style={style}
 				>
 				{topbar}
+				{sharing}
 				{bottombar}
 			</div>
 		);

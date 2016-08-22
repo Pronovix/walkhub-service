@@ -56,6 +56,7 @@ class ScreeningWidgetWrapper extends React.Component {
 		currentImage: 0,
 		nextButtonEnabled: true,
 		prevButtonEnabled: true,
+		sharing: false,
 	};
 
 	showBars = () => {
@@ -72,6 +73,9 @@ class ScreeningWidgetWrapper extends React.Component {
 
 	nextClick = (evt) => {
 		noop(evt);
+		if (evt && evt.stopPropagation) {
+			evt.stopPropagation();
+		}
 		let currentImage = this.state.currentImage;
 		if (this.state.currentImage < (this.props.walkthrough.steps.length - 2)) {
 			currentImage++;
@@ -85,6 +89,7 @@ class ScreeningWidgetWrapper extends React.Component {
 
 	prevClick = (evt) => {
 		noop(evt);
+		evt.stopPropagation();
 		let currentImage = this.state.currentImage;
 		if (currentImage > 0) {
 			currentImage--;
@@ -98,21 +103,32 @@ class ScreeningWidgetWrapper extends React.Component {
 
 	onClick = (evt) => {
 		noop(evt);
-		this.nextClick();
+		if (this.state.sharing) {
+			this.setState({
+				sharing: false,
+			});
+		} else {
+			this.nextClick();
+		}
 	}
 
 	autoNext = () => {
-		if (!this.state.showBars) {
+		if (!this.state.showBars && !this.state.sharing) {
 			this.nextClick();
 		}
 	}
 
 	shareClick = (evt) => {
 		noop(evt);
+		evt.stopPropagation();
+		this.setState({
+			sharing: true,
+		});
 	}
 
 	fullscreenClick = (evt) => {
 		noop(evt);
+		evt.stopPropagation();
 		if (document.fullscreenElement || document.webkitFullscreenElement) {
 			if (document.exitFullscreen) {
 				document.exitFullscreen();
