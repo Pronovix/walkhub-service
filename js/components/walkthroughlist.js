@@ -51,7 +51,7 @@ class WalkthroughList extends React.Component {
 				}).map(this.renderWalkthrough);
 
 			return (
-				<div className="row">
+				<div className="row" key={site}>
 					<Collapsible title={site} isExpanded={true}>
 						{list}
 					</Collapsible>
