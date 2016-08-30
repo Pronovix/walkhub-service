@@ -27,7 +27,6 @@ import (
 	"text/template"
 	"time"
 
-	"github.com/go-kit/kit/metrics"
 	"github.com/go-kit/kit/metrics/prometheus"
 	stdprometheus "github.com/prometheus/client_golang/prometheus"
 	"github.com/spf13/viper"
@@ -58,7 +57,7 @@ type WalkhubServer struct {
 }
 
 func prometheusMiddleware() func(http.Handler) http.Handler {
-	requestDuration := prometheus.NewSummary(stdprometheus.SummaryOpts{
+	requestDuration := prometheus.NewSummaryFrom(stdprometheus.SummaryOpts{
 		Namespace: "walkhub",
 		Subsystem: "main",
 		Name:      "request_duration_nanoseconds_count",
@@ -72,9 +71,9 @@ func prometheusMiddleware() func(http.Handler) http.Handler {
 		return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 			defer func(begin time.Time) {
 				requestDuration.
-					With(metrics.Field{Key: "method", Value: r.Method}).
-					With(metrics.Field{Key: "url", Value: r.URL.String()}).
-					Observe(int64(time.Since(begin)))
+					With("method", r.Method).
+					With("url", r.URL.String()).
+					Observe(float64(time.Since(begin)))
 			}(time.Now())
 			next.ServeHTTP(w, r)
 		})

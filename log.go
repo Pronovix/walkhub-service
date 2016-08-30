@@ -22,7 +22,6 @@ import (
 	"net/http"
 	"time"
 
-	"github.com/go-kit/kit/metrics"
 	"github.com/go-kit/kit/metrics/prometheus"
 	stdprometheus "github.com/prometheus/client_golang/prometheus"
 	"gitlab.com/tamasd/ab"
@@ -95,14 +94,14 @@ func logService(ec *ab.EntityController, baseurl string) ab.Service {
 	})
 
 	res.ExtraEndpoints = func(srv *ab.Server) error {
-		walkthroughPlayed := prometheus.NewCounter(stdprometheus.CounterOpts{
+		walkthroughPlayed := prometheus.NewCounterFrom(stdprometheus.CounterOpts{
 			Namespace: "walkhub",
 			Subsystem: "metrics",
 			Name:      "walkthrough_played",
 			Help:      "Number of walkthrough plays",
 		}, []string{"uuid", "embedorigin"})
 
-		walkthroughVisited := prometheus.NewCounter(stdprometheus.CounterOpts{
+		walkthroughVisited := prometheus.NewCounterFrom(stdprometheus.CounterOpts{
 			Namespace: "walkhub",
 			Subsystem: "metrics",
 			Name:      "walkthrough_visited",
@@ -150,8 +149,8 @@ func logService(ec *ab.EntityController, baseurl string) ab.Service {
 			ab.MaybeFail(http.StatusInternalServerError, DBLog(db, ec, "walkthroughplayed", message))
 
 			walkthroughPlayed.
-				With(metrics.Field{Key: "uuid", Value: l.UUID}).
-				With(metrics.Field{Key: "embedorigin", Value: l.EmbedOrigin}).
+				With("uuid", l.UUID).
+				With("embedorigin", l.EmbedOrigin).
 				Add(1)
 		}))
 
@@ -179,8 +178,8 @@ func logService(ec *ab.EntityController, baseurl string) ab.Service {
 			ab.MaybeFail(http.StatusInternalServerError, DBLog(db, ec, "walkthroughvisited", message))
 
 			walkthroughVisited.
-				With(metrics.Field{Key: "uuid", Value: l.UUID}).
-				With(metrics.Field{Key: "embedorigin", Value: l.EmbedOrigin}).
+				With("uuid", l.UUID).
+				With("embedorigin", l.EmbedOrigin).
 				Add(1)
 		}))
 
