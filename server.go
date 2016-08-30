@@ -388,7 +388,7 @@ var (
 			"Click the following link to activate your account and set up your password:\r\n" +
 			"{{.Url}}\r\n" +
 			"\r\n" +
-			"Have any questions? We’re always here to help.\r\n" +
+			"Have any questions? We’re always here to help. Drop us an email walkhub@pronovix.com\r\n" +
 			"\r\n" +
 			"Cheers,\r\n" +
 			"The WalkHub Team\r\n" +
