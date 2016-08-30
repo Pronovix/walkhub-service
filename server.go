@@ -19,6 +19,7 @@ package walkhub
 import (
 	"crypto/tls"
 	"errors"
+	htemplate "html/template"
 	"net/http"
 	"net/smtp"
 	"net/url"
@@ -102,6 +103,8 @@ func domainEnforcerMiddleware(httpsHost, httpHost string) func(http.Handler) htt
 }
 
 func NewServer(cfg *viper.Viper) (*WalkhubServer, error) {
+	cfg.Set("root", false)
+
 	b, err := ab.PetBunny(cfg, nil, prometheusMiddleware())
 	if err != nil {
 		return nil, err
@@ -260,8 +263,22 @@ func corsMiddleware(baseURL, httpOrigin string) func(http.Handler) http.Handler 
 	}
 }
 
+var indexTemplate = htemplate.Must(htemplate.ParseFiles("assets/index.html"))
+
+type pageData struct {
+	CSRFToken string
+}
+
+func handleIndex(w http.ResponseWriter, r *http.Request) {
+	token := ab.GetCSRFToken(r)
+	ab.Render(r).HTML(indexTemplate, pageData{
+		CSRFToken: token,
+	})
+}
+
 func (s *WalkhubServer) Start(addr string, certfile string, keyfile string) error {
 	frontendPaths := []string{
+		"/",
 		"/connect",
 		"/record",
 		"/walkthrough/:uuid",
@@ -271,7 +288,7 @@ func (s *WalkhubServer) Start(addr string, certfile string, keyfile string) erro
 		"/profile/:uuid",
 	}
 	for _, path := range append(frontendPaths, s.CustomPaths...) {
-		s.AddFile(path, "assets/index.html")
+		s.GetF(path, handleIndex)
 	}
 
 	ec := ab.NewEntityController(s.GetDBConnection())

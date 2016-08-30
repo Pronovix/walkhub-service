@@ -29,13 +29,12 @@ import {isStandardBrowserEnv} from "axios/lib/utils";
 import urlIsSameOrigin from "axios/lib/helpers/urlIsSameOrigin";
 import {t} from "t";
 import NetworkActivityActions from "actions/networkactivity";
-import {startGoogleAnalytics} from "util";
+import {startGoogleAnalytics, csrfToken} from "util";
 
 require("font-awesome-webpack2");
 
 let history = createBrowserHistory();
 
-axios.defaults.xsrfCookieName = "WALKHUB_CSRF";
 axios.defaults.xsrfHeaderName = "X-CSRF-Token";
 axios.defaults.headers.common = {
 	"Accept": "application/json",
@@ -48,8 +47,6 @@ axios.defaults.headers.put = {
 };
 axios.defaults.withCredentials = true;
 
-const xsrfValue = cookies.read(axios.defaults.xsrfCookieName);
-
 axios.interceptors.request.use(function(config) {
 	if (config.url[0] === "/") {
 		config.url = WALKHUB_URL + config.url.slice(1);
@@ -57,10 +54,8 @@ axios.interceptors.request.use(function(config) {
 
 	// Hack to send CSRF tokens with CORS.
 	if (isStandardBrowserEnv()) {
-		if (!urlIsSameOrigin(config.url)) {
-			if (xsrfValue) {
-				config.headers[axios.defaults.xsrfHeaderName] = xsrfValue;
-			}
+		if (csrfToken) {
+			config.headers[axios.defaults.xsrfHeaderName] = csrfToken;
 		}
 	}
 
@@ -88,15 +83,7 @@ $(function() {
 
 const el = document.getElementById("content");
 
-if (xsrfValue) {
-	render(<Router history={history}>{Routes}</Router>, el);
-} else {
-	render((
-		<div className="alert alert-danger nocookie">
-			{t("Allow cookies in your browser to be able to use WalkHub.")}
-		</div>
-	), el);
-}
+render(<Router history={history}>{Routes}</Router>, el);
 
 if (GA_ACCOUNT) {
 	startGoogleAnalytics(GA_ACCOUNT);
