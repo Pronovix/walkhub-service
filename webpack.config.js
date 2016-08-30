@@ -19,6 +19,8 @@ var httporigin = process.env.HTTPORIGIN || serverConfig.httporigin;
 var gaAccount = process.env.GOOGLEANALYTICSACCOUNT || serverConfig.googleanalyticsaccount;
 var extraBuild = process.env.EXTRABUILD || serverConfig.extrabuild;
 
+var isProd = process.env.NODE_ENV === "production";
+
 var path = require("path");
 var srcPath = path.join(__dirname, "js");
 var compassPath = path.resolve(__dirname, "./node_modules/compass-mixins/lib");
@@ -137,7 +139,9 @@ module.exports = {
 		new webpack.optimize.UglifyJsPlugin({
 			compress: {
 				warnings: false,
+				drop_debugger: isProd,
 			},
+			comments: false,
 			mangle: {
 				except: [
 					"$",
@@ -149,6 +153,7 @@ module.exports = {
 					"SearchStore",
 					"UserStore",
 					"WalkthroughStore",
+					"debugger",
 				],
 			},
 		}),
@@ -157,8 +162,8 @@ module.exports = {
 		extensions: ["", ".js"],
 		modulesDirectories: ["node_modules", "js/build"]
 	},
-	debug: process.env.NODE_ENV !== "production",
-	devtool: process.env.NODE_ENV === "production" ? null : "source-map",
+	debug: !isProd,
+	devtool: isProd ? null : "source-map",
 };
 
 if (extraBuild) {
