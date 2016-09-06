@@ -291,7 +291,9 @@ class WalkhubBackend {
 	handleGetState(data, source) {
 		this.post(this.maybeProxy({
 			type: "state",
-			state: this.state,
+			state: Object.assign({
+				screenshotCrop: this.runner.screenshotCrop(),
+			}, this.state),
 		}, data), source);
 	}
 

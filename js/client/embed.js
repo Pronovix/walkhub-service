@@ -199,7 +199,7 @@ function onMessageEventHandler(event) {
 		$(".walkthroughbutton")
 			.filter(function() { return $(this).data("origin") === WALKHUB_URL; })
 			.html("");
-		window.removeEventListener(onMessageEventHandler);
+		window.removeEventListener("message", onMessageEventHandler);
 		return;
 	}
 

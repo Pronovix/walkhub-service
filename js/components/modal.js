@@ -34,7 +34,7 @@ class Modal extends React.Component {
 			height: `${this.state.height}px`,
 		};
 		return (
-			<div className={`wh-modal ${this.props.className}`} style={style}>{this.props.children || " "}</div>
+			<div ref="modal" className={`wh-modal ${this.props.className}`} style={style}>{this.props.children || " "}</div>
 		);
 	}
 

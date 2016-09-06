@@ -14,6 +14,7 @@ var menuitems = process.env.MENUITEMS || serverConfig.menuitems;
 var frontpagecomponent = process.env.FRONTPAGECOMPONENT || serverConfig.frontpagecomponent;
 var footercomponent = process.env.FOOTERCOMPONENT || serverConfig.footercomponent;
 var baseurl = process.env.BASEURL || serverConfig.baseurl;
+var extensionid = process.env.EXTENSIONID || serverConfig.extensionid;
 var embedurl = process.env.EMBEDURL || serverConfig.embedurl;
 var httporigin = process.env.HTTPORIGIN || serverConfig.httporigin;
 var gaAccount = process.env.GOOGLEANALYTICSACCOUNT || serverConfig.googleanalyticsaccount;
@@ -128,6 +129,7 @@ module.exports = {
 			WALKHUB_URL: JSON.stringify(baseurl),
 			WALKHUB_EMBED_URL: JSON.stringify(embedurl ? embedurl : baseurl),
 			WALKHUB_HTTP_URL: JSON.stringify(httporigin ? httporigin : baseurl),
+			EXTENSIONID: JSON.stringify(extensionid),
 			WALKHUB_MENU_ITEMS: !!menuitems,
 			WALKHUB_CONTENT_PAGES: !!contentpages,
 			GA_ACCOUNT: JSON.stringify(gaAccount),

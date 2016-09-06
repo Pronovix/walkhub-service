@@ -82,8 +82,7 @@ class Controller {
 						if (that.walkthrough.steps[that.state.stepIndex] && !that.state.completed) {
 							that.client.log("Loading step");
 							that.refreshStep();
-						}
-						else {
+						} else {
 							that.client.log("Empty step");
 							that.nextStep();
 						}
@@ -159,7 +158,7 @@ class Controller {
 		});
 		if (CommandDispatcher.instance().isAutomaticCommand(this.step.pureCommand)) {
 			this.client.log("Automatically executing step.");
-			this.nextStep();
+			this.nextStep(true);
 		}
 	}
 
@@ -185,10 +184,10 @@ class Controller {
 		});
 	}
 
-	nextStep() {
+	nextStep(skip_screenshot = false) {
 		var that = this;
 
-		this.maybeScreenshot(() => {
+		const after = () => {
 			Bubble.current && Bubble.current.hide();
 			if (!this.state.completed && this.step) {
 				this.client.log("Executing incomplete step.");
@@ -236,7 +235,13 @@ class Controller {
 			this.state.completed = false;
 			this.client.updateState(this.state);
 			this.refreshStep();
-		});
+		};
+
+		if (skip_screenshot) {
+			after();
+		} else {
+			this.maybeScreenshot(after);
+		}
 	}
 
 	updateCurrentStep(step, callback) {
@@ -319,37 +324,100 @@ class Controller {
 		return tmpcanvas;
 	}
 
+	cropImage(dataUrl, crop, after) {
+		if (!crop) {
+			if (after) {
+				after(dataUrl);
+			}
+			return;
+		}
+
+		const img = new Image;
+		img.onload = () => {
+			const canvas = document.createElement("canvas");
+			canvas.width = crop.width;
+			canvas.height = crop.height;
+			const ctx = canvas.getContext("2d");
+			ctx.drawImage(img, crop.left * crop.ratio, crop.top * crop.ratio, crop.width * crop.ratio, crop.height * crop.ratio, 0, 0, canvas.width, canvas.height);
+			if (after) {
+				after(canvas.toDataURL("image/png"));
+			}
+		};
+		img.src = dataUrl;
+	}
+
 	maybeScreenshot(after) {
 		if (this.state.screening) {
-			html2canvas(document.body, {
-				onrendered: (canvas) => {
-					if (!this.state.screensize) {
-						this.state.screensize = {
-							width: window.innerWidth,
-							height: window.innerHeight,
-						};
-						this.client.updateState(this.state);
-					}
-
-					if (canvas.height != this.state.screensize.height || canvas.width != this.state.screensize.width) {
-						canvas = this.resizeCanvas(canvas);
-					}
-
-					const data = canvas.toDataURL("image/png");
-					this.client.sendScreenshot(data);
-
-					if (after) {
-						after();
-					}
-				},
-				background: undefined,
-				letterRendering: true,
-			})
+			if (this.chromeExtensionScreenshot(after)) {
+				return;
+			}
+			if (this.html2canvasScreenshot(after)) {
+				return;
+			}
 		} else {
 			if (after) {
 				after();
 			}
 		}
+	}
+
+	chromeExtensionScreenshot(after) {
+		if (window.WALKHUB_EXTENSION) {
+			const key = Math.random().toString();
+
+			const handler = (event) => {
+				const data = typeof event.data === "string" ? JSON.parse(event.data) : event.data;
+				if (data && data.screenshot_key === key && data.command === "saveScreenshot") {
+					this.cropImage(data.img, this.state.screenshotCrop, (image) => {
+						this.client.sendScreenshot(image);
+						if (after) {
+							after();
+						}
+					});
+					window.removeEventListener("message", handler);
+				}
+			};
+
+			window.addEventListener("message", handler);
+
+			window.postMessage(JSON.stringify({
+				command: "makeScreenshot",
+				walkhub_extension_key: EXTENSIONID,
+				screenshot_key: key,
+				origin: window.location.origin,
+			}), "*");
+			return true;
+		}
+		return false;
+	}
+
+	html2canvasScreenshot(after) {
+		html2canvas(document.body, {
+			onrendered: (canvas) => {
+				if (!this.state.screensize) {
+					this.state.screensize = {
+						width: window.innerWidth,
+						height: window.innerHeight,
+					};
+					this.client.updateState(this.state);
+				}
+
+				if (canvas.height != this.state.screensize.height || canvas.width != this.state.screensize.width) {
+					canvas = this.resizeCanvas(canvas);
+				}
+
+				const data = canvas.toDataURL("image/png");
+				this.client.sendScreenshot(data);
+
+				if (after) {
+					after();
+				}
+			},
+			background: undefined,
+			letterRendering: true,
+		});
+
+		return true;
 	}
 
 }

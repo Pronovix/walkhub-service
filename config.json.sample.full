@@ -16,6 +16,7 @@
 	"menuitems": "",
 	"pwauth": true,
 	"extrabuild": "",
+	"extensionid": "",
 	"google": {
 		"id": "",
 		"secret": ""

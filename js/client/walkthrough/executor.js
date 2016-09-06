@@ -140,7 +140,8 @@ class Executor {
 								}));
 							}
 							error = true;
-							this.logger.logResult(this.controller.state, false, "locator-fail: [locator]".replace("[locator]", step.highlight));
+							this.logger.logResult(this.controller.state, false,
+								"locator-fail: [locator]".replace("[locator]", step.highlight));
 						},
 						giveUp: noElement
 					});
@@ -150,7 +151,8 @@ class Executor {
 			} else {
 				this.client.showError("command-not-supported",
 					"The command '[command]' is not supported.".replace("[command]", command));
-					this.logger.logResult(this.controller.state, false, "command-not-supported: [command]".replace("[command]", command));
+				this.logger.logResult(this.controller.state, false,
+					"command-not-supported: [command]".replace("[command]", command));
 			}
 		}, 0);
 	}

@@ -181,6 +181,10 @@ func screeningService(ec *ab.EntityController) ab.Service {
 				images[fn] = dataurl.Data
 			}
 
+			if len(images) == 0 {
+				ab.Fail(http.StatusBadRequest, errors.New("no images sent"))
+			}
+
 			for name, content := range images {
 				if err := ioutil.WriteFile(name, content, 0644); err != nil {
 					ab.LogUser(r).Println(err)
@@ -226,6 +230,15 @@ func screeningService(ec *ab.EntityController) ab.Service {
 				return
 			}
 
+			// Short-circuits the gif generation process.
+			// If the client wants JSON, there is no need
+			// to go through the GIF generation, which is
+			// an expensive process.
+			if r.Header.Get("Accept") == "application/json" {
+				reply()
+				return
+			}
+
 			mtx.Lock()
 			l, ok := lock[fn]
 			if ok {
@@ -251,7 +264,13 @@ func screeningService(ec *ab.EntityController) ab.Service {
 				mtx.Unlock()
 			}()
 
-			ab.MaybeFail(http.StatusInternalServerError, err)
+			if err != nil {
+				if _, ok := err.(*os.PathError); ok {
+					ab.Fail(http.StatusNotFound, err)
+				} else {
+					ab.Fail(http.StatusInternalServerError, err)
+				}
+			}
 			close(l)
 			reply()
 		}))

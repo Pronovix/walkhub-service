@@ -130,7 +130,7 @@ class WalkhubIframe extends React.Component {
 				</Bar>
 				<div className="container-fluid iframe-container">
 					<div className="row">
-						<iframe ref="contentIframe" style={{height: `${this.state.height}px`}} className="col-xs-12" src={this.props.src} frameBorder="0" scrolling="auto" allowTransparency="true"></iframe>
+						<iframe id="walkhub-iframe" ref="contentIframe" style={{height: `${this.state.height}px`}} className="col-xs-12" src={this.props.src} frameBorder="0" scrolling="auto" allowTransparency="true"></iframe>
 					</div>
 				</div>
 			</Modal>

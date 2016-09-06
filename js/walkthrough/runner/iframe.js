@@ -18,6 +18,7 @@ import React from "react";
 import Runner from "walkthrough/runner";
 import WalkhubIframe from "components/walkhub_iframe";
 import {t} from "t";
+import $ from "jquery";
 
 class IframeRunner extends Runner {
 	reloadHTTP = true;
@@ -38,6 +39,19 @@ class IframeRunner extends Runner {
 
 	getName() {
 		return "iframe";
+	}
+
+	screenshotCrop() {
+		const elem = $("iframe#walkhub-iframe");
+		if (elem.length === 1) {
+			return Object.assign({
+				width: elem.width(),
+				height: elem.height(),
+				ratio: (window.devicePixelRatio || 1),
+			}, elem.offset());
+		}
+
+		return false;
 	}
 }
 

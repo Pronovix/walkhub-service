@@ -39,6 +39,10 @@ class Runner {
 	getName() {
 		return "";
 	}
+
+	screenshotCrop() {
+		return false;
+	}
 }
 
 export default Runner;
