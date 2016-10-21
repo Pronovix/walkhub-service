@@ -24,6 +24,10 @@ window.WalkhubWidgetPositions = window.WalkhubWidgetPositions || {
 	"top-right": [],
 };
 
+function isExtension() {
+	return window.chrome && window.chrome.runtime && window.chrome.runtime.id;
+}
+
 function reposition(iframe) {
 	const position = iframe.data("position");
 	if (!position) {
@@ -157,8 +161,8 @@ function processButton(button) {
 	const position = button.data("position") || "";
 	const search = button.data("search") || null;
 	const listURL = button.data("listUrl") || null;
-	const origin = isHTTPSPage() ? WALKHUB_URL : WALKHUB_HTTP_URL;
-	let uri = origin + "record?embedded=1&start=" + encodeURIComponent(window.location.href);
+	const origin = isHTTPSPage() || isExtension() ? WALKHUB_URL : WALKHUB_HTTP_URL;
+	let uri = origin + "record?embedded=1&start=" + (isExtension() ? "&extension=1" : encodeURIComponent(window.location.href));
 	let type = "record";
 	if (uuid) {
 		uri = origin + "walkthrough/" + uuid + "?embedded=1";

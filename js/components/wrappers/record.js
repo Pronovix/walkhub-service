@@ -22,6 +22,7 @@ import WalkhubBackend from "walkthrough/walkhub_backend";
 import flux from "control";
 import {t} from "t";
 import LoggedIn from "components/wrappers/loggedin";
+import UserStore from "stores/user";
 import WalkthroughStore from "stores/walkthrough";
 import WalkthroughActions from "actions/walkthrough";
 import connectToStores from "alt/utils/connectToStores";
@@ -32,17 +33,20 @@ class RecordWrapper extends React.Component {
 
 	static defaultProps = {
 		siteinfos: {},
+		currentUser: null,
 	};
 
 	static getStores(props) {
-		return [WalkthroughStore];
+		return [WalkthroughStore, UserStore];
 	}
 
 	static getPropsFromStores(props) {
 		const walkthroughStoreState = WalkthroughStore.getState();
+		const userStoreState = UserStore.getState();
 
 		return {
 			siteinfos: walkthroughStoreState.siteinfos,
+			currentUser: userStoreState.users[userStoreState.currentUser] || {},
 		};
 	}
 
@@ -57,6 +61,10 @@ class RecordWrapper extends React.Component {
 
 	isEmbedded() {
 		return !!this.context.location.query.embedded;
+	}
+
+	isExtension() {
+		return !!this.context.location.query.extension;
 	}
 
 	defaultState() {
@@ -163,7 +171,7 @@ class RecordWrapper extends React.Component {
 	getRunner() {
 		const wturl = URI(window.location.href);
 		const siteurl = URI(this.state.startingUrl);
-		if (wturl.protocol() !== siteurl.protocol()) {
+		if (this.isExtension() || wturl.protocol() !== siteurl.protocol()) {
 			return WalkhubBackend.createRunnerFromName("popup");
 		}
 		const siteinfo = this.props.siteinfos[this.state.startingUrl];
@@ -209,7 +217,10 @@ class RecordWrapper extends React.Component {
 	onChange = (event) => {
 		if (event.action === WalkthroughActions.CREATED_WALKTHROUGH) {
 			const uuid = event.data.data.uuid;
-			if (this.isEmbedded()) {
+			if (this.isExtension()) {
+				WalkhubBackend.embedResetState();
+				window.open(WALKHUB_URL+`walkthrough/${uuid}`);
+			} else if (this.isEmbedded()) {
 				WalkhubBackend.embedSetSavedState();
 				this.reset();
 				this.setState({
@@ -231,7 +242,7 @@ class RecordWrapper extends React.Component {
 
 	initBackend() {
 		this.backend = new WalkhubBackend();
-		this.backend.onclose = this.recordClose;
+		this.backend.onclose = this.isExtension() ? this.recordSave : this.recordClose;
 		this.backend.onsave = this.recordSave;
 		this.backend.addStepCallback = this.stepAdded;
 	}
@@ -251,6 +262,9 @@ class RecordWrapper extends React.Component {
 	componentDidMount() {
 		this.initBackend();
 		this.dispatcherToken = flux.dispatcher.register(this.onChange);
+		if (this.isExtension()) {
+			window.addEventListener("message", this.messageHandler);
+		}
 		if (this.state.startingUrl) {
 			setTimeout(() => {
 				WalkthroughStore.performSiteinfo(this.state.startingUrl);
@@ -260,10 +274,28 @@ class RecordWrapper extends React.Component {
 
 	componentWillUnmount() {
 		this.backend.stop();
+		window.removeEventListener("message", this.messageHandler);
 		if (this.dispatcherToken) {
 			flux.dispatcher.unregister(this.dispatcherToken);
 		}
 	}
+
+	messageHandler = (event) => {
+		const data = JSON.parse(event.data);
+		switch(data.type) {
+			case "extensionStartRecord":
+				this.setState({startingUrl: data.url}, () => {
+					this.recordClick();
+				});
+				break;
+			case "extensionGetCurrentUser":
+				event.source.postMessage(JSON.stringify({
+					type: "extensionCurrentUser",
+					currentUser: this.props.currentUser,
+				}), event.origin);
+				break;
+		}
+	};
 
 }
 
