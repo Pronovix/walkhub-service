@@ -47,6 +47,7 @@ If unsure, leave them empty.
 
 * `host`: host to listen on. Defaults to `localhost`.
 * `port`: port to listen on. Defaults to `8080`.
+* `letsencrypthost`: enables letsencrypt on the specified host. Default is empty.
 * `httpaddr`: enables HTTP to HTTPS automatic redirection. The format of the address is `host:port`.
 * `httporigin`: if this is set, the HTTP requests will be forced to a separate domain.
 * `redirectall`: redirects all HTTP requests to HTTPS if the server is running in HTTPS mode. If this is set to false, only a few pages will be enabled in HTTP mode

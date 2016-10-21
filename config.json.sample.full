@@ -17,6 +17,7 @@
 	"pwauth": true,
 	"extrabuild": "",
 	"extensionid": "",
+	"letsencrypthost": "",
 	"google": {
 		"id": "",
 		"secret": ""
