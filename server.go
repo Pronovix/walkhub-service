@@ -290,10 +290,6 @@ func (s *WalkhubServer) Start(addr string, certfile string, keyfile string) erro
 		s.GetF(path, handleIndex)
 	}
 
-	if host := s.cfg.GetString("letsencrypthost"); host != "" {
-		s.EnableLetsEncrypt("", host)
-	}
-
 	ec := ab.NewEntityController(s.GetDBConnection())
 	ec.
 		Add(&User{}, userEntityDelegate{}).
@@ -373,6 +369,9 @@ func (s *WalkhubServer) Start(addr string, certfile string, keyfile string) erro
 		if s.TLSConfig.ServerName == "" {
 			s.TLSConfig.ServerName = s.BaseURL
 		}
+	} else if host := s.cfg.GetString("letsencrypthost"); host != "" {
+		s.setupHTTPS()
+		s.EnableLetsEncrypt("", host)
 	}
 
 	return s.StartHTTPS(addr, certfile, keyfile)
