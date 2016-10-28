@@ -55,7 +55,7 @@ func main() {
 	cfg.SetEnvKeyReplacer(strings.NewReplacer(".", "_"))
 
 	cfg.Set("gzip", false)
-	cfg.Set("CookiePrefix", "WALKHUB")
+	cfg.SetDefault("CookiePrefix", "WALKHUB")
 	cfg.RegisterAlias("db", "PGConnectString")
 	cfg.BindEnv("PGConnectString", "DB")
 	cfg.SetDefault("pwauth", true)
