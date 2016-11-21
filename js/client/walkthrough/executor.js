@@ -170,7 +170,7 @@ class Executor {
 	}
 
 	static ping(source, origin) {
-		var message = JSON.stringify({type: "ping", origin: window.location.origin});
+		const message = JSON.stringify({type: "ping", origin: window.location.origin, protocolVersion: Context.protocolVersion});
 		try {
 			source.postMessage(message, origin);
 		} catch (ex) {

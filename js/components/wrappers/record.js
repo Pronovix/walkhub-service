@@ -220,6 +220,7 @@ class RecordWrapper extends React.Component {
 			if (this.isExtension()) {
 				WalkhubBackend.embedResetState();
 				window.open(WALKHUB_URL+`walkthrough/${uuid}`);
+				this.reset();
 			} else if (this.isEmbedded()) {
 				WalkhubBackend.embedSetSavedState();
 				this.reset();

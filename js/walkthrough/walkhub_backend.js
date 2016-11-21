@@ -26,6 +26,7 @@ import LogStore from "stores/log";
 import OuterClassActions from "actions/outerclass";
 import IframeRunner from "walkthrough/runner/iframe";
 import PopupRunner from "walkthrough/runner/popup";
+import Context from "client/walkthrough/context";
 
 class WalkhubBackend {
 
@@ -160,6 +161,7 @@ class WalkhubBackend {
 	stop() {
 		window.removeEventListener("message", this.onMessageEventHandler);
 
+		this.state = this.defaultState();
 		this.runner && this.runner.stop();
 
 		console.log("Stopping walkhub backend...");
@@ -183,6 +185,8 @@ class WalkhubBackend {
 
 	post(message, source, origin) {
 		if (source.postMessage) {
+			message.key = this.key;
+			message.protocolVersion = Context.protocolVersion;
 			this.logMessage(message, ">> ");
 			source.postMessage(JSON.stringify(message), origin || this.origin);
 		} else {
@@ -214,19 +218,21 @@ class WalkhubBackend {
 		return (getdata.embedorigin && window.parent) ? getdata.embedorigin : null;
 	}
 
-	success(source, ticket, data) {
+	success(source, ticket, client_id, data) {
 		this.post(this.maybeProxy({
 			type: "success",
 			data: data,
 			ticket: ticket,
+			client_id: client_id,
 		}, data), source);
 	}
 
-	error(source, ticket, data) {
+	error(source, ticket, client_id, data) {
 		this.post(this.maybeProxy({
 			type: "error",
 			data: data,
 			ticket: ticket,
+			client_id: client_id,
 		}, data), source);
 	}
 
@@ -234,7 +240,7 @@ class WalkhubBackend {
 		try {
 			const data = JSON.parse(event.data);
 			const handler = data && data.type && !!this["handle" + capitalizeFirstLetter(data.type)];
-			if (handler && (WalkhubBackend.keyBypass[data.type] || (data.key && data.key === this.key))) {
+			if (handler && (WalkhubBackend.keyBypass[data.type] || (data.key && data.key === this.key)) && data.protocolVersion === Context.protocolVersion) {
 				this.logMessage(data, "<< ");
 				this["handle" + capitalizeFirstLetter(data.type)](data, event.source);
 				if (WalkhubBackendActions[data.type]) {
@@ -273,24 +279,34 @@ class WalkhubBackend {
 		this.post({
 			type: "pong",
 			tag: "server",
+			protocolVersion: Context.protocolVersion,
 		}, source, data.origin);
 	}
 
 	handleConnect(data, source) {
-		this.origin = data.origin;
-		this.currentUrl = data.url;
-		this.post(this.maybeProxy({
-			type: "connect_ok",
-			origin: window.location.origin,
-			baseurl: baseUrl(),
-			key: this.key,
-		}, data), source);
-		WalkhubBackendActions.clearErrors();
+		if (data.walkhub === WALKHUB_URL && data.client_id) {
+			this.origin = data.origin;
+			this.currentUrl = data.url;
+			this.post(this.maybeProxy({
+				type: "accept",
+				origin: window.location.origin,
+				baseurl: baseUrl(),
+				client_id: data.client_id,
+			}, data), source);
+			// hides old embed buttons
+			this.post(this.maybeProxy({
+				type: "connect_ok",
+			}, data), source);
+			WalkhubBackendActions.clearErrors();
+		} else {
+			console.log("invalid connection attempt from: "+data.walkhub);
+		}
 	}
 
 	handleGetState(data, source) {
 		this.post(this.maybeProxy({
-			type: "state",
+			type: "updateState",
+			client_id: data.client_id,
 			state: Object.assign({
 				screenshotCrop: this.runner.screenshotCrop(),
 			}, this.state),
@@ -326,7 +342,7 @@ class WalkhubBackend {
 	}
 
 	handleGetSuggestions(data, source) {
-		this.success(source, data.ticket, []); // TODO
+		this.success(source, data.ticket, data.client_id, []); // TODO
 	}
 
 	handleGetWalkthrough(data, source) {
@@ -334,9 +350,9 @@ class WalkhubBackend {
 		// walkthrough must be in the cache already.
 		const walkthroughs = WalkthroughStore.getState().walkthroughs;
 		if (walkthroughs[data.uuid]) {
-			this.success(source, data.ticket, walkthroughs[data.uuid]);
+			this.success(source, data.ticket, data.client_id, walkthroughs[data.uuid]);
 		} else {
-			this.error(source, data.ticket, "walkthrough-not-found");
+			this.error(source, data.ticket, data.client_id, "walkthrough-not-found");
 		}
 	}
 
@@ -345,7 +361,7 @@ class WalkhubBackend {
 		let walkthrough = WalkthroughStore.getState().walkthroughs[data.uuid];
 		walkthrough.steps[data.stepid] = data.step;
 		WalkthroughStore.performPut(walkthrough);
-		this.success(source, data.ticket, data.step);
+		this.success(source, data.ticket, data.client_id, data.step);
 	}
 
 	handleScreenshot(data) {

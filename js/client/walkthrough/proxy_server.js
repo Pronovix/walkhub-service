@@ -14,6 +14,7 @@
 // You should have received a copy of the GNU Affero General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
+import Context from "client/walkthrough/context";
 
 class ProxyServer {
 
@@ -25,15 +26,20 @@ class ProxyServer {
 		this.origin = defaultOrigin;
 		this.serverKey = null;
 		this.paused = false;
+		this.id = Math.random().toString();
 
 		window.addEventListener("message", function (event) {
 			if (that.paused) {
 				return;
 			}
-			var data = JSON.parse(event.data);
+			const data = JSON.parse(event.data);
 			if (data && data.type && data.type === "ping") {
 				that.log(["Ping received, sending pong", event.origin]);
-				event.source.postMessage(JSON.stringify({type: "pong", tag: "proxy"}), event.origin);
+				event.source.postMessage(JSON.stringify({type: "pong", tag: "proxy", protocolVersion: data.protocolVersion}), event.origin);
+				return;
+			}
+			if (that.id !== data.client_id) {
+				console.log("client id mismatch", data);
 				return;
 			}
 			if (that.serverKey) {
@@ -58,7 +64,7 @@ class ProxyServer {
 					that.post(data);
 					that.log(["Proxying data to the server", data]);
 				}
-			} else if (data && data.type && data.type === "connect_ok") {
+			} else if (data && data.type && data.type === "accept") {
 				that.origin = data.origin;
 				that.serverKey = data.key;
 				that.log("Proxy connected");
@@ -68,6 +74,9 @@ class ProxyServer {
 		this.post({
 			type: "connect",
 			origin: window.location.origin,
+			protocolVersion: Context.protocolVersion,
+			walkhub: WALKHUB_URL,
+			client_id: this.id,
 			tag: "proxy"
 		});
 
@@ -92,7 +101,7 @@ class ProxyServer {
 
 	log(data) {
 		if (this.serverKey) {
-			this.post({type: "log", log: data, key: this.serverKey});
+			this.post({type: "log", log: data, key: this.serverKey, protocolVersion: Context.protocolVersion});
 		}
 	}
 

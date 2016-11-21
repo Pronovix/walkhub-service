@@ -20,7 +20,8 @@ import URI from "URIjs";
 export const csrfToken = window.CSRF_TOKEN;
 
 export function baseUrl() {
-	return window.location.protocol + "//" + window.location.hostname + ":" + window.location.port + "/";
+	const port = window.location.port ? ":"+window.location.port : "";
+	return window.location.protocol + "//" + window.location.hostname + port + "/";
 }
 
 export function capitalizeFirstLetter(string) {

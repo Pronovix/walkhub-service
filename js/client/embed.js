@@ -197,9 +197,9 @@ function onMessageEventHandler(event) {
 	const msg = JSON.parse(event.data);
 
 	// TODO this is a workaround.
-	// If we intercept a connect_ok message, it means that we are in a
+	// If we intercept a connect_ok or an accept message, it means that we are in a
 	// playing or recording session.
-	if (msg.type === "connect_ok") {
+	if (msg.type === "connect_ok" || msg.type === "accept") {
 		$(".walkthroughbutton")
 			.filter(function() { return $(this).data("origin") === WALKHUB_URL; })
 			.html("");

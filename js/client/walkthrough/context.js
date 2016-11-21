@@ -18,6 +18,7 @@ let Context = {
 	MAXIMUM_ZINDEX: 2147483647,
 	fullscreen: false,
 	mobileBreakpoint: 479,
+	protocolVersion: 2,
 	iOS:
 		window.navigator.platform === "iPad" ||
 		window.navigator.platform === "iPad Simulator" ||

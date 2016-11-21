@@ -28,10 +28,11 @@ class Client {
 		this.proxyKey = null;
 		this.frame = frame;
 		this.stateChanged = null;
+		this.id = Math.random().toString();
 
 		this.handlers = {
-			connect_ok: function (data) {
-				if (!that.serverKey) {
+			accept: function (data) {
+				if (!that.serverKey && data.client_id === that.id) {
 					if (!that.proxyKey) {
 						that.origin = data.origin;
 					}
@@ -59,7 +60,7 @@ class Client {
 					that.log(`Invalid ticket: ${data.ticket}`);
 				}
 			},
-			state: function (data) {
+			updateState: function (data) {
 				if (that.stateChanged) {
 					that.stateChanged(data.state);
 				}
@@ -69,11 +70,23 @@ class Client {
 			},
 		};
 
+		this.handlers.accept.bypassConnect = true;
+
 		window.addEventListener("message", function (event) {
 			var data = JSON.parse(event.data);
+			if (data.protocolVersion !== Context.protocolVersion) {
+				console.log("protocol version mismatch");
+				return;
+			}
 			var handler = data && data.type && that.handlers[data.type];
 			if (handler) {
-				handler(data, event.source);
+				if (handler.bypassConnect || (!data.client_id || that.id === data.client_id)) {
+					handler(data, event.source);
+				} else {
+					console.log("client id mismatch", data);
+				}
+			} else {
+				console.log("handler not found", data);
 			}
 		});
 	}
@@ -81,6 +94,8 @@ class Client {
 	post(data) {
 		data.key = data.key || this.serverKey;
 		data.tag = data.tag || "client";
+		data.protocolVersion = Context.protocolVersion;
+		data.client_id = this.id;
 		if (this.proxyKey) {
 			data.proxy_key = this.proxyKey;
 		}
@@ -192,7 +207,13 @@ class Client {
 
 	start() {
 		if (this.frame && this.origin) {
-			this.post({type: "connect", origin: window.location.origin, url: window.location.href});
+			this.post({
+				type: "connect",
+				origin: window.location.origin,
+				url: window.location.href,
+				walkhub: WALKHUB_URL,
+				client_id: this.id,
+			});
 		}
 	}
 }
