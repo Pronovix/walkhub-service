@@ -92,6 +92,7 @@ module.exports = {
 			MENU_ITEMS: menuitems,
 			FRONT_PAGE: frontpagecomponent || "components/frontpage",
 			FOOTER: footercomponent,
+			flux: "flux/index",
 		},
 		root: srcPath,
 		extensions: ["", ".js", ".less"],

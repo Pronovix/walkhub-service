@@ -5,7 +5,7 @@
     "watch": "webpack --progress --profile --colors --watch",
     "webpack": "webpack",
     "test": "exit 1",
-    "debug": "webpack --progress --profile --colors --watch --display-chunks --display-reasons --display-error-details --display-modules",
+    "debug": "webpack --progress --profile --colors --display-chunks --display-reasons --display-error-details --display-modules",
     "check": "npm-check -s",
     "update": "npm-check -u"
   },

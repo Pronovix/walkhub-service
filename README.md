@@ -11,7 +11,7 @@ Check the [landing page](http://pronovix.com/walkhub) for more information.
 
 * Go 1.7+
 * PostgreSQL 9.5
-* NPM
+* NPM 3.x
 * Node.js 4.x ([5.x does not work](https://github.com/Pronovix/walkhub-service/issues/12))
 
 ## Configuration
