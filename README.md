@@ -71,6 +71,39 @@ Run the server:
 
 	go run cmd/walkhub/main.go
 
+## Quick start with Docker compose
+
+This is a basic configuration to launch WalkHub locally. DO NOT use this in production. To maximize security for your GMail account, it is highly recommended to enable 2-factor authentication and create an app password for WalkHub.
+
+	web:
+		image: pronovix/walkhub-service
+		restart: always
+		ports:
+			- "8080:8080"
+		links:
+			- db
+		environment:
+			HOST: "0.0.0.0"
+			DB: "host=db dbname=postgres user=docker password=docker sslmode=disable"
+			BASEURL: "http://localhost:8080/"
+			SECRET: "0000000000000000000000000000000000000000000000000000000000000000"
+			COOKIESECRET: "0000000000000000000000000000000000000000000000000000000000000000"
+			PWAUTH: "true"
+			SMTP_ADDR: "smtp.gmail.com:587"
+			SMTP_IDENTITY: ""
+			SMTP_USERNAME: "<your gmail address>"
+			SMTP_PASSWORD: "<your gmail password>"
+			SMTP_FROM: "<your gmail address>"
+			SMTP_HOST: "smtp.gmail.com"
+	db:
+		image: postgres:latest
+		restart: always
+		environment:
+			POSTGRES_PASSWORD: docker
+			POSTGRES_USER: docker
+
+On startup the frontend assets will be built, and the server starts. You can visit the site at http://localhost:8080 after 20-40 seconds, depending on your hardware.
+
 # Contribution
 
 Feel free to open an issue or a pull request if you have questions / bugs / patches.
