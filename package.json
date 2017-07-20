@@ -7,7 +7,8 @@
     "test": "exit 1",
     "debug": "webpack --progress --profile --colors --display-chunks --display-reasons --display-error-details --display-modules",
     "check": "npm-check -s",
-    "update": "npm-check -u"
+    "update": "npm-check -u",
+    "stonejs": "stonejs"
   },
   "license": "AGPL-3.0",
   "dependencies": {
@@ -49,5 +50,8 @@
     "style-loader": "^0.13",
     "url-loader": "^0.5",
     "webpack": "^1.12"
+  },
+  "devDependencies": {
+    "stonejs-tools": "^1.0.8"
   }
 }

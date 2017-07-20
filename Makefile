@@ -38,3 +38,6 @@ docker: preparedocker
 
 rebuildsearch:
 	go build -o wh-rebuildsearch cmd/wh-rebuildsearch/main.go
+
+buildpo:
+	npm run stonejs -- build locales/*.po locales/

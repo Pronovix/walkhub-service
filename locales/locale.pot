@@ -1,0 +1,354 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2017-07-20 17:40+0200\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=CHARSET\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+msgid "On"
+msgstr ""
+
+msgid "Off"
+msgstr ""
+
+msgid "Play walkthrough"
+msgstr ""
+
+msgid "Play"
+msgstr ""
+
+msgid "Edit"
+msgstr ""
+
+msgid "Delete"
+msgstr ""
+
+msgid "Edit"
+msgstr ""
+
+msgid "Delete"
+msgstr ""
+
+msgid "Steps"
+msgstr ""
+
+msgid "Embed codes"
+msgstr ""
+
+msgid "Walkthrough"
+msgstr ""
+
+msgid "Screening gif"
+msgstr ""
+
+msgid "Screening widget"
+msgstr ""
+
+msgid "The walkthrough is recorded on an HTTP website. Playing the walkthrough will temporarly reload the page in HTTP."
+msgstr ""
+
+msgid "This walkthrough is only enabled in popup mode"
+msgstr ""
+
+msgid "Name"
+msgstr ""
+
+msgid "Save"
+msgstr ""
+
+msgid "Cancel"
+msgstr ""
+
+msgid "Email"
+msgstr ""
+
+msgid "Authentication"
+msgstr ""
+
+msgid "Password change"
+msgstr ""
+
+msgid "Old:"
+msgstr ""
+
+msgid "New:"
+msgstr ""
+
+msgid "New again:"
+msgstr ""
+
+msgid "Connect"
+msgstr ""
+
+msgid "Password"
+msgstr ""
+
+msgid "Disable"
+msgstr ""
+
+msgid "Cancel"
+msgstr ""
+
+msgid "Disable 2-factor authentication"
+msgstr ""
+
+msgid "Code"
+msgstr ""
+
+msgid "Verify"
+msgstr ""
+
+msgid "Cancel"
+msgstr ""
+
+msgid "Enable 2-factor authentication"
+msgstr ""
+
+msgid "Open"
+msgstr ""
+
+msgid "Back"
+msgstr ""
+
+msgid "Log in"
+msgstr ""
+
+msgid "Loading ..."
+msgstr ""
+
+msgid "Reset"
+msgstr ""
+
+msgid "Recorder embed code"
+msgstr ""
+
+msgid "The site might not be compatible with this walkhub"
+msgstr ""
+
+msgid "Record walkthrough"
+msgstr ""
+
+msgid "Title"
+msgstr ""
+
+msgid "Starting URL"
+msgstr ""
+
+msgid "Record"
+msgstr ""
+
+msgid "Recorded steps"
+msgstr ""
+
+msgid "Save"
+msgstr ""
+
+msgid "Two-factor authentication"
+msgstr ""
+
+msgid "Edit"
+msgstr ""
+
+msgid "Email"
+msgstr ""
+
+msgid "Authentication"
+msgstr ""
+
+msgid "Search"
+msgstr ""
+
+msgid "Embed these results"
+msgstr ""
+
+msgid "Close"
+msgstr ""
+
+msgid "Edit walkthrough"
+msgstr ""
+
+msgid "Name"
+msgstr ""
+
+msgid "Description"
+msgstr ""
+
+msgid "Cancel"
+msgstr ""
+
+msgid "Save"
+msgstr ""
+
+msgid "Welcome to WalkHub!"
+msgstr ""
+
+msgid "Title"
+msgstr ""
+
+msgid "Description"
+msgstr ""
+
+msgid "Highlight"
+msgstr ""
+
+msgid "Command"
+msgstr ""
+
+msgid "First argument"
+msgstr ""
+
+msgid "Second argument"
+msgstr ""
+
+msgid "Record button"
+msgstr ""
+
+msgid "Help center"
+msgstr ""
+
+msgid "Position"
+msgstr ""
+
+msgid "Advanced settings"
+msgstr ""
+
+msgid "To enable WalkHub, you need to place this code so that it will be rendered on every page"
+msgstr ""
+
+msgid "Invalid url"
+msgstr ""
+
+msgid "Reset form"
+msgstr ""
+
+msgid "Generate my code!"
+msgstr ""
+
+msgid "Generate your personalized embed code to record and play walkthroughs"
+msgstr ""
+
+msgid "website url"
+msgstr ""
+
+msgid "email"
+msgstr ""
+
+msgid "Create your Walkthrough GIF"
+msgstr ""
+
+msgid "Update your Walkthrough GIF"
+msgstr ""
+
+msgid "Close"
+msgstr ""
+
+msgid "Register"
+msgstr ""
+
+msgid "Forgot your password?"
+msgstr ""
+
+msgid "Token"
+msgstr ""
+
+msgid "Continue"
+msgstr ""
+
+msgid "E-mail"
+msgstr ""
+
+msgid "Password"
+msgstr ""
+
+msgid "Sign in"
+msgstr ""
+
+msgid "E-mail"
+msgstr ""
+
+msgid "Request a one-time login link"
+msgstr ""
+
+msgid "E-mail"
+msgstr ""
+
+msgid "Password"
+msgstr ""
+
+msgid "Password confirm"
+msgstr ""
+
+msgid "Sign up for free"
+msgstr ""
+
+msgid "Record walkthroughs and play them on top of websites"
+msgstr ""
+
+msgid "Get help"
+msgstr ""
+
+msgid "Are you sure that you want to delete this walkthrough?"
+msgstr ""
+
+msgid "Untitled walkthrough"
+msgstr ""
+
+msgid "Get help"
+msgstr ""
+
+msgid "Your Walkthrough will be recorded in a new browser tab, just close the tab when you are finished."
+msgstr ""
+
+msgid "Log in"
+msgstr ""
+
+msgid "It looks like you haven't got a Walkthrough yet. Add an embed code first to your site."
+msgstr ""
+
+msgid "Generate my embed code!"
+msgstr ""
+
+msgid "My Walkthroughs"
+msgstr ""
+
+msgid "Add new site"
+msgstr ""
+
+msgid "Walkthroughs on the site"
+msgstr ""
+
+msgid "Verification email has been sent."
+msgstr ""
+
+msgid "Recovery email has been sent."
+msgstr ""
+
+msgid "Finish & Save"
+msgstr ""
+
+msgid "A walkthrough is playing or recording in a different window or tab. Do not close this window."
+msgstr ""
+
+msgid "Abort walkthrough"
+msgstr ""
+
+msgid "Failed to open the popup automatically."
+msgstr ""
+
+msgid "Open walkthrough manually"
+msgstr ""
+
+msgid "Cancel walkthrough"
+msgstr ""
