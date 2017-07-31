@@ -39,5 +39,7 @@ docker: preparedocker
 rebuildsearch:
 	go build -o wh-rebuildsearch cmd/wh-rebuildsearch/main.go
 
-buildpo:
+gettext:
+	python gettext.py
+	msgmerge -U locales/fr.po locales/locale.pot
 	npm run stonejs -- build locales/*.po locales/

@@ -24,14 +24,23 @@ msgstr ""
 
 
 if __name__ == '__main__':
-    rexp = re.compile('(\W|^)t\("(.*)"\)')
+    rexp = re.compile('(.*[^a-zA-Z0-9_]|^)t\("(.*?)"[\)|,]')
 
     pot = open('locales/locale.pot', 'w')
     pot.write(HEADER)
+
+    msgs = {}
     for root, dirs, files in os.walk('js'):
         for filename in files:
             if filename.endswith('.js'):
                 filename = os.path.join(root, filename)
-                for line in open(filename):
+                for line_no, line in enumerate(open(filename)):
+                    source = '%s:%d' % (filename, line_no + 1)
                     for match in rexp.finditer(line):
-                        pot.write('\nmsgid "{}"\nmsgstr ""\n'.format(match.group(2)))
+                        msgs.setdefault(match.group(2), []).append(source)
+
+    for msg in sorted(msgs):
+        pot.write('\n')
+        for source in sorted(msgs[msg]):
+            pot.write('#: %s\n' % source)
+        pot.write('msgid "{}"\nmsgstr ""\n'.format(msg))
