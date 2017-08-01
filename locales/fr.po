@@ -189,6 +189,10 @@ msgstr "Chargement en cours ..."
 msgid "Log in"
 msgstr "S'identifier"
 
+#: js/components/connect.js:58
+msgid "Log in with {label}"
+msgstr ""
+
 #: js/components/wrappers/profile.js:170
 msgid "My Walkthroughs"
 msgstr "My Walkthroughs"
@@ -385,6 +389,11 @@ msgstr "Verifier"
 msgid "Walkthrough"
 msgstr "Visite guidée"
 
+#: js/components/wrappers/record.js:185
+#, fuzzy
+msgid "Walkthrough on {domain}"
+msgstr "Walkthroughs on the site"
+
 #: js/components/wrappers/search.js:115
 msgid "Walkthroughs on the site"
 msgstr "Walkthroughs on the site"
@@ -408,3 +417,7 @@ msgstr "e-mail"
 #: js/components/embedcodebuilder.js:137
 msgid "website url"
 msgstr "UURL du site web"
+
+#: js/components/profileedit.js:127
+msgid "{label} log in"
+msgstr ""

@@ -47,6 +47,7 @@
     "react-router": "^1.0",
     "sass-loader": "^3.1",
     "sprintf-js": "^1.0.3",
+    "stonejs": "^2.3.0",
     "style-loader": "^0.13",
     "url-loader": "^0.5",
     "webpack": "^1.12"

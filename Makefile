@@ -41,5 +41,5 @@ rebuildsearch:
 
 gettext:
 	python gettext.py
-	msgmerge -U locales/fr.po locales/locale.pot
-	npm run stonejs -- build locales/*.po locales/
+	msgmerge -U locales/fr.po locales/messages.pot
+	npm run stonejs -- build --merge locales/*.po js/messages.json

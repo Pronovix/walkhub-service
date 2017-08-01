@@ -26,7 +26,7 @@ msgstr ""
 if __name__ == '__main__':
     rexp = re.compile('(.*[^a-zA-Z0-9_]|^)t\("(.*?)"[\)|,]')
 
-    pot = open('locales/locale.pot', 'w')
+    pot = open('locales/messages.pot', 'w')
     pot.write(HEADER)
 
     msgs = {}

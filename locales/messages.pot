@@ -17,10 +17,6 @@ msgstr ""
 "Content-Type: text/plain; charset=CHARSET\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: js/components/profileedit.js:127
-msgid "%label log in"
-msgstr ""
-
 #: js/walkthrough/runner/popup.js:97
 msgid "A walkthrough is playing or recording in a different window or tab. Do not close this window."
 msgstr ""
@@ -196,7 +192,7 @@ msgid "Log in"
 msgstr ""
 
 #: js/components/connect.js:58
-msgid "Log in with @label"
+msgid "Log in with {label}"
 msgstr ""
 
 #: js/components/wrappers/profile.js:170
@@ -394,7 +390,7 @@ msgid "Walkthrough"
 msgstr ""
 
 #: js/components/wrappers/record.js:185
-msgid "Walkthrough on @domain"
+msgid "Walkthrough on {domain}"
 msgstr ""
 
 #: js/components/wrappers/search.js:115
@@ -415,4 +411,8 @@ msgstr ""
 
 #: js/components/embedcodebuilder.js:137
 msgid "website url"
+msgstr ""
+
+#: js/components/profileedit.js:127
+msgid "{label} log in"
 msgstr ""

@@ -14,28 +14,10 @@
 // You should have received a copy of the GNU Affero General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-import {escapeHTML} from "util";
+import messages from 'messages.json';
 
-function isPlural(num) {
-	return num > 1;
-}
+var Stone = require("stonejs");
+Stone.addCatalogs(messages);
+Stone.setBestMatchingLocale();
 
-function replace(s, p, param_p) {
-	if (p.indexOf("!") !== 0) {
-		param_p = escapeHTML(param_p);
-	}
-
-	return s.replace(p, param_p);
-}
-
-export function t(str, params) {
-	return params ? Object.keys(params).reduce((s, p) => {
-		return replace(s, p, params[p]);
-	}, str) : str;
-};
-
-export function pt(str, str_plural, num, params) {
-	return isPlural(num) ?
-		t(str_plural, params) :
-		t(str, params);
-};
+export var t = Stone.gettext;
