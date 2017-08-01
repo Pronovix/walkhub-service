@@ -205,6 +205,11 @@ msgstr "Nom"
 msgid "New again:"
 msgstr "Renouveller"
 
+#: js/components/connect.js:64
+#, fuzzy
+msgid "New to WalkHub?"
+msgstr "Bienvenue à Walkhub"
+
 #: js/components/profileedit.js:115
 msgid "New:"
 msgstr "Nouveau"

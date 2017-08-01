@@ -208,6 +208,10 @@ msgstr ""
 msgid "New again:"
 msgstr ""
 
+#: js/components/connect.js:64
+msgid "New to WalkHub?"
+msgstr ""
+
 #: js/components/profileedit.js:115
 msgid "New:"
 msgstr ""
