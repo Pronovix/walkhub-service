@@ -25,8 +25,8 @@ class AutoTitle {
 		const [sentence, paragraph, params] = this.locatorToSentence(command, locator);
 		const verb = this.commandToVerb(command);
 
-		params["@verb"] = t(verb);
-		params["@value"] = value;
+		params["verb"] = t(verb);
+		params["value"] = value;
 
 		return [t(sentence, params), t(paragraph, params)];
 	}
@@ -47,10 +47,10 @@ class AutoTitle {
 
 	linkSentenceGenerator(command, prefix, argument) {
 		return [
-			"@verb on @argument",
+			N_("{verb} on {argument}"),
 			"",
 			{
-				"@argument": argument,
+				"argument": argument,
 			},
 		];
 	}
@@ -59,10 +59,10 @@ class AutoTitle {
 		const elem = Translator.instance().translate(prefix+"="+argument);
 		const label = this.getLabel(elem);
 		return [
-			"@verb in @label",
+			N_("{verb} in {label}"),
 			"",
 			{
-				"@label": label,
+				"label": label,
 			},
 		];
 	}

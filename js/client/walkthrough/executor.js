@@ -24,7 +24,7 @@ import Controller from "client/walkthrough/controller";
 import Bubble from "client/walkthrough/bubble";
 import CommandDispatcher from "client/walkthrough/command_dispatcher";
 import Translator from "client/walkthrough/translator";
-import {t} from "t";
+import {t, N_} from "t";
 import URI from "URIjs";
 import {getdata} from "util";
 
@@ -130,13 +130,13 @@ class Executor {
 						},
 						waiting: (tries, remainingtries) => {
 							const message = step.canEdit ?
-								"The @number. bubble is not found. Go to the !editlink form to repair it. Technical info: @locator" :
-								"The @number. bubble is not found. Report it to the owner.";
+								N_("The {number}. bubble is not found. Go to the {editlink} form to repair it. Technical info: {locator}") :
+								N_("The {number}. bubble is not found. Report it to the owner.");
 							if ((tries-remainingtries) > 10) {
 								this.client.showError("locator-fail", t(message, {
-									"@number": this.controller.state.stepIndex + 1,
-									"@locator": step.highlight,
-									"!editlink": `<a href="/walkthrough/${this.controller.state.walkthrough}" target="_top">edit walkthrough</a>`, // TODO replace this with a proper router generated link
+									"number": this.controller.state.stepIndex + 1,
+									"locator": step.highlight,
+									"editlink": `<a href="/walkthrough/${this.controller.state.walkthrough}" target="_top">edit walkthrough</a>`, // TODO replace this with a proper router generated link
 								}));
 							}
 							error = true;

@@ -24,7 +24,7 @@ msgstr ""
 
 
 if __name__ == '__main__':
-    rexp = re.compile('(.*?[^a-zA-Z0-9_]|^)t\("(.*?)"[\)|,]')
+    rexp = re.compile('(.*?[^a-zA-Z0-9_]|^)(t|N_)\("(.*?)"[\)|,]')
 
     pot = open('locales/messages.pot', 'w')
     pot.write(HEADER)
@@ -37,7 +37,7 @@ if __name__ == '__main__':
                 for line_no, line in enumerate(open(filename)):
                     source = '%s:%d' % (filename, line_no + 1)
                     for match in rexp.finditer(line):
-                        msgs.setdefault(match.group(2), []).append(source)
+                        msgs.setdefault(match.group(3), []).append(source)
 
     for msg in sorted(msgs):
         pot.write('\n')

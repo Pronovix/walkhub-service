@@ -47,6 +47,7 @@ class EmbedCodeBuilder extends React.Component {
 		let advancedSettings = null;
 		if (this.props.enableAdvanced && !this.props.showCode) {
 			if (this.props.showAdvanced) {
+				N_("none"); N_("bottom right"); N_("bottom left"); N_("top right"), N_("top left");
 				const positions = ["none", "bottom-right", "bottom-left", "top-right", "top-left"].map((position) => {
 					const label = t(position.replace("-", " "));
 					return (

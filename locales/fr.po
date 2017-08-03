@@ -34,7 +34,7 @@ msgstr "Mettre fin à la visite guidée\t"
 msgid "Add new site"
 msgstr "Add new site"
 
-#: js/components/embedcodebuilder.js:82
+#: js/components/embedcodebuilder.js:83
 msgid "Advanced settings"
 msgstr "Réglages avancés"
 
@@ -58,6 +58,10 @@ msgstr "Annuler"
 #: js/walkthrough/runner/popup.js:112
 msgid "Cancel walkthrough"
 msgstr "Annuler la visite guidée"
+
+#: js/client/walkthrough/recorder.js:110
+msgid "Click"
+msgstr ""
 
 #: js/components/bar.js:54 js/components/errorbar.js:33
 msgid "Close"
@@ -98,6 +102,10 @@ msgstr "Désactiver"
 #: js/components/profileedit.js:177
 msgid "Disable 2-factor authentication"
 msgstr "Désactiver l'identification en 2 étapes"
+
+#: js/components/wrappers/app.js:43
+msgid "Download from GitHub"
+msgstr ""
 
 #: js/components/connect.js:108 js/components/connect.js:142
 #: js/components/connect.js:172
@@ -145,7 +153,7 @@ msgstr "Premier argument"
 msgid "Forgot your password?"
 msgstr "Mot de passe oublié ?"
 
-#: js/components/embedcodebuilder.js:125
+#: js/components/embedcodebuilder.js:126
 msgid "Generate my code!"
 msgstr "Generer mon code !"
 
@@ -153,7 +161,7 @@ msgstr "Generer mon code !"
 msgid "Generate my embed code!"
 msgstr "Generate my embed code!"
 
-#: js/components/embedcodebuilder.js:132
+#: js/components/embedcodebuilder.js:133
 msgid "Generate your personalized embed code to record and play walkthroughs"
 msgstr "Generate your personalized embed code to record and play walkthroughs"
 
@@ -161,7 +169,7 @@ msgstr "Generate your personalized embed code to record and play walkthroughs"
 msgid "Get help"
 msgstr "Demande d'assistance"
 
-#: js/components/embedcodebuilder.js:72
+#: js/components/embedcodebuilder.js:73
 msgid "Help center"
 msgstr "Centre d'assistance"
 
@@ -169,7 +177,7 @@ msgstr "Centre d'assistance"
 msgid "Highlight"
 msgstr "Surligner"
 
-#: js/components/embedcodebuilder.js:117
+#: js/components/embedcodebuilder.js:118
 msgid "Invalid url"
 msgstr "Invalid url"
 
@@ -191,6 +199,10 @@ msgstr "S'identifier"
 
 #: js/components/connect.js:58
 msgid "Log in with {label}"
+msgstr ""
+
+#: js/components/wrappers/app.js:47
+msgid "My Profile"
 msgstr ""
 
 #: js/components/wrappers/profile.js:170
@@ -259,15 +271,15 @@ msgstr "Lancer"
 msgid "Play walkthrough"
 msgstr "Lancer la visite guidée"
 
-#: js/components/embedcodebuilder.js:76
+#: js/components/embedcodebuilder.js:77
 msgid "Position"
 msgstr "Position"
 
-#: js/components/record.js:79
+#: js/components/record.js:79 js/components/wrappers/app.js:48
 msgid "Record"
 msgstr "Enregistrer"
 
-#: js/components/embedcodebuilder.js:66
+#: js/components/embedcodebuilder.js:67
 msgid "Record button"
 msgstr "Bouton Enregistrer"
 
@@ -303,7 +315,7 @@ msgstr "Request a one-time login link"
 msgid "Reset"
 msgstr "Ré-initialisation"
 
-#: js/components/embedcodebuilder.js:122
+#: js/components/embedcodebuilder.js:123
 msgid "Reset form"
 msgstr "Ré-initialiser le formulaire"
 
@@ -320,13 +332,17 @@ msgstr "Screening gif"
 msgid "Screening widget"
 msgstr "Screening widget"
 
-#: js/components/search.js:43
+#: js/components/search.js:43 js/components/wrappers/app.js:46
 msgid "Search"
 msgstr "Recherche"
 
 #: js/components/stepedit.js:51
 msgid "Second argument"
 msgstr "Second argument"
+
+#: js/client/walkthrough/recorder.js:152
+msgid "Select"
+msgstr ""
 
 #: js/components/connect.js:128
 msgid "Sign in"
@@ -358,6 +374,16 @@ msgid ""
 "temporarly reload the page in HTTP."
 msgstr "La visite guidée s'effectue sur un site non sécurisé (HTTP)"
 
+#: js/client/walkthrough/executor.js:133
+msgid ""
+"The {number}. bubble is not found. Go to the {editlink} form to repair it. "
+"Technical info: {locator}"
+msgstr ""
+
+#: js/client/walkthrough/executor.js:134
+msgid "The {number}. bubble is not found. Report it to the owner."
+msgstr ""
+
 #: js/components/walkthrough.js:147
 msgid "This walkthrough is only enabled in popup mode"
 msgstr "Cette visite guidée s'effectue obligatoirement en mode pop-up"
@@ -366,7 +392,7 @@ msgstr "Cette visite guidée s'effectue obligatoirement en mode pop-up"
 msgid "Title"
 msgstr "Titre"
 
-#: js/components/embedcodebuilder.js:103
+#: js/components/embedcodebuilder.js:104
 msgid ""
 "To enable WalkHub, you need to place this code so that it will be rendered "
 "on every page"
@@ -381,6 +407,10 @@ msgstr "Token"
 #: js/components/profile.js:52
 msgid "Two-factor authentication"
 msgstr "Identification en 2 étapes"
+
+#: js/client/walkthrough/recorder.js:163 js/client/walkthrough/recorder.js:172
+msgid "Type"
+msgstr ""
 
 #: js/components/wrappers/helpcenterlist.js:103
 msgid "Untitled walkthrough"
@@ -423,14 +453,43 @@ msgstr ""
 "Your Walkthrough will be recorded in a new browser tab, just close the tab "
 "when you are finished."
 
-#: js/components/embedcodebuilder.js:138
+#: js/components/embedcodebuilder.js:50
+msgid "bottom left"
+msgstr ""
+
+#: js/components/embedcodebuilder.js:50
+msgid "bottom right"
+msgstr ""
+
+#: js/components/embedcodebuilder.js:139
 msgid "email"
 msgstr "e-mail"
 
-#: js/components/embedcodebuilder.js:137
+#: js/components/embedcodebuilder.js:50
+msgid "none"
+msgstr ""
+
+#: js/components/embedcodebuilder.js:50
+msgid "top left"
+msgstr ""
+
+#: js/components/embedcodebuilder.js:50
+msgid "top right"
+msgstr ""
+
+#: js/components/embedcodebuilder.js:138
 msgid "website url"
 msgstr "UURL du site web"
 
 #: js/components/profileedit.js:127
 msgid "{label} log in"
 msgstr ""
+
+#: js/client/walkthrough/autotitle.js:62
+msgid "{verb} in {label}"
+msgstr ""
+
+#: js/client/walkthrough/autotitle.js:50
+#, fuzzy
+msgid "{verb} on {argument}"
+msgstr "Second argument"

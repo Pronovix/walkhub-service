@@ -107,7 +107,7 @@ class Recorder {
 
 		if (!Util.isInputElement(clickedElement)) {
 			const locator = LocatorGenerator.instance().generate(clickedElement);
-			const [title, description] = AutoTitle.instance().titleAndDescription("click", locator);
+			const [title, description] = AutoTitle.instance().titleAndDescription("click", locator); N_("Click");
 			this.client.saveStep("click", locator, null, title, description);
 			this.animateRecordedElement(clickedElement);
 		}
@@ -149,7 +149,7 @@ class Recorder {
 		let title, description;
 		switch (tagName) {
 			case "select":
-				[title, description] = AutoTitle.instance().titleAndDescription("select", locator, value);
+				[title, description] = AutoTitle.instance().titleAndDescription("select", locator, value); N_("Select");
 				this.client.saveStep("select", locator, "value=" + value, title, description);
 				this.animateRecordedElement(element);
 				break;
@@ -160,7 +160,7 @@ class Recorder {
 					this.client.enablePasswordParameter();
 				}
 				const value = ispw ? "[password]" : value;
-				[title, description] = AutoTitle.instance().titleAndDescription("type", locator, value);
+				[title, description] = AutoTitle.instance().titleAndDescription("type", locator, value); N_("Type");
 				this.client.saveStep("type", locator, value);
 				this.animateRecordedElement(element);
 				break;
@@ -169,7 +169,7 @@ class Recorder {
 					var valueDom = $(element.html());
 					valueDom.find(".walkthrough-eventabsorber-hover").removeClass("walkthrough-eventabsorber-hover");
 					var finalValue = $("<div />").append(valueDom).html();
-					[title, description] = AutoTitle.instance().titleAndDescription("type", locator, finalValue);
+					[title, description] = AutoTitle.instance().titleAndDescription("type", locator, finalValue); N_("Type");
 					this.client.saveStep("type", locator, finalValue, title, description);
 					this.animateRecordedElement(element);
 				} else {
