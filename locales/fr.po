@@ -104,8 +104,8 @@ msgstr "Désactiver l'identification en 2 étapes"
 msgid "E-mail"
 msgstr ""
 
-#: js/components/profile.js:57 js/components/walkthrough.js:66
-#: js/components/walkthrough.js:69
+#: js/client/walkthrough/bubble.js:134 js/components/profile.js:57
+#: js/components/walkthrough.js:66 js/components/walkthrough.js:69
 msgid "Edit"
 msgstr "Modifier"
 
@@ -213,6 +213,10 @@ msgstr "Bienvenue à Walkhub"
 #: js/components/profileedit.js:115
 msgid "New:"
 msgstr "Nouveau"
+
+#: js/client/walkthrough/bubble.js:115
+msgid "Next"
+msgstr "Suivant"
 
 #: js/components/onoff.js:25
 msgid "Off"
@@ -339,6 +343,10 @@ msgstr "URL de démarrage"
 #: js/components/walkthrough.js:116
 msgid "Steps"
 msgstr "Etapes"
+
+#: js/client/walkthrough/editdialog.js:221
+msgid "Suggestions: "
+msgstr ""
 
 #: js/components/record.js:69
 msgid "The site might not be compatible with this walkhub"

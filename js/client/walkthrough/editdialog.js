@@ -16,6 +16,7 @@
 
 import $ from "jquery";
 import Bubble from "client/walkthrough/bubble";
+import {t} from "t";
 
 class editDialog {
 
@@ -217,7 +218,7 @@ class editDialog {
 		this.controller.client.getSuggestions(this.step.cmd, this.step.arg0, this.step.arg1, function (data) {
 			suggestionwrapper
 				.show()
-				.append($("<p/>").text("Suggestions: "));
+				.append($("<p/>").text(t("Suggestions: ")));
 			for (var i in data) {
 				if (data.hasOwnProperty(i)) {
 					$("<p />")
