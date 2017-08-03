@@ -23,7 +23,7 @@ Stone.setBestMatchingLocale();
 export var t = Stone.gettext;
 
 // Used only to mark strings for translation
-function N_(str)
+export function N_(str)
 {
   return str;
 }

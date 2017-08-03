@@ -19,6 +19,7 @@ import EventAbsorber from "client/walkthrough/eventabsorber";
 import Util from "client/walkthrough/util";
 import LocatorGenerator from "client/walkthrough/locator_generator";
 import AutoTitle from "client/walkthrough/autotitle";
+import {N_} from "t";
 
 class Recorder {
 

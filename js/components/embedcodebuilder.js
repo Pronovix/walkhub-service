@@ -17,7 +17,7 @@
 import React from "react";
 import EmbedCode from "components/embedcode";
 import {noop} from "form";
-import {t} from "t";
+import {t, N_} from "t";
 import URI from "URIjs";
 
 class EmbedCodeBuilder extends React.Component {

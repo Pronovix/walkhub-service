@@ -21,7 +21,7 @@ import UserActions from "actions/user";
 import connectToStores from "alt/utils/connectToStores";
 import flux from "control";
 import {noop} from "form";
-import {t} from "t";
+import {t, N_} from "t";
 import {capitalizeFirstLetter} from "util";
 import RouterActions from "actions/router";
 import OuterClassActions from "actions/outerclass";

@@ -16,7 +16,7 @@
 
 import $ from "jquery";
 import {capitalizeFirstLetter, split} from "util";
-import {t} from "t";
+import {t, N_} from "t";
 import Translator from "client/walkthrough/translator";
 
 class AutoTitle {
