@@ -19,6 +19,7 @@ var embedurl = process.env.EMBEDURL || serverConfig.embedurl;
 var httporigin = process.env.HTTPORIGIN || serverConfig.httporigin;
 var gaAccount = process.env.GOOGLEANALYTICSACCOUNT || serverConfig.googleanalyticsaccount;
 var extraBuild = process.env.EXTRABUILD || serverConfig.extrabuild;
+var disableRegistration = process.env.DISABLEREGISTRATION || serverConfig.disableregistration;
 
 var isProd = process.env.NODE_ENV === "production";
 
@@ -135,6 +136,7 @@ module.exports = {
 			WALKHUB_CONTENT_PAGES: !!contentpages,
 			GA_ACCOUNT: JSON.stringify(gaAccount),
 			WALKHUB_CUSTOM_FOOTER: !!footercomponent,
+			DISABLE_REGISTRATION: !!disableRegistration,
 		}),
 		new webpack.NoErrorsPlugin(),
 		new webpack.optimize.OccurenceOrderPlugin(),

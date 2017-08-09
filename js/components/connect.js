@@ -60,7 +60,7 @@ class Connect extends React.Component {
 			);
 		});
 
-		const signupButton = (this.props.password && !this.props.signup) ? (
+		const signupButton = (!DISABLE_REGISTRATION && this.props.password && !this.props.signup) ? (
 			<span>New to WalkHub? <a href="#" className="register-link" onClick={this.props.signupClick}>{t("Register")}</a></span>
 		) : null;
 

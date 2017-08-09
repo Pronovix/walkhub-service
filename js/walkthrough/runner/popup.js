@@ -28,7 +28,7 @@ class PopupRunner extends Runner {
 
 	openPopup = (evt) => {
 		noop(evt);
-		this.popup = window.open("/assets/start.html");
+		this.popup = window.open("/assets/start.html", "walkhub-highlight-"+Math.random().toString());
 		this.refreshWidget();
 	};
 

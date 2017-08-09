@@ -15,6 +15,7 @@
 	"footercomponent": "",
 	"menuitems": "",
 	"pwauth": true,
+	"disableregistration": false,
 	"extrabuild": "",
 	"extensionid": "",
 	"letsencrypthost": "",
