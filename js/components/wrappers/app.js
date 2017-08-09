@@ -39,7 +39,7 @@ if (WALKHUB_CUSTOM_FOOTER) {
 }
 
 if (WALKHUB_ANNOUNCEMENT) {
-  AnnouncementComponent = require("ANNOUNCEMENT");
+    AnnouncementComponent = require("ANNOUNCEMENT");
 }
 
 let menuItems = {
