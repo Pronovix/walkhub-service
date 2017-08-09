@@ -30,6 +30,7 @@ class App extends React.Component {
 		className: "",
 		containerClassName: "",
 		footer: null,
+    announcement: null,
 		navbarIsFixedTop: false,
 	};
 
@@ -70,6 +71,7 @@ class App extends React.Component {
 		return (
 			<div className={this.props.className}>
 				{navbar}
+				{this.props.announcement}
 				<div className={"container " + this.props.containerClassName + (this.props.navbarIsFixedTop ? " navbar-is-fixed-top" : "")}>
 					<ErrorBar
 						messages={this.props.messages}

@@ -13,6 +13,7 @@ var contentpages = process.env.CONTENTPAGES || serverConfig.contentpages;
 var menuitems = process.env.MENUITEMS || serverConfig.menuitems;
 var frontpagecomponent = process.env.FRONTPAGECOMPONENT || serverConfig.frontpagecomponent;
 var footercomponent = process.env.FOOTERCOMPONENT || serverConfig.footercomponent;
+var announcementcomponent = process.env.ANNOUNCEMENTCOMPONENT || serverConfig.announcementcomponent;
 var baseurl = process.env.BASEURL || serverConfig.baseurl;
 var extensionid = process.env.EXTENSIONID || serverConfig.extensionid;
 var embedurl = process.env.EMBEDURL || serverConfig.embedurl;
@@ -93,6 +94,7 @@ module.exports = {
 			MENU_ITEMS: menuitems,
 			FRONT_PAGE: frontpagecomponent || "components/frontpage",
 			FOOTER: footercomponent,
+			ANNOUNCEMENT: announcementcomponent,
 			flux: "flux/index",
 		},
 		root: srcPath,
@@ -136,6 +138,7 @@ module.exports = {
 			WALKHUB_CONTENT_PAGES: !!contentpages,
 			GA_ACCOUNT: JSON.stringify(gaAccount),
 			WALKHUB_CUSTOM_FOOTER: !!footercomponent,
+			WALKHUB_ANNOUNCEMENT: !!announcementcomponent,
 			DISABLE_REGISTRATION: !!disableRegistration,
 		}),
 		new webpack.NoErrorsPlugin(),

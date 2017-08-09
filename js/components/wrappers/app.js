@@ -32,9 +32,14 @@ import NetworkActivityWrapper from "components/wrappers/networkactivity";
 import WalkthroughActions from "actions/walkthrough";
 
 let FooterComponent = null;
+let AnnouncementComponent = null;
 
 if (WALKHUB_CUSTOM_FOOTER) {
 	FooterComponent = require("FOOTER");
+}
+
+if (WALKHUB_ANNOUNCEMENT) {
+  AnnouncementComponent = require("ANNOUNCEMENT");
 }
 
 let menuItems = {
@@ -174,6 +179,7 @@ class AppWrapper extends React.Component {
 		});
 
 		const footer = FooterComponent ? <FooterComponent /> : null;
+		const announcement = AnnouncementComponent ? <AnnouncementComponent /> : null;
 
 		return (
 			<App
@@ -186,6 +192,7 @@ class AppWrapper extends React.Component {
 				className={className}
 				containerClassName={this.getContainerClassName()}
 				footer={footer}
+				announcement={announcement}
 				navbarIsFixedTop={true}
 				>
 				<NetworkActivityWrapper />
