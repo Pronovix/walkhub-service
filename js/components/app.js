@@ -30,7 +30,7 @@ class App extends React.Component {
 		className: "",
 		containerClassName: "",
 		footer: null,
-        announcement: null,
+		announcement: null,
 		navbarIsFixedTop: false,
 	};
 
