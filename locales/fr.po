@@ -59,7 +59,7 @@ msgstr "Annuler"
 msgid "Cancel walkthrough"
 msgstr "Annuler la visite guidée"
 
-#: js/client/walkthrough/recorder.js:110
+#: js/client/walkthrough/recorder.js:111
 msgid "Click"
 msgstr ""
 
@@ -103,7 +103,7 @@ msgstr "Désactiver"
 msgid "Disable 2-factor authentication"
 msgstr "Désactiver l'identification en 2 étapes"
 
-#: js/components/wrappers/app.js:43
+#: js/components/wrappers/app.js:48
 msgid "Download from GitHub"
 msgstr ""
 
@@ -201,7 +201,7 @@ msgstr "S'identifier"
 msgid "Log in with {label}"
 msgstr ""
 
-#: js/components/wrappers/app.js:47
+#: js/components/wrappers/app.js:52
 msgid "My Profile"
 msgstr ""
 
@@ -275,7 +275,7 @@ msgstr "Lancer la visite guidée"
 msgid "Position"
 msgstr "Position"
 
-#: js/components/record.js:79 js/components/wrappers/app.js:48
+#: js/components/record.js:79 js/components/wrappers/app.js:53
 msgid "Record"
 msgstr "Enregistrer"
 
@@ -332,7 +332,7 @@ msgstr "Screening gif"
 msgid "Screening widget"
 msgstr "Screening widget"
 
-#: js/components/search.js:43 js/components/wrappers/app.js:46
+#: js/components/search.js:43 js/components/wrappers/app.js:51
 msgid "Search"
 msgstr "Recherche"
 
@@ -340,7 +340,7 @@ msgstr "Recherche"
 msgid "Second argument"
 msgstr "Second argument"
 
-#: js/client/walkthrough/recorder.js:152
+#: js/client/walkthrough/recorder.js:153
 msgid "Select"
 msgstr ""
 
@@ -408,7 +408,7 @@ msgstr "Token"
 msgid "Two-factor authentication"
 msgstr "Identification en 2 étapes"
 
-#: js/client/walkthrough/recorder.js:163 js/client/walkthrough/recorder.js:172
+#: js/client/walkthrough/recorder.js:164 js/client/walkthrough/recorder.js:173
 msgid "Type"
 msgstr ""
 

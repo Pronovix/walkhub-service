@@ -18,7 +18,7 @@ import messages from 'messages.json';
 
 var Stone = require("stonejs");
 Stone.addCatalogs(messages);
-Stone.setBestMatchingLocale();
+Stone.setBestMatchingLocale(LANGUAGES);
 
 export var t = Stone.gettext;
 

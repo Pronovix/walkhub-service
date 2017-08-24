@@ -36,5 +36,6 @@
 		"listid": "",
 		"datacenter": ""
 	},
-	"googleanalyticsaccount": ""
+	"googleanalyticsaccount": "",
+	"languages": ["en"]
 }
