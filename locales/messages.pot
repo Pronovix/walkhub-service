@@ -1,0 +1,490 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2017-07-20 17:40+0200\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=CHARSET\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: js/walkthrough/runner/popup.js:97
+msgid "A walkthrough is playing or recording in a different window or tab. Do not close this window."
+msgstr ""
+
+#: js/walkthrough/runner/popup.js:100
+msgid "Abort walkthrough"
+msgstr ""
+
+#: js/components/wrappers/profile.js:173
+msgid "Add new site"
+msgstr ""
+
+#: js/components/embedcodebuilder.js:83
+msgid "Advanced settings"
+msgstr ""
+
+#: js/components/wrappers/walkthrough.js:130
+msgid "Are you sure that you want to delete this walkthrough?"
+msgstr ""
+
+#: js/components/profile.js:75
+#: js/components/profileedit.js:98
+msgid "Authentication"
+msgstr ""
+
+#: js/components/recordsaved.js:41
+msgid "Back"
+msgstr ""
+
+#: js/components/profileedit.js:167
+#: js/components/profileedit.js:206
+#: js/components/profileedit.js:84
+#: js/components/walkthroughedit.js:78
+msgid "Cancel"
+msgstr ""
+
+#: js/walkthrough/runner/popup.js:112
+msgid "Cancel walkthrough"
+msgstr ""
+
+#: js/client/walkthrough/recorder.js:111
+msgid "Click"
+msgstr ""
+
+#: js/components/bar.js:54
+#: js/components/errorbar.js:33
+msgid "Close"
+msgstr ""
+
+#: js/components/profileedit.js:188
+msgid "Code"
+msgstr ""
+
+#: js/components/stepedit.js:49
+msgid "Command"
+msgstr ""
+
+#: js/components/profileedit.js:130
+msgid "Connect"
+msgstr ""
+
+#: js/components/connect.js:97
+msgid "Continue"
+msgstr ""
+
+#: js/components/screeningwidget.js:51
+msgid "Create your Walkthrough GIF"
+msgstr ""
+
+#: js/components/walkthrough.js:67
+#: js/components/walkthrough.js:70
+msgid "Delete"
+msgstr ""
+
+#: js/components/stepedit.js:47
+#: js/components/walkthroughedit.js:70
+msgid "Description"
+msgstr ""
+
+#: js/components/profileedit.js:161
+msgid "Disable"
+msgstr ""
+
+#: js/components/profileedit.js:177
+msgid "Disable 2-factor authentication"
+msgstr ""
+
+#: js/components/wrappers/app.js:48
+msgid "Download from GitHub"
+msgstr ""
+
+#: js/components/connect.js:108
+#: js/components/connect.js:142
+#: js/components/connect.js:172
+msgid "E-mail"
+msgstr ""
+
+#: js/client/walkthrough/bubble.js:134
+#: js/components/profile.js:57
+#: js/components/walkthrough.js:66
+#: js/components/walkthrough.js:69
+msgid "Edit"
+msgstr ""
+
+#: js/components/walkthroughedit.js:67
+msgid "Edit walkthrough"
+msgstr ""
+
+#: js/components/profile.js:70
+#: js/components/profileedit.js:94
+msgid "Email"
+msgstr ""
+
+#: js/components/walkthrough.js:129
+msgid "Embed codes"
+msgstr ""
+
+#: js/components/search.js:68
+msgid "Embed these results"
+msgstr ""
+
+#: js/components/profileedit.js:215
+msgid "Enable 2-factor authentication"
+msgstr ""
+
+#: js/walkthrough/runner/popup.js:106
+msgid "Failed to open the popup automatically."
+msgstr ""
+
+#: js/walkthrough/runner/iframe.js:32
+msgid "Finish & Save"
+msgstr ""
+
+#: js/components/stepedit.js:50
+msgid "First argument"
+msgstr ""
+
+#: js/components/connect.js:75
+msgid "Forgot your password?"
+msgstr ""
+
+#: js/components/embedcodebuilder.js:126
+msgid "Generate my code!"
+msgstr ""
+
+#: js/components/wrappers/profile.js:161
+msgid "Generate my embed code!"
+msgstr ""
+
+#: js/components/embedcodebuilder.js:133
+msgid "Generate your personalized embed code to record and play walkthroughs"
+msgstr ""
+
+#: js/components/helpbutton.js:33
+#: js/components/wrappers/helpcenterlist.js:127
+msgid "Get help"
+msgstr ""
+
+#: js/components/embedcodebuilder.js:73
+msgid "Help center"
+msgstr ""
+
+#: js/components/stepedit.js:48
+msgid "Highlight"
+msgstr ""
+
+#: js/components/embedcodebuilder.js:118
+msgid "Invalid url"
+msgstr ""
+
+#: js/components/wrappers/profile.js:160
+msgid "It looks like you haven't got a Walkthrough yet. Add an embed code first to your site."
+msgstr ""
+
+#: js/components/helpcenterlist.js:48
+msgid "Loading ..."
+msgstr ""
+
+#: js/components/notloggedin.js:25
+#: js/components/wrappers/loggedin.js:45
+msgid "Log in"
+msgstr ""
+
+#: js/components/connect.js:58
+msgid "Log in with {label}"
+msgstr ""
+
+#: js/components/wrappers/app.js:52
+msgid "My Profile"
+msgstr ""
+
+#: js/components/wrappers/profile.js:170
+msgid "My Walkthroughs"
+msgstr ""
+
+#: js/components/profileedit.js:63
+#: js/components/walkthroughedit.js:69
+msgid "Name"
+msgstr ""
+
+#: js/components/profileedit.js:116
+msgid "New again:"
+msgstr ""
+
+#: js/components/connect.js:64
+msgid "New to WalkHub?"
+msgstr ""
+
+#: js/components/profileedit.js:115
+msgid "New:"
+msgstr ""
+
+#: js/client/walkthrough/bubble.js:115
+msgid "Next"
+msgstr ""
+
+#: js/components/onoff.js:25
+msgid "Off"
+msgstr ""
+
+#: js/components/profileedit.js:109
+msgid "Old:"
+msgstr ""
+
+#: js/components/onoff.js:24
+msgid "On"
+msgstr ""
+
+#: js/components/recordsaved.js:40
+msgid "Open"
+msgstr ""
+
+#: js/walkthrough/runner/popup.js:109
+msgid "Open walkthrough manually"
+msgstr ""
+
+#: js/components/connect.js:118
+#: js/components/connect.js:180
+#: js/components/profileedit.js:149
+msgid "Password"
+msgstr ""
+
+#: js/components/profileedit.js:99
+msgid "Password change"
+msgstr ""
+
+#: js/components/connect.js:188
+msgid "Password confirm"
+msgstr ""
+
+#: js/components/walkthrough.js:51
+msgid "Play"
+msgstr ""
+
+#: js/components/walkthrough.js:50
+msgid "Play walkthrough"
+msgstr ""
+
+#: js/components/embedcodebuilder.js:77
+msgid "Position"
+msgstr ""
+
+#: js/components/record.js:79
+#: js/components/wrappers/app.js:53
+msgid "Record"
+msgstr ""
+
+#: js/components/embedcodebuilder.js:67
+msgid "Record button"
+msgstr ""
+
+#: js/components/record.js:74
+msgid "Record walkthrough"
+msgstr ""
+
+#: js/components/connect.js:218
+msgid "Record walkthroughs and play them on top of websites"
+msgstr ""
+
+#: js/components/record.js:81
+msgid "Recorded steps"
+msgstr ""
+
+#: js/components/record.js:58
+msgid "Recorder embed code"
+msgstr ""
+
+#: js/components/wrappers/connect.js:189
+msgid "Recovery email has been sent."
+msgstr ""
+
+#: js/components/connect.js:64
+msgid "Register"
+msgstr ""
+
+#: js/components/connect.js:153
+msgid "Request a one-time login link"
+msgstr ""
+
+#: js/components/record.js:52
+msgid "Reset"
+msgstr ""
+
+#: js/components/embedcodebuilder.js:123
+msgid "Reset form"
+msgstr ""
+
+#: js/components/profileedit.js:77
+#: js/components/record.js:87
+#: js/components/walkthroughedit.js:79
+msgid "Save"
+msgstr ""
+
+#: js/components/walkthrough.js:134
+msgid "Screening gif"
+msgstr ""
+
+#: js/components/walkthrough.js:136
+msgid "Screening widget"
+msgstr ""
+
+#: js/components/search.js:43
+#: js/components/wrappers/app.js:51
+msgid "Search"
+msgstr ""
+
+#: js/components/stepedit.js:51
+msgid "Second argument"
+msgstr ""
+
+#: js/client/walkthrough/recorder.js:153
+msgid "Select"
+msgstr ""
+
+#: js/components/connect.js:128
+msgid "Sign in"
+msgstr ""
+
+#: js/components/connect.js:199
+msgid "Sign up for free"
+msgstr ""
+
+#: js/components/record.js:77
+msgid "Starting URL"
+msgstr ""
+
+#: js/components/walkthrough.js:116
+msgid "Steps"
+msgstr ""
+
+#: js/client/walkthrough/editdialog.js:221
+msgid "Suggestions: "
+msgstr ""
+
+#: js/components/record.js:69
+msgid "The site might not be compatible with this walkhub"
+msgstr ""
+
+#: js/components/walkthrough.js:143
+msgid "The walkthrough is recorded on an HTTP website. Playing the walkthrough will temporarly reload the page in HTTP."
+msgstr ""
+
+#: js/client/walkthrough/executor.js:133
+msgid "The {number}. bubble is not found. Go to the {editlink} form to repair it. Technical info: {locator}"
+msgstr ""
+
+#: js/client/walkthrough/executor.js:134
+msgid "The {number}. bubble is not found. Report it to the owner."
+msgstr ""
+
+#: js/components/walkthrough.js:147
+msgid "This walkthrough is only enabled in popup mode"
+msgstr ""
+
+#: js/components/record.js:76
+#: js/components/stepedit.js:46
+msgid "Title"
+msgstr ""
+
+#: js/components/embedcodebuilder.js:104
+msgid "To enable WalkHub, you need to place this code so that it will be rendered on every page"
+msgstr ""
+
+#: js/components/connect.js:85
+msgid "Token"
+msgstr ""
+
+#: js/components/profile.js:52
+msgid "Two-factor authentication"
+msgstr ""
+
+#: js/client/walkthrough/recorder.js:164
+#: js/client/walkthrough/recorder.js:173
+msgid "Type"
+msgstr ""
+
+#: js/components/wrappers/helpcenterlist.js:103
+msgid "Untitled walkthrough"
+msgstr ""
+
+#: js/components/screeningwidget.js:63
+msgid "Update your Walkthrough GIF"
+msgstr ""
+
+#: js/components/wrappers/connect.js:169
+msgid "Verification email has been sent."
+msgstr ""
+
+#: js/components/profileedit.js:199
+msgid "Verify"
+msgstr ""
+
+#: js/components/walkthrough.js:132
+msgid "Walkthrough"
+msgstr ""
+
+#: js/components/wrappers/record.js:185
+msgid "Walkthrough on {domain}"
+msgstr ""
+
+#: js/components/wrappers/search.js:115
+msgid "Walkthroughs on the site"
+msgstr ""
+
+#: js/components/frontpage.js:26
+msgid "Welcome to WalkHub!"
+msgstr ""
+
+#: js/components/wrappers/record.js:190
+msgid "Your Walkthrough will be recorded in a new browser tab, just close the tab when you are finished."
+msgstr ""
+
+#: js/components/embedcodebuilder.js:50
+msgid "bottom left"
+msgstr ""
+
+#: js/components/embedcodebuilder.js:50
+msgid "bottom right"
+msgstr ""
+
+#: js/components/embedcodebuilder.js:139
+msgid "email"
+msgstr ""
+
+#: js/components/embedcodebuilder.js:50
+msgid "none"
+msgstr ""
+
+#: js/components/embedcodebuilder.js:50
+msgid "top left"
+msgstr ""
+
+#: js/components/embedcodebuilder.js:50
+msgid "top right"
+msgstr ""
+
+#: js/components/embedcodebuilder.js:138
+msgid "website url"
+msgstr ""
+
+#: js/components/profileedit.js:127
+msgid "{label} log in"
+msgstr ""
+
+#: js/client/walkthrough/autotitle.js:62
+msgid "{verb} in {label}"
+msgstr ""
+
+#: js/client/walkthrough/autotitle.js:50
+msgid "{verb} on {argument}"
+msgstr ""

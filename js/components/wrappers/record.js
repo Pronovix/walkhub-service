@@ -182,8 +182,8 @@ class RecordWrapper extends React.Component {
 		noop(evt);
 		const title = this.state.title ?
 			this.state.title :
-			t("Walkthrough on @domain", {
-				"@domain": URI(this.state.startingUrl).hostname(),
+			t("Walkthrough on {domain}", {
+				"domain": URI(this.state.startingUrl).hostname(),
 			});
 		const runner = this.getRunner();
 		if (runner.getName() === "popup") {

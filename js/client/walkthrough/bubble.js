@@ -20,6 +20,7 @@ import {MAXIMUM_ZINDEX} from "util";
 import editDialog from "client/walkthrough/editdialog";
 import EventAbsorber from "client/walkthrough/eventabsorber";
 import LocatorGenerator from "client/walkthrough/locator_generator";
+import {t} from "t";
 
 class Bubble {
 
@@ -111,7 +112,7 @@ class Bubble {
 
 		this.nextButton = $("<a />")
 			.attr("href", "#")
-			.text("Next")
+			.text(t("Next"))
 			.addClass("wtbubble-button")
 			.addClass("wtbubble-next")
 			.addClass("wtbubble-button")
@@ -130,7 +131,7 @@ class Bubble {
 				.attr("href", "#")
 				.addClass("wtbubble-edit")
 				.addClass("wtbubble-button")
-				.text("Edit")
+				.text(t("Edit"))
 				.click(function (event) {
 					event.preventDefault();
 					that.editdialog = new editDialog(that.step, that.contentWrapper);

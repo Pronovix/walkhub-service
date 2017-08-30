@@ -124,7 +124,7 @@ class ProfileEdit extends React.Component {
 			return (
 				<div key={provider.id} className="row">
 					<div className="col-xs-6">
-						{t("%label log in", {"%label": provider.label})}
+						{t("{label} log in", {"label": provider.label})}
 					</div>
 					<div className="col-xs-6">
 						<a href={url} className="btn btn-default btn-sm profile-edit-button">{t("Connect")}</a>

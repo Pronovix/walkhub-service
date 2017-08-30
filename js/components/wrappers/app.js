@@ -21,7 +21,7 @@ import UserActions from "actions/user";
 import connectToStores from "alt/utils/connectToStores";
 import flux from "control";
 import {noop} from "form";
-import {t} from "t";
+import {t, N_} from "t";
 import {capitalizeFirstLetter} from "util";
 import RouterActions from "actions/router";
 import OuterClassActions from "actions/outerclass";
@@ -45,12 +45,12 @@ if (WALKHUB_ANNOUNCEMENT) {
 let menuItems = {
 	navbar: {
 		left: [
-			{path: "https://github.com/Pronovix/walkhub-service", label: "Download from GitHub"},
+			{path: "https://github.com/Pronovix/walkhub-service", label: N_("Download from GitHub")},
 		],
 		right: [
-			{path: "/search", label: "Search"},
-			{path: "/profile/me", label: "My Profile", loggedin: true},
-			{path: "/record", label: "Record", loggedin: true},
+			{path: "/search", label: N_("Search")},
+			{path: "/profile/me", label: N_("My Profile"), loggedin: true},
+			{path: "/record", label: N_("Record"), loggedin: true},
 			{path: "/connect", icon: "log-in", loggedin: false},
 			{path: "/api/auth/logout?token=CSRF_TOKEN", icon: "log-out", loggedin: true},
 		],
