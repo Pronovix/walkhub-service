@@ -61,7 +61,7 @@ msgstr "Annuler la visite guidée"
 
 #: js/client/walkthrough/recorder.js:111
 msgid "Click"
-msgstr ""
+msgstr "Veuillez clicker"
 
 #: js/components/bar.js:54 js/components/errorbar.js:33
 msgid "Close"
@@ -487,9 +487,8 @@ msgstr ""
 
 #: js/client/walkthrough/autotitle.js:62
 msgid "{verb} in {label}"
-msgstr ""
+msgstr "{verb} dans {label}"
 
 #: js/client/walkthrough/autotitle.js:50
-#, fuzzy
 msgid "{verb} on {argument}"
-msgstr "Second argument"
+msgstr "{verb} sur {argument}"
