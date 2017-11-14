@@ -3,20 +3,20 @@
 # This file is distributed under the same license as the PACKAGE package.
 # FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
 #
-#, fuzzy
 msgid ""
 msgstr ""
-"Project-Id-Version: PACKAGE VERSION\n"
+"Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2017-07-20 17:40+0200\n"
-"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
-"Last-Translator: Laurent BREYTON <lb@cadredeville.com>\n"
-"Language-Team: LANGUAGE <LL@li.org>\n"
+"PO-Revision-Date: 2017-11-14 16:32+0100\n"
+"Last-Translator: Gari Araolaza <garaolaza@codesyntax.com>\n"
 "Language: fr\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Language-Team: \n"
+"X-Generator: Poedit 1.8.7.1\n"
 
 #: js/walkthrough/runner/popup.js:97
 msgid ""
@@ -110,7 +110,7 @@ msgstr ""
 #: js/components/connect.js:108 js/components/connect.js:142
 #: js/components/connect.js:172
 msgid "E-mail"
-msgstr ""
+msgstr "Email"
 
 #: js/client/walkthrough/bubble.js:134 js/components/profile.js:57
 #: js/components/walkthrough.js:66 js/components/walkthrough.js:69
@@ -203,7 +203,7 @@ msgstr ""
 
 #: js/components/wrappers/app.js:52
 msgid "My Profile"
-msgstr ""
+msgstr "Mon profil"
 
 #: js/components/wrappers/profile.js:170
 msgid "My Walkthroughs"
@@ -218,9 +218,8 @@ msgid "New again:"
 msgstr "Renouveller"
 
 #: js/components/connect.js:64
-#, fuzzy
 msgid "New to WalkHub?"
-msgstr "Bienvenue à Walkhub"
+msgstr "Nouveau à Walkhub?"
 
 #: js/components/profileedit.js:115
 msgid "New:"
@@ -346,7 +345,7 @@ msgstr ""
 
 #: js/components/connect.js:128
 msgid "Sign in"
-msgstr ""
+msgstr "Se connecter"
 
 #: js/components/connect.js:199
 msgid "Sign up for free"
@@ -362,7 +361,7 @@ msgstr "Etapes"
 
 #: js/client/walkthrough/editdialog.js:221
 msgid "Suggestions: "
-msgstr ""
+msgstr "Suggestions: "
 
 #: js/components/record.js:69
 msgid "The site might not be compatible with this walkhub"
@@ -379,10 +378,14 @@ msgid ""
 "The {number}. bubble is not found. Go to the {editlink} form to repair it. "
 "Technical info: {locator}"
 msgstr ""
+"La bulle {number}. n'a pas été trouvée. Veuillez s.v.p. acceder au "
+"formulaire {editlink} pour la réparer. Info technique: {locator}"
 
 #: js/client/walkthrough/executor.js:134
 msgid "The {number}. bubble is not found. Report it to the owner."
 msgstr ""
+"La bulle {number}. n'a pas été trouvée. Veuillez s.v.p. le notifier au "
+"proprietaire."
 
 #: js/components/walkthrough.js:147
 msgid "This walkthrough is only enabled in popup mode"
@@ -410,7 +413,7 @@ msgstr "Identification en 2 étapes"
 
 #: js/client/walkthrough/recorder.js:164 js/client/walkthrough/recorder.js:173
 msgid "Type"
-msgstr ""
+msgstr "Type"
 
 #: js/components/wrappers/helpcenterlist.js:103
 msgid "Untitled walkthrough"
@@ -433,13 +436,12 @@ msgid "Walkthrough"
 msgstr "Visite guidée"
 
 #: js/components/wrappers/record.js:185
-#, fuzzy
 msgid "Walkthrough on {domain}"
-msgstr "Walkthroughs on the site"
+msgstr "Visites guidée sur {domain}"
 
 #: js/components/wrappers/search.js:115
 msgid "Walkthroughs on the site"
-msgstr "Walkthroughs on the site"
+msgstr "Visites guidées dans le site"
 
 #: js/components/frontpage.js:26
 msgid "Welcome to WalkHub!"
@@ -455,11 +457,11 @@ msgstr ""
 
 #: js/components/embedcodebuilder.js:50
 msgid "bottom left"
-msgstr ""
+msgstr "en bas à gauche"
 
 #: js/components/embedcodebuilder.js:50
 msgid "bottom right"
-msgstr ""
+msgstr "en bas à droite"
 
 #: js/components/embedcodebuilder.js:139
 msgid "email"
@@ -471,15 +473,15 @@ msgstr ""
 
 #: js/components/embedcodebuilder.js:50
 msgid "top left"
-msgstr ""
+msgstr "en haut à gauche"
 
 #: js/components/embedcodebuilder.js:50
 msgid "top right"
-msgstr ""
+msgstr "en haut à droite"
 
 #: js/components/embedcodebuilder.js:138
 msgid "website url"
-msgstr "UURL du site web"
+msgstr "URL du site web"
 
 #: js/components/profileedit.js:127
 msgid "{label} log in"
