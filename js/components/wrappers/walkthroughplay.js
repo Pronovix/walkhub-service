@@ -285,7 +285,8 @@ class WalkthroughPlay extends React.Component {
 	}
 
 	isEditable() {
-		return this.props.walkthrough.uid !== "" && this.props.walkthrough.uid === this.props.currentUser.UUID;
+		const user = this.props.currentUser;
+		return this.props.walkthrough.uid !== "" && (user.Admin || this.props.walkthrough.uid === user.UUID);
 	}
 
 	render() {
