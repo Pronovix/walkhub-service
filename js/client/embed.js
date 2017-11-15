@@ -116,7 +116,7 @@ function fixIFrameSize(iframe) {
 		case "search":
 			switch (state) {
 				case "":
-					width = 105;
+					width = 210;
 					height = 35;
 					break;
 				case "list":
@@ -128,7 +128,7 @@ function fixIFrameSize(iframe) {
 		case "list":
 			switch (state) {
 				case "":
-					width = 105;
+					width = 210;
 					height = 35;
 					break;
 				case "list":
