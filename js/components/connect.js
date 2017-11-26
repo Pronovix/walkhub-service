@@ -55,13 +55,13 @@ class Connect extends React.Component {
 			const url = `/api/auth/${provider.id}/connect?token=${csrfToken}`;
 			return (
 				<div key={provider.id} className={"col-xs-10 col-xs-offset-1 provider-"+provider.id}>
-					<a href={url} className="btn btn-primary btn-block">{t("Log in with @label", {"@label": provider.label})}</a>
+					<a href={url} className="btn btn-primary btn-block">{t("Log in with {label}", {"label": provider.label})}</a>
 				</div>
 			);
 		});
 
-		const signupButton = (this.props.password && !this.props.signup) ? (
-			<span>New to WalkHub? <a href="#" className="register-link" onClick={this.props.signupClick}>{t("Register")}</a></span>
+		const signupButton = (!DISABLE_REGISTRATION && this.props.password && !this.props.signup) ? (
+			<span>{t("New to WalkHub?")} <a href="#" className="register-link" onClick={this.props.signupClick}>{t("Register")}</a></span>
 		) : null;
 
 		let signinForm = null;

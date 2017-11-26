@@ -61,6 +61,7 @@ If unsure, leave them empty.
 * `googleanalyticsaccount`: enables Google Analytics.
 * `mailchimp`: mailchimp-related configuration. If set, new users will be added to a mailing list.
 * `metricsaddresses`: comma separated whitelist of addresses from where the `/metrics` endpoint is accessible
+* `languages`: list of languages for the user interface
 
 ## Build & Run
 

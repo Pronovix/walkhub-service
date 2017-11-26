@@ -38,3 +38,9 @@ docker: preparedocker
 
 rebuildsearch:
 	go build -o wh-rebuildsearch cmd/wh-rebuildsearch/main.go
+
+gettext:
+	python gettext.py
+	msgmerge -U locales/en.po locales/messages.pot
+	msgmerge -U locales/fr.po locales/messages.pot
+	npm run stonejs -- build --merge locales/*.po js/messages.json

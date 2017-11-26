@@ -15,6 +15,7 @@
 	"footercomponent": "",
 	"menuitems": "",
 	"pwauth": true,
+	"disableregistration": false,
 	"extrabuild": "",
 	"extensionid": "",
 	"letsencrypthost": "",
@@ -35,5 +36,6 @@
 		"listid": "",
 		"datacenter": ""
 	},
-	"googleanalyticsaccount": ""
+	"googleanalyticsaccount": "",
+	"languages": ["en"]
 }

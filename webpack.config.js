@@ -13,12 +13,15 @@ var contentpages = process.env.CONTENTPAGES || serverConfig.contentpages;
 var menuitems = process.env.MENUITEMS || serverConfig.menuitems;
 var frontpagecomponent = process.env.FRONTPAGECOMPONENT || serverConfig.frontpagecomponent;
 var footercomponent = process.env.FOOTERCOMPONENT || serverConfig.footercomponent;
+var announcementcomponent = process.env.ANNOUNCEMENTCOMPONENT || serverConfig.announcementcomponent;
 var baseurl = process.env.BASEURL || serverConfig.baseurl;
 var extensionid = process.env.EXTENSIONID || serverConfig.extensionid;
 var embedurl = process.env.EMBEDURL || serverConfig.embedurl;
 var httporigin = process.env.HTTPORIGIN || serverConfig.httporigin;
 var gaAccount = process.env.GOOGLEANALYTICSACCOUNT || serverConfig.googleanalyticsaccount;
 var extraBuild = process.env.EXTRABUILD || serverConfig.extrabuild;
+var disableRegistration = process.env.DISABLEREGISTRATION || serverConfig.disableregistration;
+var languages = process.env.LANGUAGES || serverConfig.languages;
 
 var isProd = process.env.NODE_ENV === "production";
 
@@ -44,7 +47,8 @@ var loaders = [
 	{ test: /\.scss$/, loader: "style!css!sass?"+sassIncludePaths },
 	{ test: /\.sass$/, loader: "style!css!sass?indentedSyntax&"+sassIncludePaths },
 	{ test: /.*\.(gif|png|jpe?g|ico)$/i, loader: "file?name=[name]-[sha512:hash:hex:6].[ext]" },
-	{ test: /\.md$/, loader: "babel-loader!react-markdown!markdown" }
+	{ test: /\.md$/, loader: "babel-loader!react-markdown!markdown" },
+	{ test: /\.json$/, loader: 'json' }
 ];
 
 if (contentpages) {
@@ -92,6 +96,7 @@ module.exports = {
 			MENU_ITEMS: menuitems,
 			FRONT_PAGE: frontpagecomponent || "components/frontpage",
 			FOOTER: footercomponent,
+			ANNOUNCEMENT: announcementcomponent,
 			flux: "flux/index",
 		},
 		root: srcPath,
@@ -135,6 +140,9 @@ module.exports = {
 			WALKHUB_CONTENT_PAGES: !!contentpages,
 			GA_ACCOUNT: JSON.stringify(gaAccount),
 			WALKHUB_CUSTOM_FOOTER: !!footercomponent,
+			WALKHUB_ANNOUNCEMENT: !!announcementcomponent,
+			DISABLE_REGISTRATION: !!disableRegistration,
+			LANGUAGES: JSON.stringify(languages),
 		}),
 		new webpack.NoErrorsPlugin(),
 		new webpack.optimize.OccurenceOrderPlugin(),
