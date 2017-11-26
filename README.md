@@ -1,3 +1,5 @@
+WalkHub is looking for a maintainer and no longer supported. Pronovix (pronovix.com), the company that originally sponsored WalkHub’s development has focussed its activities around developer portals (API documentation) and is as a result unfortunately unable to provide any support for the project. The code is available as is, and we hope a developer with an interest in the project might be able to still use the code.
+
 # WalkHub
 
 Walkthrough tutorials designed for web applications and websites.
