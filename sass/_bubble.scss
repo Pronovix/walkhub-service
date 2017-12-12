@@ -250,12 +250,19 @@ div.wtbubble-tip-guide {
         color: #6f6f6f;
       }
 
+      &:before,
       &:after {
         @include font-wtbubble;
-
         display: inline-block;
-        margin-left: 5px;
         font-size: 11px;
+      }
+
+      &:before {
+        margin-right: 5px;
+      }
+
+      &:after {
+        margin-left: 5px;
       }
 
       &:focus {
@@ -273,14 +280,24 @@ div.wtbubble-tip-guide {
       margin-top: 5px;
     }
 
+    a.wtbubble-back {
+      margin-right: 5px;
+
+      &:before {
+        content: "";
+      }
+    }
+
     a.wtbubble-next {
       margin-right: 5px;
 
       &:after {
-        content: "";
+        content: "";
+        //content: "";
       }
     }
 
+    a.wtbubble-back,
     a.wtbubble-next,
     a.wtbubble-extrabutton,
     input[type="submit"] {

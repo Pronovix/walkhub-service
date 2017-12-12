@@ -184,6 +184,32 @@ class Controller {
 		});
 	}
 
+	backStep(skip_screenshot = false) {
+		var that = this;
+
+		const after = () => {
+			Bubble.current && Bubble.current.hide();
+			if (!this.state.completed && this.step) {
+				this.client.log("Executing incomplete step.");
+				this.state.completed = true;
+				this.client.updateState(this.state);
+				this.executor.execute(this.step, true);
+			}
+
+			this.client.log("Loading back step (" + this.state.stepIndex + ")");
+			this.state.stepIndex--;
+			this.state.completed = false;
+			this.client.updateState(this.state);
+			this.refreshStep();
+		};
+
+		if (skip_screenshot) {
+			after();
+		} else {
+			this.maybeScreenshot(after);
+		}
+  }
+
 	nextStep(skip_screenshot = false) {
 		var that = this;
 

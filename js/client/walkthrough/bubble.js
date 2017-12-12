@@ -33,6 +33,7 @@ class Bubble {
 		this.tipGuide = null;
 		this.nub = null;
 		this.contentWrapper = null;
+		this.backButton = null;
 		this.nextButton = null;
 		this.editButton = null;
 		this.title = null;
@@ -41,9 +42,15 @@ class Bubble {
 		this.resizeEventHandler = null;
 		this.stopAdjusting = false;
 
+		this.backButtonDisabled = (controller.state.stepIndex == 1);
 		this.nextButtonDisabled = false;
 
 		this.extraButtons = {};
+	}
+
+	disableBackButton() {
+		this.backButtonDisabled = true;
+		return this;
 	}
 
 	disableNextButton() {
@@ -110,10 +117,20 @@ class Bubble {
 			this.description.text(this.step.description);
 		}
 
+		this.backButton = $("<a />")
+			.attr("href", "#")
+			.text(t("Back"))
+			.addClass("wtbubble-back")
+			.addClass("wtbubble-button")
+			.click(function (event) {
+				event.preventDefault();
+				that.controller.backStep();
+			})
+			.appendTo(this.contentWrapper);
+
 		this.nextButton = $("<a />")
 			.attr("href", "#")
 			.text(t("Next"))
-			.addClass("wtbubble-button")
 			.addClass("wtbubble-next")
 			.addClass("wtbubble-button")
 			.click(function (event) {
@@ -121,6 +138,10 @@ class Bubble {
 				that.controller.nextStep();
 			})
 			.appendTo(this.contentWrapper);
+
+		if (this.backButtonDisabled) {
+			this.backButton.hide();
+		}
 
 		if (this.nextButtonDisabled) {
 			this.nextButton.hide();
@@ -138,6 +159,7 @@ class Bubble {
 					that.editdialog
 						.setController(that.controller)
 						.setSubmitCallback(function () {
+							that.backButton.show();
 							that.nextButton.show();
 							that.editButton.show();
 						})
@@ -148,6 +170,7 @@ class Bubble {
 							that.editdialog = null;
 						})
 						.open();
+					that.backButton.hide();
 					that.nextButton.hide();
 					that.editButton.hide();
 				})
@@ -201,6 +224,7 @@ class Bubble {
 		this.tipGuide = null;
 		this.contentWrapper = null;
 		this.nub = null;
+		this.backButton = null;
 		this.nextButton = null;
 		this.editButton = null;
 		this.title = null;
