@@ -92,6 +92,7 @@ class Executor {
 
 	showExitDialog(message, buttons) {
 		var bubble = new Bubble(this.controller, null, {description: message, html: true});
+		bubble.disableCloseButton();
 		bubble.disableBackButton();
 		bubble.disableNextButton();
 

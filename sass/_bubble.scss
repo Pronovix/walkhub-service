@@ -280,6 +280,20 @@ div.wtbubble-tip-guide {
       margin-top: 5px;
     }
 
+    a.wtbubble-close {
+      color: white;
+      cursor: pointer;
+      position: absolute;
+      top: 0;
+      right: 0;
+      padding: 7px 10px;
+
+      &:after {
+        @include font-wtbubble;
+        content: "";
+      }
+    }
+
     a.wtbubble-back {
       margin-right: 5px;
 
