@@ -76,7 +76,7 @@ class Record extends React.Component {
 					<TextField id="input-title" label={t("Title")} value={this.props.title} onChange={this.props.onTitleChange} />
 					<TextField id="input-starting-url" label={t("Starting URL")} value={this.props.startingUrl} onChange={this.props.onStartingUrlChange} onBlur={this.props.onStartingUrlBlur} />
 					{compatWarn}
-					<Button grid={!this.props.embedded} onClick={this.props.onRecordClick} disabled={this.props.recordDisabled} containerClassName="record" className={recordButtonClass}><strong className="semi-bold">{t("Record")}</strong> <span><object className="record-icon" type="image/svg+xml" data={recordIcon}></object></span></Button>
+					<Button grid={!this.props.embedded} onClick={this.props.onRecordClick} disabled={this.props.recordDisabled} containerClassName="record" className={recordButtonClass} title={t("Record")}><span><object className="record-icon" type="image/svg+xml" data={recordIcon}></object></span></Button>
 					<div className="form-group steps">
 						<h3 className="col-sm-offset-2 col-sm-10">{t("Recorded steps")}</h3>
 						<div className="col-sm-offset-2 col-sm-10">

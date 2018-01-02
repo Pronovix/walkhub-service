@@ -201,11 +201,12 @@ export class ButtonSetButton extends React.Component {
 		id: "",
 		name: "",
 		disabled: false,
+		title: ""
 	};
 
 	render() {
 		return (
-			<button onClick={this.props.onClick} type={this.props.type} className={"btn " + this.props.className} id={this.props.id} name={this.props.name || this.props.id} disabled={this.props.disabled}>{this.props.children}</button>
+			<button onClick={this.props.onClick} type={this.props.type} className={"btn " + this.props.className} id={this.props.id} name={this.props.name || this.props.id} disabled={this.props.disabled} title={this.props.title}>{this.props.children}</button>
 		);
 	}
 
@@ -222,12 +223,13 @@ export class Button extends React.Component {
 		name: "",
 		grid: true,
 		disabled: false,
+		title: ""
 	};
 
 	render() {
 		return (
 			<ButtonSet grid={this.props.grid} className={this.props.containerClassName}>
-				<ButtonSetButton onClick={this.props.onClick} type={this.props.type} className={this.props.className} id={this.props.id} name={this.props.name || this.props.id} disabled={this.props.disabled}>{this.props.children}</ButtonSetButton>
+				<ButtonSetButton onClick={this.props.onClick} type={this.props.type} className={this.props.className} id={this.props.id} name={this.props.name || this.props.id} disabled={this.props.disabled} title={this.props.title}>{this.props.children}</ButtonSetButton>
 			</ButtonSet>
 		);
 	}

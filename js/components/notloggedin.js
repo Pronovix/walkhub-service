@@ -18,6 +18,8 @@ import React from "react";
 import {t} from "t";
 import {Link} from "react-router";
 
+import loginIcon from "images/login.svg";
+
 class NotLoggedIn extends React.Component {
 
 	static defaultProps = {
@@ -27,9 +29,11 @@ class NotLoggedIn extends React.Component {
 	};
 
 	render() {
+		const loginClass = "btn btn-"+this.props.color+" login-button";
+		const loginSpan = <span><object className="login-icon" type="image/svg+xml" data={loginIcon}></object></span>;
 		const loginButton = this.props.customLoginButtonClick ?
-			<a href="#" className={"btn btn-"+this.props.color} onClick={this.props.customLoginButtonClick}>{this.props.label}</a>:
-			<Link to="/connect" className={"btn btn-"+this.props.color}>{this.props.label}</Link>;
+			<a href="#" className={loginClass} onClick={this.props.customLoginButtonClick} title={this.props.label}>{loginSpan}</a>:
+			<Link to="/connect" className={loginClass} title={this.props.label}>{loginSpan}</Link>;
 		return (
 			<div className="row">
 				<div className="col-xs-12">
