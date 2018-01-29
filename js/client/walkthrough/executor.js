@@ -25,7 +25,7 @@ import Bubble from "client/walkthrough/bubble";
 import CommandDispatcher from "client/walkthrough/command_dispatcher";
 import Translator from "client/walkthrough/translator";
 import {t, N_} from "t";
-import URI from "URIjs";
+import URI from "urijs";
 import {getdata} from "util";
 
 class Executor {

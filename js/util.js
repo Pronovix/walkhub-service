@@ -15,7 +15,7 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 import {t} from "t";
-import URI from "URIjs";
+import URI from "urijs";
 
 export const csrfToken = window.CSRF_TOKEN;
 

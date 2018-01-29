@@ -19,7 +19,7 @@ import Translator from "client/walkthrough/translator";
 import Util from "client/walkthrough/util";
 import Walkhub from "client/walkhub";
 import CryptoJS from "crypto-js";
-import URI from "URIjs";
+import URI from "urijs";
 
 class CommandDispatcher {
 

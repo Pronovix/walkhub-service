@@ -26,7 +26,7 @@ import UserStore from "stores/user";
 import WalkthroughStore from "stores/walkthrough";
 import WalkthroughActions from "actions/walkthrough";
 import connectToStores from "alt/utils/connectToStores";
-import URI from "URIjs";
+import URI from "urijs";
 
 @connectToStores
 class RecordWrapper extends React.Component {

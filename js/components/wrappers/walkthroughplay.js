@@ -21,7 +21,7 @@ import Walkthrough from "components/walkthrough";
 import connectToStores from "alt/utils/connectToStores";
 import UserStore from "stores/user";
 import WalkthroughStore from "stores/walkthrough";
-import URI from "URIjs";
+import URI from "urijs";
 import {isHTTPSPage} from "util";
 import flux from "control";
 import WalkthroughActions from "actions/walkthrough";
