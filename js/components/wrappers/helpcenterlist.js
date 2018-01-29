@@ -23,7 +23,7 @@ import HelpCenterList from "components/helpcenterlist";
 import WalkhubBackend from "walkthrough/walkhub_backend";
 import HelpButton from "components/helpbutton";
 import Bar from "components/bar";
-import URI from "URIjs";
+import URI from "urijs";
 import {noop} from "form";
 import {t} from "t";
 

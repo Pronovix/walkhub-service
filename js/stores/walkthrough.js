@@ -18,7 +18,7 @@ import flux from "control";
 import {createStore, bind} from "alt/utils/decorators";
 import WalkthroughActions from "actions/walkthrough";
 import WalkthroughSource from "sources/walkthrough";
-import URI from "URIjs";
+import URI from "urijs";
 
 @createStore(flux)
 class WalkthroughStore {
