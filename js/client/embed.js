@@ -84,10 +84,11 @@ function reposition(iframe) {
 function fixIFrameSize(iframe) {
 	iframe.attr("style", "");
 	const state = iframe.data("state") || "";
+	const type = iframe.data("type");
 	let width = "";
 	let height = "";
 
-	switch (iframe.data("type")) {
+	switch (type) {
 		case "play":
 			width = 55;
 			height = 35;
@@ -140,6 +141,7 @@ function fixIFrameSize(iframe) {
 	}
 
 	iframe
+		.attr("class", type)
 		.css("width", width ? width + "px" : "100%")
 		.css("height", height ? height + "px" : "100%")
 		.css("z-index", MAXIMUM_ZINDEX-1)
@@ -219,6 +221,7 @@ function onMessageEventHandler(event) {
 
 	switch (msg.type) {
 		case "start":
+			iframe.attr("class", "start");
 			iframe
 				.data("started", true)
 				.css("position", "fixed")
